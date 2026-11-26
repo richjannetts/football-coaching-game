@@ -107,7 +107,7 @@ export async function chapter1(stage) {
           pitch.moveTo(other.el, { x: flip(19), y: 32.5 }, 2000),
           pitch.moveTo(kicker.el, { x: 15, y: 27 }, 1800),
           pitch.moveTo(back, { x: flip(11), y: 30.5 }, 1700),
-          pitch.moveTo(nearWide, { x: flip(8), y: 26 }, 1500),
+          pitch.moveTo(nearWide, { x: flip(6), y: 27 }, 1500),
         ]),
       'c1.move2': () =>
         Promise.all([pitch.moveBall({ x: flip(19), y: 33.2 }, 700), pitch.moveTo(gk, { x: flip(16.5), y: 38.6 }, 800)]),
