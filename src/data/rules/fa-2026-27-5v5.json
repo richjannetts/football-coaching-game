@@ -1,0 +1,79 @@
+{
+  "id": "fa-2026-27-5v5",
+  "body": "The FA",
+  "season": "2026/27",
+  "format": "5v5",
+  "ageGroups": ["U8", "U9"],
+  "rules": {
+    "kickoff.fromCentreMark": {
+      "value": true,
+      "source": "FA Mini-Soccer Handbook 2026/27, Law 8",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-25"
+    },
+    "kickoff.ownHalf": {
+      "value": true,
+      "source": "FA Mini-Soccer Handbook 2026/27, Law 8",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-25"
+    },
+    "kickoff.opponentDistance": {
+      "value": 5,
+      "unit": "yards",
+      "source": "FA Mini-Soccer Handbook 2026/27, Law 8",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-25"
+    },
+    "kickoff.direction": {
+      "value": "any",
+      "source": "FA Mini-Soccer Handbook 2026/27, Law 8",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-25"
+    },
+    "kickoff.canScoreDirect": {
+      "value": false,
+      "source": "FA Mini-Soccer Handbook 2026/27, Law 8",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-25"
+    },
+    "kickoff.centreCircle": {
+      "value": false,
+      "source": "FA Mini-Soccer Handbook 2026/27, Law 8 (only a centre mark is described)",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-25"
+    },
+    "kickoff.afterGoalWhichTeam": {
+      "value": null,
+      "source": "Not stated in the mini-soccer handbook. Do not test the child on this.",
+      "confidence": "unconfirmed",
+      "lastChecked": "2026-11-25"
+    },
+    "kickoff.kickerTouchTwice": {
+      "value": null,
+      "source": "Not stated in the mini-soccer handbook. Do not test the child on this.",
+      "confidence": "unconfirmed",
+      "lastChecked": "2026-11-25"
+    },
+    "pitch.length": {
+      "value": 40,
+      "unit": "yards",
+      "source": "FA Mini-Soccer Handbook 2026/27, 5v5 pitch maximum",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-25"
+    },
+    "pitch.width": {
+      "value": 30,
+      "unit": "yards",
+      "source": "FA Mini-Soccer Handbook 2026/27, 5v5 pitch maximum",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-25"
+    },
+    "goal.width": {
+      "value": 4,
+      "unit": "yards",
+      "source": "FA Mini-Soccer Handbook 2026/27, 5v5 goal 12 ft by 6 ft",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-25"
+    }
+  }
+}

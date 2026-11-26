@@ -1,0 +1,123 @@
+// Chapter 1: our centre kick.
+// Line up in our shape, choose the first pass, then watch a passing move
+// that ends in our goal. The message is "we were ready", not "stand here and score".
+
+import { team } from './content.js';
+import { runLineup } from './lineup.js';
+import { wait, motion } from '../lib/svg.js';
+
+export async function chapter1(stage) {
+  const { pitch } = stage;
+  const them = stage.addThem(team.opponents.ourCentreKick);
+  pitch.placeBall({ x: 15, y: 30 });
+  pitch.ball.classList.add('is-hidden');
+  pitch.setRing(true);
+
+  // Intro explainer. Touch is off while it plays.
+  stage.setBusy(true);
+  await stage.play(['c1.intro1', 'c1.intro2', 'c1.intro3', 'ring.helper'], {
+    'c1.intro1': () => stage.jump(stage.players.map((p) => p.el)),
+    'c1.intro2': async () => {
+      pitch.showArrow({ x: 15, y: 6 }, { x: 15, y: 34 });
+      await wait(motion(2600));
+      pitch.clear('arrow');
+    },
+    'c1.intro3': async () => {
+      pitch.ball.classList.remove('is-hidden');
+      await pitch.moveBall(pitch.centre, 900, 'cubic-bezier(.3,1.5,.6,1)');
+    },
+    'ring.helper': async () => {
+      pitch.setRing(true, true);
+      await wait(motion(3000));
+      pitch.setRing(true, false);
+    },
+  });
+  stage.setBusy(false);
+
+  // The puzzle: line up for our centre kick.
+  const solved = await runLineup(stage, {
+    kind: 'ours',
+    shapeKey: 'ourCentreKick',
+    promptIds: ['c1.place', 'place.how', 'place.ready'],
+  });
+  await solved.spoken;
+
+  const role = (name) => solved.roles.filter((r) => r.role === name);
+  const kicker = role('kicker')[0];
+  const [sideL, sideR] = role('side').sort((a, b) => a.x - b.x);
+
+  // Choose the first pass.
+  const targets = [
+    { kind: 'friend', x: sideL.x, y: sideL.y, role: sideL },
+    { kind: 'friend', x: sideR.x, y: sideR.y, role: sideR },
+    { kind: 'long', x: 15, y: 34, drawR: 30 },
+    { kind: 'shot', x: 15, y: 40.6, drawR: 30 },
+  ];
+  await stage.play(['c1.passAsk']);
+
+  for (;;) {
+    stage.check();
+    const pick = await stage.pickTarget(targets, (t) => {
+      // Inside the tap: start the sound now.
+      stage.setBusy(true);
+      if (t.kind === 'friend') return stage.play(['c1.passShort'], { 'c1.passShort': () => pitch.moveBall(t, 700) });
+      if (t.kind === 'long') return stage.play(['sfx.whistle', 'c1.passLong', 'hint.tryAgain'], {}, { remember: false });
+      return stage.play(['sfx.whistle', 'c1.passShot', 'hint.tryAgain'], {}, { remember: false });
+    });
+    const t = pick.target;
+    if (t.kind === 'long') {
+      await Promise.all([longKick(), pick.done]);
+    } else if (t.kind === 'shot') {
+      await Promise.all([shot(), pick.done]);
+    } else {
+      await pick.done;
+      await passingMove(t.role, t.role === sideL ? sideR : sideL);
+      return;
+    }
+    stage.setBusy(false);
+  }
+
+  async function longKick() {
+    const theirBack = them[1];
+    await pitch.moveBall({ x: 15, y: 30.8 }, 900, 'ease-out');
+    await pitch.moveTo(theirBack, { x: 15, y: 31.5 }, 300);
+    stage.jump([theirBack]);
+    await wait(motion(1200));
+    await Promise.all([pitch.moveBall(pitch.centre, 700), pitch.moveTo(theirBack, { x: 15, y: 30 }, 700)]);
+  }
+
+  async function shot() {
+    await pitch.moveBall({ x: 15, y: 40.6 }, 1000, 'ease-out');
+    const cross = pitch.showCross({ x: 15, y: 40.6 });
+    await wait(motion(1800));
+    cross.remove();
+    await pitch.moveBall(pitch.centre, 700);
+  }
+
+  // The friend takes it forward, passes across, and her friend scores.
+  async function passingMove(friend, other) {
+    const flip = friend.x > 15 ? (x) => 30 - x : (x) => x; // mirror when passing right
+    const [gk, back, wideA, wideB] = them;
+    const nearWide = friend.x > 15 ? wideB : wideA;
+    await stage.play(['c1.move1', 'c1.move2', 'c1.goal'], {
+      'c1.move1': () =>
+        Promise.all([
+          pitch.moveTo(friend.el, { x: flip(9), y: 28.5 }, 1800),
+          pitch.moveBall({ x: flip(9.4), y: 29.4 }, 1800),
+          pitch.moveTo(other.el, { x: flip(19), y: 32.5 }, 2000),
+          pitch.moveTo(kicker.el, { x: 15, y: 27 }, 1800),
+          pitch.moveTo(back, { x: flip(11), y: 30.5 }, 1700),
+          pitch.moveTo(nearWide, { x: flip(8), y: 26 }, 1500),
+        ]),
+      'c1.move2': () =>
+        Promise.all([pitch.moveBall({ x: flip(19), y: 33.2 }, 700), pitch.moveTo(gk, { x: flip(16.5), y: 38.6 }, 800)]),
+      'c1.goal': async () => {
+        await pitch.moveBall({ x: flip(13.6), y: 40.9 }, 500, 'ease-in');
+        stage.goalBanner(true);
+        stage.jump(stage.players.map((p) => p.el));
+        await wait(motion(2200));
+        stage.goalBanner(false);
+      },
+    });
+  }
+}

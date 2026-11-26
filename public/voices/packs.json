@@ -1,0 +1,10 @@
+{
+  "active": "rich",
+  "packs": {
+    "rich": {
+      "label": "Rich's voice",
+      "recorded": []
+    }
+  },
+  "note": "List a line id under 'recorded' once public/voices/rich/<id>.mp3 exists. Lines not listed use the phone's own voice."
+}

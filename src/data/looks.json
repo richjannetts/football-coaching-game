@@ -1,0 +1,28 @@
+{
+  "note": "Preset choices for the player setup. Colours are set on the drawings through CSS variables, so artwork can be redrawn later without changing these.",
+  "skin": [
+    { "id": "s1", "colour": "#f6d7c3" },
+    { "id": "s2", "colour": "#e8b896" },
+    { "id": "s3", "colour": "#c98e66" },
+    { "id": "s4", "colour": "#a86b45" },
+    { "id": "s5", "colour": "#7a4a2c" },
+    { "id": "s6", "colour": "#4f2f1c" }
+  ],
+  "hairColour": [
+    { "id": "h1", "colour": "#1f1a17" },
+    { "id": "h2", "colour": "#4a2f1d" },
+    { "id": "h3", "colour": "#8a5a32" },
+    { "id": "h4", "colour": "#b4552d" },
+    { "id": "h5", "colour": "#e0b45a" }
+  ],
+  "hair": [
+    { "id": "short", "label": "Short" },
+    { "id": "curls", "label": "Curls" },
+    { "id": "braids", "label": "Braids" },
+    { "id": "bun", "label": "Bun" },
+    { "id": "ponytail", "label": "Ponytail" },
+    { "id": "hijab", "label": "Hijab" }
+  ],
+  "hijabColour": "#0f766e",
+  "default": { "skin": "s3", "hair": "curls", "hairColour": "h1" }
+}

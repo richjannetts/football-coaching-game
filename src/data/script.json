@@ -1,0 +1,63 @@
+{
+  "note": "Every spoken line in the game. 'text' is spoken and shown as a caption. 'cue' says what the child sees at the same time. {name} is replaced with the player's first name or nickname. To record a line, save it as public/voices/rich/<id>.mp3 and add the id to public/voices/packs.json.",
+  "lines": [
+    { "id": "setup.hello", "text": "Hello! Let's get you ready for match day.", "cue": "Your player appears in our blue and yellow kit." },
+    { "id": "setup.skin", "text": "Tap a colour for your player's skin.", "cue": "A row of skin colour circles glows." },
+    { "id": "setup.hair", "text": "Now tap a hair style.", "cue": "A row of hair styles glows." },
+    { "id": "setup.hairColour", "text": "And tap a hair colour.", "cue": "A row of hair colour circles glows." },
+    { "id": "setup.done", "text": "Looking great, {name}! Tap the tick when you're ready.", "cue": "The tick button glows." },
+
+    { "id": "menu.welcome", "text": "Hi {name}! Tap the glowing chapter to play.", "cue": "The next chapter to play glows." },
+    { "id": "menu.locked", "text": "Play chapter one first. Then chapter two opens.", "cue": "Chapter one glows." },
+    { "id": "menu.allDone", "text": "You've played both chapters! You can play them again any time.", "cue": "Two footballs are shown." },
+
+    { "id": "sfx.whistle", "text": "Peep!", "cue": "A whistle sound. Not spoken." },
+
+    { "id": "c1.intro1", "text": "It's match day! We're the blue and yellow team.", "cue": "Our five players stand at the side of the pitch." },
+    { "id": "c1.intro2", "text": "We're shooting this way, up the pitch.", "cue": "A big arrow points at their goal." },
+    { "id": "c1.intro3", "text": "We have the centre kick. The ball sits on the middle spot.", "cue": "The ball bounces onto the centre mark." },
+    { "id": "ring.helper", "text": "The dotted ring is a helper. Real pitches don't have one. It shows five big steps from the ball.", "cue": "The dotted ring around the ball glows." },
+    { "id": "c1.place", "text": "Spots! Put our five players where our team stands for our centre kick.", "cue": "Our players at the side gently bounce." },
+    { "id": "place.how", "text": "Tap a player, then tap where she should stand.", "cue": "A finger taps a player, then a spot." },
+    { "id": "place.ready", "text": "When everyone is on her spot, tap the tick.", "cue": "The tick button glows." },
+    { "id": "place.notAll", "text": "Put all five players on the pitch first.", "cue": "The players still at the side bounce." },
+
+    { "id": "rule.ownHalf", "text": "The rule says: everyone starts in our own half.", "cue": "Their half turns red. The player in it has a red ring." },
+    { "id": "rule.onBall", "text": "The rule says: one of us starts on the ball, on the middle spot.", "cue": "The ball glows." },
+    { "id": "rule.ring", "text": "The rule says: stay five big steps away from the ball. Keep out of the dotted ring.", "cue": "The ring turns red. The player inside it has a red ring." },
+
+    { "id": "shape.c1.kicker", "text": "Our team does: one player on the ball to take the kick.", "cue": "The ball glows." },
+    { "id": "shape.c1.friends", "text": "Our team does: a friend either side of the ball, level with it, so there are two easy passes.", "cue": "The players in the wrong place have a red ring." },
+    { "id": "shape.back", "text": "Our team does: one player stays back, between our goal and halfway, a bit nearer our goal.", "cue": "The players in the wrong place have a red ring." },
+    { "id": "shape.keeper", "text": "Our team does: a keeper in our goal.", "cue": "Our goal glows." },
+    { "id": "shape.c2.up", "text": "Our team does: our front player waits just behind the ring, in the middle, ready to chase.", "cue": "The players in the wrong place have a red ring." },
+    { "id": "shape.c2.middles", "text": "Our team does: a friend either side, a little further back than our front player.", "cue": "The players in the wrong place have a red ring." },
+
+    { "id": "hint.tryAgain", "text": "Have another go.", "cue": "The tick button comes back." },
+    { "id": "hint.show", "text": "Look for the glowing spots. That's where our team stands.", "cue": "Glowing circles show the empty spots." },
+    { "id": "hint.together", "text": "Let's do one together. Watch.", "cue": "One player walks to a glowing spot." },
+    { "id": "hint.yourTurn", "text": "Now you try the rest.", "cue": "The glowing spots stay on." },
+
+    { "id": "good.lineup", "text": "Everyone is on her spot. Great work!", "cue": "Our players do a little jump." },
+    { "id": "good.lineupEffort", "text": "You kept trying, and now everyone is on her spot. Great work!", "cue": "Our players do a little jump." },
+
+    { "id": "c1.passAsk", "text": "The ref blows the whistle. Where should the first pass go? Tap where the ball should go.", "cue": "The two friends, the far end and their goal all glow." },
+    { "id": "c1.passShort", "text": "Short pass to a friend. Good thinking!", "cue": "The ball rolls to the friend." },
+    { "id": "c1.passLong", "text": "Our team does: short pass to a friend. A long kick gives the ball away.", "cue": "The ball flies long and the orange team gets it." },
+    { "id": "c1.passShot", "text": "The rule says: you can't score straight from a centre kick. Try a short pass to a friend.", "cue": "The ball flies at their goal and a big cross appears." },
+    { "id": "c1.move1", "text": "She takes the ball forward.", "cue": "Our player runs up the pitch with the ball." },
+    { "id": "c1.move2", "text": "Pass across to a friend.", "cue": "The ball goes across to the other friend." },
+    { "id": "c1.goal", "text": "Goal! We were ready, so we could pass and score.", "cue": "The ball hits the net. Our players jump." },
+    { "id": "c1.end", "text": "You've earned a football for chapter one. Well played, {name}!", "cue": "A football flies into your collection." },
+
+    { "id": "c2.intro1", "text": "Later in the match, the other team has a centre kick.", "cue": "The orange team lines up." },
+    { "id": "c2.intro2", "text": "They're in orange. Their kicker is on the ball.", "cue": "Their kicker glows." },
+    { "id": "c2.place", "text": "Spots! Where do we stand when they have the centre kick? Put our five players in our defending shape.", "cue": "Our players at the side gently bounce." },
+    { "id": "c2.kick", "text": "They kick off.", "cue": "Their kicker passes to a friend." },
+    { "id": "c2.close", "text": "Our front player closes down straight away.", "cue": "Our front player runs at the ball." },
+    { "id": "c2.defend", "text": "We stay together and defend as a team.", "cue": "Our players move across together." },
+    { "id": "c2.out", "text": "Their shot goes wide, out over our goal line.", "cue": "The ball rolls past our goal and off the pitch." },
+    { "id": "c2.goalKick", "text": "That means it's our goal kick! We'll find out what to do in the next chapter.", "cue": "Our keeper picks up the ball." },
+    { "id": "c2.end", "text": "You've earned a football for chapter two. Brilliant defending, {name}!", "cue": "A football flies into your collection." }
+  ]
+}
