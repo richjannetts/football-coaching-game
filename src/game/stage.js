@@ -7,9 +7,14 @@ import { createPlacement } from '../lib/placement.js';
 import { homeIcon, speakerIcon, tickIcon, stickerSvg, bonusStickerSvg, nextIcon, tapHere } from '../lib/icons.js';
 import { createQuiz } from './quiz.js';
 import * as narrator from '../lib/narrator.js';
+import * as sfx from '../lib/sfx.js';
+import { burst, burstFrom } from '../lib/confetti.js';
 import { team, pitchSize, gridSpots, benchSpots, keeperAt } from './content.js';
 
 export const ABORT = Symbol('left the chapter');
+
+// Confetti in our kit colours, with white and gold for sparkle.
+const CONFETTI = [team.kit.us.shirt, team.kit.us.stripe, '#ffffff', '#facc15', team.kit.keeper.shirt];
 
 const THEIR_LOOKS = [
   { skin: 's5', hair: 'short', hairColour: 'h1' },
@@ -95,6 +100,8 @@ export function createStage({ profile, onHome, showWords = false }) {
     players: stage.players,
     spots: [...gridSpots, ...benchSpots],
     keeperAt,
+    onPick: () => sfx.play('pick', { haptic: 10 }),
+    onDrop: () => sfx.play('drop', { haptic: 15 }),
     onChange: () => {
       stage.clearWhy();
       stage.afterChange?.();
@@ -169,7 +176,33 @@ export function createStage({ profile, onHome, showWords = false }) {
     });
   };
 
+  // A friendly wobble on the players who need to move. Not a telling off:
+  // just "look at me".
+  stage.shake = (indexes) => {
+    indexes.forEach((i) => {
+      const t = stage.players[i].el;
+      t.classList.remove('is-shaking');
+      void t.getBoundingClientRect();
+      t.classList.add('is-shaking');
+      setTimeout(() => t.classList.remove('is-shaking'), 700);
+    });
+  };
+
+  // Confetti for the big moments. Optional: from an element on screen.
+  stage.confetti = (fromEl, count) => {
+    if (!stage.alive) return;
+    if (fromEl) burstFrom(fromEl, { colours: CONFETTI, count });
+    else burst({ colours: CONFETTI, count });
+  };
+
   stage.goalBanner = (show) => goalBanner.classList.toggle('is-hidden', !show);
+  // The net ripples when the ball goes in.
+  stage.netShake = () => {
+    pitch.svg.classList.remove('net-shake');
+    void pitch.svg.getBoundingClientRect();
+    pitch.svg.classList.add('net-shake');
+    setTimeout(() => pitch.svg.classList.remove('net-shake'), 900);
+  };
 
   // Wait for a tap on one of several glowing places on the pitch.
   // onPick runs inside the tap, so it can start sound straight away.
@@ -242,7 +275,9 @@ export function createStage({ profile, onHome, showWords = false }) {
         onAnswer: (right) => {
           if (right) {
             bonus = bonus.map((b, i) => b || i === level - 1);
-            award.append(h('div', { class: 'end-bonus' }, bonusStickerSvg(level, true)));
+            const won = h('div', { class: 'end-bonus' }, bonusStickerSvg(level, true));
+            award.append(won);
+            requestAnimationFrame(() => stage.confetti(won, 36));
             drawTally();
             onBonus?.();
           }
@@ -255,6 +290,8 @@ export function createStage({ profile, onHome, showWords = false }) {
     }
     endCard.replaceChildren(h('div', { class: 'end-main' }, h('div', { class: 'end-award' }, award, tally), quiz ? quiz.el : null), buttons);
     endCard.classList.remove('is-hidden');
+    // The new sticker arrives with a burst of confetti.
+    requestAnimationFrame(() => stage.confetti(award, 56));
     return { startQuiz: () => (quiz ? quiz.start() : pointLine ? stage.play([pointLine]) : Promise.resolve()) };
   };
 

@@ -61,9 +61,11 @@ export function createQuiz({ question, play, say, onShow, onAnswer, thenLines = 
       b.classList.toggle('is-chosen', j === i);
     });
     // Speech starts inside the tap.
+    // A right answer gets a happy chime first. "Hear it again" repeats the
+    // words only.
     last = { ids: [right ? question.right : question.reveal, ...thenLines], cues: {} };
     onAnswer(right);
-    say(last.ids, last.cues);
+    say(right ? ['sfx.chime', ...last.ids] : last.ids, last.cues);
   }
 
   function hearAgain() {

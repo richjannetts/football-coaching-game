@@ -2,6 +2,7 @@ import './style.css';
 import { registerSW } from 'virtual:pwa-register';
 import * as store from './lib/storage.js';
 import * as narrator from './lib/narrator.js';
+import * as sfx from './lib/sfx.js';
 import { createStage, ABORT } from './game/stage.js';
 import { chapter1 } from './game/chapter1.js';
 import { chapter2 } from './game/chapter2.js';
@@ -69,6 +70,7 @@ if ('serviceWorker' in navigator) {
 }
 
 narrator.prepare(import.meta.env.BASE_URL);
+sfx.setEnabled(!store.load('soundsOff'));
 if (profile) narrator.setVars({ name: profile.name });
 if (isInstalled()) store.askToKeepData();
 
@@ -159,6 +161,11 @@ function goGrownUps() {
       onEditPlayer: goSetup,
       showWords: !!store.load('showWords'),
       onToggleWords: (on) => store.save('showWords', on),
+      sounds: sfx.isEnabled(),
+      onToggleSounds: (on) => {
+        sfx.setEnabled(on);
+        store.save('soundsOff', !on);
+      },
       onDelete: () => {
         narrator.stop();
         store.deleteEverything();
@@ -205,7 +212,7 @@ async function finishChapter(n, stage) {
   });
   stage.setBusy(false);
   stage.showReady(false);
-  await stage.play([`c${n}.end`]).catch(() => {});
+  await stage.play(['sfx.sticker', `c${n}.end`]).catch(() => {});
   await end.startQuiz().catch(() => {});
 }
 

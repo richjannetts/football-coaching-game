@@ -4,6 +4,9 @@
 //  - a touch within 300 ms and 40 px of the last one is ignored
 //  - a cancelled or dropped move puts the player back; nobody is ever lost
 //  - every move snaps to the nearest spot
+// Game feel: a dragged player is lifted a little above the finger so she
+// can be seen, the spot she will land on glows, and she lands with a small
+// springy bounce. onPick and onDrop let the stage add sounds.
 
 import { distance, nearestSpot } from './geometry.js';
 
@@ -11,14 +14,19 @@ const REPEAT_MS = 300;
 const REPEAT_PX = 40;
 const DRAG_START_PX = 10;
 const PICK_PX = 60; // finger distance that still picks a player: about a 120 px circle
+const LIFT_PX = 26; // a dragged player floats this far above a finger, so the finger does not hide her
+const SNAP_MS = 280;
+const SNAP_EASE = 'cubic-bezier(.3,1.45,.55,1)'; // overshoots a touch, then settles: a little bounce
 
-export function createPlacement({ pitch, players, spots, keeperAt, onChange, onEmptyTap }) {
+export function createPlacement({ pitch, players, spots, keeperAt, onChange, onEmptyTap, onPick, onDrop }) {
   // players: [{ el, spotId }]
   const spotById = new Map(spots.map((sp) => [sp.id, sp]));
   let enabled = false;
   let selected = -1;
   let active = null; // { pointerId, index, startX, startY, dragging, from }
   let last = { t: -Infinity, x: 0, y: 0 };
+  let frame = 0; // a drag waits for the next screen refresh, so it moves smoothly
+  let nearId = null;
   const svg = pitch.svg;
   const anyMarked = players.some((p) => p.keeper);
 
@@ -41,13 +49,41 @@ export function createPlacement({ pitch, players, spots, keeperAt, onChange, onE
     });
   }
 
-  function putAt(index, spotId, animate = true, ms = 220) {
+  function putAt(index, spotId, animate = true, ms = 220, easing = 'ease-out') {
     const p = players[index];
     p.spotId = spotId;
     const sp = spotById.get(spotId);
-    const done = animate ? pitch.moveTo(p.el, sp, ms, 'ease-out') : (pitch.place(p.el, sp), Promise.resolve());
+    const done = animate ? pitch.moveTo(p.el, sp, ms, easing) : (pitch.place(p.el, sp), Promise.resolve());
     refresh();
     return done;
+  }
+
+  // A move the child made: springy snap, then a little squash on landing.
+  function settle(index, spotId) {
+    const el = players[index].el;
+    return putAt(index, spotId, true, SNAP_MS, SNAP_EASE).then(() => {
+      el.classList.remove('is-landing');
+      void el.getBoundingClientRect();
+      el.classList.add('is-landing');
+      setTimeout(() => el.classList.remove('is-landing'), 400);
+    });
+  }
+
+  // Where a dragged player is: a little above the finger (not for a mouse).
+  function dragPoint(e) {
+    const lift = e.pointerType === 'mouse' ? 0 : LIFT_PX;
+    return pitch.eventToYards({ clientX: e.clientX, clientY: e.clientY - lift });
+  }
+
+  function showNear(spotId) {
+    if (spotId === nearId) return;
+    nearId = spotId;
+    pitch.layers.spots.querySelectorAll('.spot').forEach((dot) => dot.classList.toggle('is-near', dot.dataset.spot === spotId));
+  }
+
+  function stopFrame() {
+    if (frame) cancelAnimationFrame(frame);
+    frame = 0;
   }
 
   function pickPlayer(yards, px) {
@@ -97,34 +133,50 @@ export function createPlacement({ pitch, players, spots, keeperAt, onChange, onE
       selected = active.index;
       players[active.index].el.classList.add('is-dragging');
       refresh();
+      onPick?.(active.index);
     }
-    const yards = pitch.eventToYards(e);
-    if (yards) pitch.place(players[active.index].el, yards);
+    // Only the newest finger position matters. Draw it on the next screen
+    // refresh, so a fast finger does not make the phone redraw many times.
+    active.point = { clientX: e.clientX, clientY: e.clientY, pointerType: e.pointerType };
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      if (!active?.dragging || !active.point) return;
+      const yards = dragPoint(active.point);
+      if (!yards) return;
+      pitch.place(players[active.index].el, yards);
+      showNear(nearestSpot(yards, spots).id);
+    });
   }
 
   function onUp(e) {
     if (!active || e.pointerId !== active.pointerId) return;
     const a = active;
     active = null;
-    const yards = pitch.eventToYards(e);
+    stopFrame();
+    showNear(null);
     if (a.dragging) {
+      const yards = dragPoint(e);
       players[a.index].el.classList.remove('is-dragging');
       if (!yards) return putBack(a);
       const target = nearestSpot(yards, spots);
       const other = occupant(target.id, a.index);
-      if (other >= 0) putAt(other, a.from); // swap with whoever was there
-      putAt(a.index, target.id);
+      if (other >= 0) settle(other, a.from); // swap with whoever was there
+      settle(a.index, target.id);
       selected = -1;
       refresh();
+      onDrop?.(a.index);
       onChange?.();
       return;
     }
+    const yards = pitch.eventToYards(e);
     // A tap.
     if (!yards) return;
     if (selected < 0) {
       if (a.index >= 0) {
         selected = a.index;
         refresh();
+        onPick?.(a.index);
       } else {
         onEmptyTap?.();
       }
@@ -140,15 +192,19 @@ export function createPlacement({ pitch, players, spots, keeperAt, onChange, onE
     if (other >= 0) {
       selected = other; // that spot is taken: pick that player instead
       refresh();
+      onPick?.(other);
       return;
     }
     const moving = selected;
     selected = -1;
-    putAt(moving, target.id);
+    settle(moving, target.id);
+    onDrop?.(moving);
     onChange?.();
   }
 
   function putBack(a) {
+    stopFrame();
+    showNear(null);
     if (a.index >= 0) {
       players[a.index].el.classList.remove('is-dragging');
       putAt(a.index, a.from);
@@ -201,6 +257,7 @@ export function createPlacement({ pitch, players, spots, keeperAt, onChange, onE
     },
     refresh,
     destroy() {
+      stopFrame();
       svg.removeEventListener('pointerdown', onDown);
       svg.removeEventListener('pointermove', onMove);
       svg.removeEventListener('pointerup', onUp);

@@ -7,6 +7,7 @@
 // straight away, with no await before it, so call say() from a tap handler.
 
 import script from '../data/script.json';
+import * as sfx from './sfx.js';
 
 const lines = new Map(script.lines.map((l) => [l.id, l]));
 const recorded = new Map(); // id -> Blob URL
@@ -19,8 +20,8 @@ let noVoiceHandler = () => {};
 let run = 0; // bumps on every say() so an old sequence knows to stop
 let lastIds = [];
 let voice = null;
-const whistleUrl = makeWhistleUrl();
-const silentUrl = makeSilentUrl();
+let speaking = false;
+const silentUrl = sfx.url('silent');
 
 const synth = typeof speechSynthesis !== 'undefined' ? speechSynthesis : null;
 
@@ -62,6 +63,14 @@ export function onNoVoice(fn) {
 }
 export function onSpeaking(fn) {
   speakingHandler = fn;
+}
+export function isSpeaking() {
+  return speaking;
+}
+function setSpeaking(on) {
+  speaking = on;
+  sfx.setSpeaking(on);
+  speakingHandler(on);
 }
 
 export function lineText(id) {
@@ -138,7 +147,7 @@ export function stop() {
   } catch {
     /* ignore */
   }
-  speakingHandler(false);
+  setSpeaking(false);
 }
 
 // Speak one or more lines in order. Returns a promise that settles when the
@@ -150,13 +159,13 @@ export function say(ids, { remember = true } = {}) {
   stop();
   const mine = run;
   if (remember) lastIds = list.filter((id) => !id.startsWith('sfx.'));
-  speakingHandler(true);
+  setSpeaking(true);
   let chain = playOne(list[0], mine); // starts now, inside the tap
   for (const id of list.slice(1)) {
     chain = chain.then(() => (mine === run ? playOne(id, mine) : null));
   }
   return chain.then(() => {
-    if (mine === run) speakingHandler(false);
+    if (mine === run) setSpeaking(false);
   });
 }
 
@@ -180,7 +189,13 @@ export function hasLine(id) {
 
 function playOne(id, mine) {
   if (mine !== run) return Promise.resolve();
-  if (id === 'sfx.whistle') return playUrl(whistleUrl, mine, 800);
+  // Game sounds sit in the chain between spoken lines, so they never talk
+  // over the voice. The whistle always plays; the others can be switched off.
+  if (id.startsWith('sfx.')) {
+    const name = id.slice(4);
+    if (name !== 'whistle' && !sfx.isEnabled()) return Promise.resolve(true);
+    return playUrl(sfx.url(name), mine, sfx.lengthMs(name) + 300);
+  }
   const text = lineText(id);
   if (!lines.has(id)) console.warn('Missing script line', id);
   captionHandler(text, id);
@@ -265,54 +280,4 @@ function speak(text, mine) {
       /* the caption is still on screen */
     }
   });
-}
-
-// ---- Small sounds made in code, so there are no extra files ----
-
-function wavUrl(samples, rate) {
-  const buffer = new ArrayBuffer(44 + samples.length * 2);
-  const v = new DataView(buffer);
-  const str = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
-  str(0, 'RIFF');
-  v.setUint32(4, 36 + samples.length * 2, true);
-  str(8, 'WAVE');
-  str(12, 'fmt ');
-  v.setUint32(16, 16, true);
-  v.setUint16(20, 1, true);
-  v.setUint16(22, 1, true);
-  v.setUint32(24, rate, true);
-  v.setUint32(28, rate * 2, true);
-  v.setUint16(32, 2, true);
-  v.setUint16(34, 16, true);
-  str(36, 'data');
-  v.setUint32(40, samples.length * 2, true);
-  samples.forEach((s, i) => v.setInt16(44 + i * 2, Math.max(-1, Math.min(1, s)) * 32767, true));
-  if (typeof Blob === 'undefined' || typeof URL === 'undefined' || !URL.createObjectURL) return '';
-  return URL.createObjectURL(new Blob([buffer], { type: 'audio/wav' }));
-}
-
-// A soft, friendly two-peep referee whistle.
-function makeWhistleUrl() {
-  const rate = 22050;
-  const out = [];
-  const peep = (secs) => {
-    const n = Math.floor(rate * secs);
-    for (let i = 0; i < n; i++) {
-      const t = i / rate;
-      const env = Math.min(1, i / 300, (n - i) / 600);
-      const trill = 0.75 + 0.25 * Math.sin(2 * Math.PI * 28 * t);
-      out.push(0.28 * env * trill * Math.sin(2 * Math.PI * 2650 * t));
-    }
-  };
-  const gap = (secs) => {
-    for (let i = 0; i < rate * secs; i++) out.push(0);
-  };
-  peep(0.16);
-  gap(0.07);
-  peep(0.3);
-  return wavUrl(out, rate);
-}
-
-function makeSilentUrl() {
-  return wavUrl(new Array(2205).fill(0), 22050);
 }
