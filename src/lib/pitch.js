@@ -10,7 +10,7 @@ import { distance } from './geometry.js';
 
 const U = 10; // drawing units per yard
 
-export function createPitch({ length, width, goalWidth, ringYards }) {
+export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }) {
   const toView = (p) => ({ x: p.x * U, y: (length - p.y) * U });
   const toYards = (v) => ({ x: v.x / U, y: length - v.y / U });
   const halfway = length / 2;
@@ -63,6 +63,14 @@ export function createPitch({ length, width, goalWidth, ringYards }) {
   const theirGoal = s('rect', { x: W / 2 - gw / 2, y: -16, width: gw, height: 16, class: 'goal goal-theirs' });
   const ourGoal = s('rect', { x: W / 2 - gw / 2, y: L, width: gw, height: 16, class: 'goal goal-ours' });
   lines.append(theirGoal, ourGoal);
+  if (penaltyArea) {
+    const pw = penaltyArea.width * U;
+    const pd = penaltyArea.depth * U;
+    lines.append(
+      s('rect', { x: W / 2 - pw / 2, y: 0, width: pw, height: pd, class: 'line' }),
+      s('rect', { x: W / 2 - pw / 2, y: L - pd, width: pw, height: pd, class: 'line' })
+    );
+  }
 
   const ringLayer = mk('ring');
   const ring = s('circle', { cx: W / 2, cy: L / 2, r: ringYards * U, class: 'helper-ring' });
@@ -85,6 +93,7 @@ export function createPitch({ length, width, goalWidth, ringYards }) {
     const box = svg.getBoundingClientRect();
     const wantLandscape = box.width > box.height * 1.05;
     landscape = wantLandscape;
+    svg.classList.toggle('is-landscape', landscape);
     const pad = 22;
     if (landscape) {
       root.setAttribute('transform', 'rotate(90)');

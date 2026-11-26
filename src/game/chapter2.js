@@ -9,7 +9,7 @@ import { wait, motion, hold } from '../lib/svg.js';
 
 export async function chapter2(stage) {
   const { pitch } = stage;
-  const them = stage.addThem(team.opponents.theirCentreKick);
+  const them = stage.addThem(team.opponents.theirCentreKick, team.opponentKeeper.theirCentreKick);
   const [kicker, theirL, theirR] = them;
   pitch.placeBall(pitch.centre);
   pitch.setRing(true);

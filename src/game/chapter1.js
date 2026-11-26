@@ -8,7 +8,7 @@ import { wait, motion, hold } from '../lib/svg.js';
 
 export async function chapter1(stage) {
   const { pitch } = stage;
-  const them = stage.addThem(team.opponents.ourCentreKick);
+  const them = stage.addThem(team.opponents.ourCentreKick, team.opponentKeeper.ourCentreKick);
   pitch.placeBall({ x: 15, y: 30 });
   pitch.ball.classList.add('is-hidden');
   pitch.setRing(true);
@@ -45,11 +45,13 @@ export async function chapter1(stage) {
   const role = (name) => solved.roles.filter((r) => r.role === name);
   const kicker = role('kicker')[0];
   const [sideL, sideR] = role('side').sort((a, b) => a.x - b.x);
+  const ourBack = role('back')[0];
 
   // Choose the first pass.
   const targets = [
     { kind: 'friend', x: sideL.x, y: sideL.y, role: sideL },
     { kind: 'friend', x: sideR.x, y: sideR.y, role: sideR },
+    { kind: 'back', x: ourBack.x, y: ourBack.y, role: ourBack },
     { kind: 'long', x: 15, y: 34, drawR: 30 },
     { kind: 'shot', x: 15, y: 40.6, drawR: 30 },
   ];
@@ -63,7 +65,7 @@ export async function chapter1(stage) {
     stage.check();
     if (wrong >= 3) {
       stage.setBusy(true);
-      await Promise.all([stage.play(['c1.passTogether']), pitch.moveBall(sideL, 900)]);
+      await Promise.all([stage.play(['c1.passTogether']), passAcross(sideL)]);
       await passingMove(sideL, sideR);
       return;
     }
@@ -71,10 +73,10 @@ export async function chapter1(stage) {
     const pick = await stage.pickTarget(choices, (t) => {
       // Inside the tap: start the sound now.
       stage.setBusy(true);
-      if (t.kind === 'friend') return stage.play(['c1.passShort'], { 'c1.passShort': () => pitch.moveBall(t, 700) });
+      if (t.kind === 'friend') return stage.play(['c1.passShort'], { 'c1.passShort': () => passAcross(t.role) });
       wrong++;
       const next = wrong >= 3 ? [] : wrong === 2 ? ['c1.passShow'] : ['hint.tryAgain'];
-      const why = t.kind === 'long' ? 'c1.passLong' : 'c1.passShot';
+      const why = { long: 'c1.passLong', shot: 'c1.passShot', back: 'c1.passBack' }[t.kind];
       return stage.play(['sfx.whistle', why, ...next], {}, { remember: wrong === 2 });
     });
     const t = pick.target;
@@ -82,12 +84,29 @@ export async function chapter1(stage) {
       await Promise.all([longKick(), pick.done]);
     } else if (t.kind === 'shot') {
       await Promise.all([shot(), pick.done]);
+    } else if (t.kind === 'back') {
+      await Promise.all([passBack(), pick.done]);
     } else {
       await pick.done;
       await passingMove(t.role, t.role === sideL ? sideR : sideL);
       return;
     }
     stage.setBusy(false);
+  }
+
+  // The friend steps on to the ball as it comes, so the pass goes across
+  // or slightly forward, never backwards.
+  function passAcross(friend) {
+    const meet = { x: friend.x + (friend.x < 15 ? 0.6 : -0.6), y: 21 };
+    return Promise.all([pitch.moveTo(friend.el, { x: meet.x, y: meet.y - 0.9 }, 700), pitch.moveBall(meet, 700)]);
+  }
+
+  async function passBack() {
+    await pitch.moveBall({ x: ourBack.x, y: ourBack.y + 1.2 }, 1000, 'ease-out');
+    const cross = pitch.showCross({ x: ourBack.x, y: ourBack.y + 1.2 });
+    await wait(hold(1800));
+    cross.remove();
+    await pitch.moveBall(pitch.centre, 700);
   }
 
   async function longKick() {

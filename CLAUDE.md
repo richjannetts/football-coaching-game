@@ -11,7 +11,7 @@ Background research is in `docs/research/`. The coaching content is in `docs/coa
 - The child places all five of our players. Any player can go on any spot. The game checks which spots are filled, not who is on them, because the FA advises rotating young players through every position.
 - Two kinds of right answer, kept separate in code and in wording:
   - "The rule says": the FA 5v5 rule. Objective.
-  - "Our team does": the coach's shape. A preference, stored as data.
+  - "In our team": the coach's shape. A preference, stored as data. (Rich found "Our team does" unclear, 26th November 2026.)
 
 ## Stack
 
@@ -57,7 +57,7 @@ These come from the research. Each has caused real failures in other web apps.
 
 ## How it should feel
 
-- Every instruction is spoken and shown. Text is optional. Many 6 year olds cannot read fluently.
+- Every instruction is spoken and shown in pictures. Words on screen are off by default (Rich's choice, 26th November 2026), switch on in the grown-ups area, and come on by themselves if the phone has no voice. Many 6 year olds cannot read fluently.
 - A wrong answer gets a friendly whistle, a picture of why, a hint, and another go straight away. Hints step up: nudge, show, do it together.
 - A wrong answer never loses the match or concedes a goal.
 - Praise effort, not cleverness.
@@ -94,7 +94,7 @@ Keep content out of the code so it can be swapped later.
 - The ball can go in any direction.
 - No goal straight from the kick.
 - There is no centre circle in 5v5. Draw a dashed five-yard ring as a helper and say it is a helper.
-- Not confirmed for 5v5, so do not test the child on them: which team kicks off after a goal, and whether the kicker can touch the ball twice.
+- Not confirmed for 5v5, so do not test the child on them: which team kicks off after a goal, and whether the kicker can touch the ball twice. Level 2's story has them restart after our goal, at Rich's request. It is told, never tested.
 
 ## Not in scope yet
 

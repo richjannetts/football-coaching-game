@@ -109,13 +109,14 @@ function headwear(style) {
 export function tokenSvg(look, kit = 'us') {
   const g = s('g', { class: `token token-${kit}` });
   const v = applyVars(g, look, kit);
-  const keeper = team.kit.keeper;
-  g.style.setProperty('--keeper-shirt', keeper.shirt);
+  g.style.setProperty('--keeper-shirt', team.kit.keeper.shirt);
+  g.style.setProperty('--their-keeper-shirt', team.kit.theirKeeper.shirt);
   const body = s('g', { class: 'token-body' });
   body.append(
     layer('token-hit', s('circle', { r: 30, class: 'token-hit' })),
     layer('token-halo', s('circle', { r: 24, class: 'token-halo' })),
     layer('token-wrong', s('circle', { r: 23, class: 'token-wrong' })),
+    layer('token-you', s('circle', { r: 22, class: 'token-you-glow' }), s('circle', { r: 19, class: 'token-you-ring' })),
     layer('token-shadow', s('ellipse', { cx: 2, cy: 4, rx: 17, ry: 15, class: 'token-shadow' })),
     layer('token-shirt', s('circle', { r: 16, class: 'token-shirt', fill: kit === 'us' ? 'url(#stripes-us)' : 'var(--shirt)' })),
     layer('token-arms', s('circle', { cx: -15, cy: 0, r: 4.5, fill: 'var(--skin)' }), s('circle', { cx: 15, cy: 0, r: 4.5, fill: 'var(--skin)' })),
@@ -123,6 +124,8 @@ export function tokenSvg(look, kit = 'us') {
     layer('token-hair', tokenHair(v.hairStyle))
   );
   g.append(body);
+  // "GK" under a keeper. Kept outside the body so it never turns upside down.
+  g.append(s('g', { class: 'token-label', 'data-layer': 'token-label' }, s('rect', { x: -13, y: 20, width: 26, height: 15, rx: 4 }), s('text', { x: 0, y: 31.5, 'text-anchor': 'middle' }, 'GK')));
   return g;
 }
 

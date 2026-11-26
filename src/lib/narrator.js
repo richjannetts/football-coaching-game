@@ -15,6 +15,7 @@ let unlocked = false;
 let vars = { name: '' };
 let captionHandler = () => {};
 let speakingHandler = () => {};
+let noVoiceHandler = () => {};
 let run = 0; // bumps on every say() so an old sequence knows to stop
 let lastIds = [];
 let voice = null;
@@ -29,7 +30,14 @@ function pickVoice() {
   // Only voices that run on the device. Some browsers offer online voices,
   // which would send the words (and the child's name) to another company.
   const local = voices.filter((v) => v.localService);
+  const isGB = (v) => v.lang && v.lang.replace('_', '-').startsWith('en-GB');
+  // Rich asked for a female voice. Voices do not say whether they are male
+  // or female, so we look for the names Apple and others use for female
+  // English voices, British first.
+  const female = /serena|kate|stephanie|martha|fiona|moira|karen|samantha|tessa|susan|libby|sonia|hazel|female/i;
   voice =
+    local.find((v) => isGB(v) && female.test(v.name)) ||
+    local.find((v) => v.lang && v.lang.startsWith('en') && female.test(v.name)) ||
     local.find((v) => v.lang === 'en-GB') ||
     local.find((v) => v.lang && v.lang.replace('_', '-').startsWith('en-GB')) ||
     local.find((v) => v.lang && v.lang.startsWith('en')) ||
@@ -45,6 +53,9 @@ export function setVars(next) {
 }
 export function onCaption(fn) {
   captionHandler = fn;
+}
+export function onNoVoice(fn) {
+  noVoiceHandler = fn;
 }
 export function onSpeaking(fn) {
   speakingHandler = fn;
@@ -234,7 +245,10 @@ function speak(text, mine) {
     }, 100);
     if (!synth) return;
     if (!voice) pickVoice();
-    if (!voice) return; // no on-device voice: the caption carries the line
+    if (!voice) {
+      noVoiceHandler(); // no on-device voice: the words on screen carry the line
+      return;
+    }
     try {
       const u = new SpeechSynthesisUtterance(text);
       u.lang = voice.lang;

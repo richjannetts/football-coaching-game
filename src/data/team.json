@@ -1,50 +1,225 @@
 {
   "teamName": "The Stripes",
-  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row.",
+  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper.",
   "kit": {
-    "us": { "shirt": "#1d4ed8", "stripe": "#facc15", "shorts": "#1e3a8a", "socks": "#1d4ed8" },
-    "keeper": { "shirt": "#7c3aed", "stripe": "#7c3aed", "shorts": "#1e3a8a", "socks": "#7c3aed" },
-    "them": { "shirt": "#ea580c", "stripe": "#ea580c", "shorts": "#ffffff", "socks": "#ea580c" }
+    "us": {
+      "shirt": "#1d4ed8",
+      "stripe": "#facc15",
+      "shorts": "#1e3a8a",
+      "socks": "#1d4ed8"
+    },
+    "keeper": {
+      "shirt": "#f97316",
+      "stripe": "#f97316",
+      "shorts": "#1e3a8a",
+      "socks": "#f97316"
+    },
+    "them": {
+      "shirt": "#dc2626",
+      "stripe": "#dc2626",
+      "shorts": "#ffffff",
+      "socks": "#dc2626"
+    },
+    "theirKeeper": {
+      "shirt": "#1f2937",
+      "stripe": "#1f2937",
+      "shorts": "#ffffff",
+      "socks": "#1f2937"
+    }
   },
   "grid": {
-    "cols": [4, 9, 15, 21, 26],
-    "rows": [1.5, 7.5, 11, 14, 17.5, 26, 33],
-    "extra": [{ "id": "centre-mark", "x": 15, "y": 20 }]
+    "cols": [
+      4,
+      9,
+      15,
+      21,
+      26
+    ],
+    "rows": [
+      1.5,
+      7.5,
+      11,
+      14,
+      18.5,
+      26,
+      33
+    ],
+    "extra": [
+      {
+        "id": "centre-mark",
+        "x": 15,
+        "y": 20
+      }
+    ]
   },
-  "keeperSpot": { "col": 2, "row": 0 },
+  "keeperSpot": {
+    "col": 2,
+    "row": 0
+  },
   "squad": [
-    { "you": true },
-    { "skin": "s2", "hair": "braids", "hairColour": "h1" },
-    { "skin": "s5", "hair": "bun", "hairColour": "h4" },
-    { "skin": "s4", "hair": "hijab", "hairColour": "h1" },
-    { "skin": "s1", "hair": "ponytail", "hairColour": "h5" }
+    {
+      "you": true
+    },
+    {
+      "skin": "s2",
+      "hair": "braids",
+      "hairColour": "h1"
+    },
+    {
+      "skin": "s5",
+      "hair": "bun",
+      "hairColour": "h4"
+    },
+    {
+      "skin": "s4",
+      "hair": "hijab",
+      "hairColour": "h1"
+    },
+    {
+      "skin": "s1",
+      "hair": "ponytail",
+      "hairColour": "h5"
+    }
   ],
   "shapes": {
     "ourCentreKick": {
       "label": "Our centre kick",
       "tolerance": 2,
       "spots": [
-        { "role": "kicker", "at": "centre-mark", "hint": "shape.c1.kicker" },
-        { "role": "side", "at": [1, 4], "hint": "shape.c1.friends" },
-        { "role": "side", "at": [3, 4], "hint": "shape.c1.friends" },
-        { "role": "back", "at": [2, 1], "hint": "shape.back" },
-        { "role": "keeper", "at": [2, 0], "hint": "shape.keeper" }
+        {
+          "role": "kicker",
+          "at": "centre-mark",
+          "hint": "shape.c1.kicker"
+        },
+        {
+          "role": "side",
+          "at": [
+            1,
+            4
+          ],
+          "hint": "shape.c1.friends"
+        },
+        {
+          "role": "side",
+          "at": [
+            3,
+            4
+          ],
+          "hint": "shape.c1.friends"
+        },
+        {
+          "role": "back",
+          "at": [
+            2,
+            1
+          ],
+          "hint": "shape.back"
+        },
+        {
+          "role": "keeper",
+          "at": [
+            2,
+            0
+          ],
+          "hint": "shape.keeper"
+        }
       ]
     },
     "theirCentreKick": {
       "label": "Their centre kick",
       "tolerance": 2,
       "spots": [
-        { "role": "up", "at": [2, 3], "hint": "shape.c2.up" },
-        { "role": "middle", "at": [1, 2], "hint": "shape.c2.middles" },
-        { "role": "middle", "at": [3, 2], "hint": "shape.c2.middles" },
-        { "role": "back", "at": [2, 1], "hint": "shape.back" },
-        { "role": "keeper", "at": [2, 0], "hint": "shape.keeper" }
+        {
+          "role": "up",
+          "at": [
+            2,
+            3
+          ],
+          "hint": "shape.c2.up"
+        },
+        {
+          "role": "middle",
+          "at": [
+            1,
+            4
+          ],
+          "hint": "shape.c2.middles"
+        },
+        {
+          "role": "middle",
+          "at": [
+            3,
+            4
+          ],
+          "hint": "shape.c2.middles"
+        },
+        {
+          "role": "back",
+          "at": [
+            2,
+            1
+          ],
+          "hint": "shape.back"
+        },
+        {
+          "role": "keeper",
+          "at": [
+            2,
+            0
+          ],
+          "hint": "shape.keeper"
+        }
       ]
     }
   },
   "opponents": {
-    "ourCentreKick": [[15, 38.5], [15, 30], [6.5, 23.5], [23.5, 23.5], [18, 24.5]],
-    "theirCentreKick": [[15, 20], [9, 22.5], [21, 22.5], [15, 30], [15, 38.5]]
+    "ourCentreKick": [
+      [
+        15,
+        38.5
+      ],
+      [
+        15,
+        30
+      ],
+      [
+        6.5,
+        23.5
+      ],
+      [
+        23.5,
+        23.5
+      ],
+      [
+        18,
+        24.5
+      ]
+    ],
+    "theirCentreKick": [
+      [
+        15,
+        20
+      ],
+      [
+        9,
+        22.5
+      ],
+      [
+        21,
+        22.5
+      ],
+      [
+        15,
+        30
+      ],
+      [
+        15,
+        38.5
+      ]
+    ]
+  },
+  "opponentKeeper": {
+    "ourCentreKick": 0,
+    "theirCentreKick": 4
   }
 }

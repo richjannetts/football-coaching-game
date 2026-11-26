@@ -16,7 +16,7 @@ Five players: Keeper, Back, Middle, Middle, Up.
 ## Our centre kick
 
 - One Middle takes it on the centre mark.
-- Up and the other Middle stand either side of her, about the same distance away, level with the ball and in our half.
+- Up and the other Middle stand either side of her, about the same distance away, almost on the halfway line and in our half. The first pass goes across, or slightly forward as the friend steps on to it. Never backwards.
 - Back stands about halfway between our goal and the halfway line, a little nearer our goal.
 - Keeper is in goal.
 - First pass: short, to a friend. Never long. The friends either side then take the ball forward.
@@ -27,7 +27,7 @@ Why: one girl stays back to defend, and a girl either side gives two easy passes
 
 - Everyone on her spot in our half, at least five yards from the ball.
 - Up stands just behind halfway, in the middle, and closes down as soon as the ball moves.
-- Middles either side, a little deeper.
+- Middles either side, further forward than Up, almost mirroring their players either side of their kicker. (Changed by Rich, 26th November 2026. Before this they were deeper than Up.)
 - Back and Keeper as before.
 
 ## Cue words the girls know

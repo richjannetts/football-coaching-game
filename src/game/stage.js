@@ -18,24 +18,30 @@ const THEIR_LOOKS = [
   { skin: 's1', hair: 'braids', hairColour: 'h5' },
 ];
 
-export function createStage({ profile, onHome }) {
+export function createStage({ profile, onHome, showWords = false }) {
   const caption = h('p', { class: 'caption', 'aria-live': 'polite' });
   const homeBtn = h('button', { class: 'icon-btn home-btn', type: 'button', 'aria-label': 'Home' }, homeIcon());
   const againBtn = h('button', { class: 'icon-btn again', type: 'button', 'aria-label': 'Hear it again' }, speakerIcon());
   const readyBtn = h('button', { class: 'ready-btn is-hidden', type: 'button', 'aria-label': 'Ready' }, tickIcon());
   const pitchWrap = h('div', { class: 'pitch-wrap' });
-  const endCard = h('div', { class: 'end-card is-hidden', role: 'dialog', 'aria-label': 'Chapter finished' });
+  const endCard = h('div', { class: 'end-card is-hidden', role: 'dialog', 'aria-label': 'Level finished' });
   const goalBanner = h('div', { class: 'goal-banner is-hidden', 'aria-hidden': 'true' }, 'GOAL!');
 
   const el = h(
     'section',
     { class: 'screen chapter' },
-    h('header', { class: 'chapter-top' }, homeBtn, caption, againBtn),
+    h('header', { class: 'chapter-top' }, caption),
     pitchWrap,
-    h('footer', { class: 'chapter-bottom' }, readyBtn),
+    h('footer', { class: 'chapter-bottom' }, homeBtn, readyBtn, againBtn),
     goalBanner,
     endCard
   );
+
+  // Words on screen are off unless a grown-up switches them on, or the
+  // phone has no voice to read the lines out.
+  const showCaption = (on) => el.classList.toggle('show-words', on);
+  showCaption(showWords);
+  narrator.onNoVoice(() => showCaption(true));
 
   const pitch = createPitch(pitchSize);
   pitchWrap.append(pitch.svg);
@@ -94,9 +100,10 @@ export function createStage({ profile, onHome }) {
     },
   });
 
-  stage.addThem = (positions) => {
+  stage.addThem = (positions, keeperIndex = -1) => {
     stage.them = positions.map(([x, y], i) => {
       const t = pitch.addPlayer(THEIR_LOOKS[i % THEIR_LOOKS.length], 'them');
+      if (i === keeperIndex) t.classList.add('is-their-keeper');
       pitch.place(t, { x, y });
       return t;
     });
@@ -205,7 +212,7 @@ export function createStage({ profile, onHome }) {
         'div',
         { class: 'end-buttons' },
         h('button', { class: 'icon-btn big', type: 'button', 'aria-label': 'Home', onclick: () => (stage.leave(), onHome()) }, homeIcon()),
-        onNext ? h('button', { class: 'icon-btn big is-glow', type: 'button', 'aria-label': nextLabel || 'Next chapter', onclick: () => (stage.leave(), onNext()) }, nextIcon()) : null
+        onNext ? h('button', { class: 'icon-btn big is-glow', type: 'button', 'aria-label': nextLabel || 'Next level', onclick: () => (stage.leave(), onNext()) }, nextIcon()) : null
       )
     );
     endCard.classList.remove('is-hidden');
