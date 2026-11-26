@@ -1,25 +1,53 @@
-/* ---------- Colours and sizes ---------- */
+/* ---------- Fonts ----------
+   Both fonts sit inside the app, so nothing is fetched from another website.
+   Licences are beside the files in src/fonts. */
+@font-face {
+  font-family: 'Fredoka';
+  src: url('./fonts/fredoka-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Titan One';
+  src: url('./fonts/titan-one-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* ---------- Colours and sizes ----------
+   The "Saturday morning" look (Rich's choice, 26th November 2026): a blue
+   sky, navy words, and chunky buttons with a thick bottom edge. */
 :root {
-  --bg: #13294b; /* deep navy around the pitch: Rich asked for more contrast */
-  --bg-2: #1c3a66;
+  --bg: #58b8ff; /* sky, top of the screen */
+  --bg-2: #c4eaff; /* sky, bottom of the screen */
   --panel: #ffffff;
-  --ink: #10231a;
-  --ink-soft: #3f5a4a;
-  --on-dark: #f4f7f2;
-  --accent: #facc15;
-  --blue: #1d4ed8;
-  --wrong: #ef4444;
+  --ink: #12305c; /* navy, for words and icons */
+  --ink-soft: #3d6496;
+  --line: #b9d4ef; /* soft edges and dashed outlines */
+  --lip: #8fb6e0; /* the thick bottom edge of a white button */
+  --navy: #0a1a3c;
+  --accent: #ffd028; /* yellow always means "tap me next" */
+  --accent-lip: #d48f00;
+  --accent-ink: #3b2500;
+  --blue: #2463eb;
+  --blue-lip: #173f9e;
+  --green: #35b05c;
+  --green-lip: #1c7a3c;
+  --bonus: #7b4dff; /* purple only ever means the bonus */
+  --bonus-lip: #4c27c2;
+  --wrong: #e5372e;
   --hint: #fde047;
-  --grass-a: #2f9e4f;
-  --grass-b: #36ab57;
+  --grass-a: #2ea252;
+  --grass-b: #35b05c;
   --edge: max(24px, env(safe-area-inset-left));
   --edge-top: max(24px, env(safe-area-inset-top));
   --edge-bottom: max(24px, env(safe-area-inset-bottom));
   --edge-left: max(24px, env(safe-area-inset-left));
   --edge-right: max(24px, env(safe-area-inset-right));
   --radius: 18px;
-  --font: ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  color-scheme: dark;
+  --font: 'Fredoka', ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Titan One', 'Fredoka', ui-rounded, 'Arial Rounded MT Bold', system-ui, sans-serif;
+  color-scheme: light;
 }
 
 * {
@@ -31,7 +59,7 @@ body {
   margin: 0;
   height: 100%;
   background: var(--bg);
-  color: var(--on-dark);
+  color: var(--ink);
   font-family: var(--font);
   -webkit-text-size-adjust: 100%;
   -webkit-touch-callout: none;
@@ -46,6 +74,7 @@ body {
      keep its landscape height after turning back to portrait. */
   height: var(--app-h, 100dvh);
   overflow: hidden;
+  background: linear-gradient(var(--bg), var(--bg-2));
 }
 
 button {
@@ -93,11 +122,13 @@ h2 {
   height: 64px;
   flex: none;
   border-radius: 50%;
-  border: 3px solid rgba(255, 255, 255, 0.35);
-  background: rgba(0, 0, 0, 0.25);
+  border: 3px solid #fff;
+  background: var(--panel);
+  color: var(--ink);
   display: grid;
   place-items: center;
   padding: 0;
+  box-shadow: 0 6px 0 var(--lip), 0 12px 14px rgba(10, 26, 60, 0.2);
 }
 .icon-btn.big {
   width: 88px;
@@ -122,9 +153,7 @@ h2 {
 }
 .again.is-speaking {
   border-color: var(--accent);
-}
-.again.is-speaking .icon-stroke {
-  stroke: var(--accent);
+  box-shadow: 0 6px 0 var(--lip), 0 0 0 6px rgba(255, 208, 40, 0.45), 0 12px 14px rgba(10, 26, 60, 0.2);
 }
 
 .big-btn,
@@ -136,15 +165,19 @@ h2 {
   font-size: 1.2rem;
   font-weight: 700;
   background: var(--accent);
-  color: #1f2937;
+  color: var(--accent-ink);
+  box-shadow: inset 0 3px 0 #fff3a6, 0 6px 0 var(--accent-lip), 0 12px 14px rgba(10, 26, 60, 0.2);
+  margin-bottom: 6px; /* room for the thick bottom edge */
 }
 .big-btn.secondary {
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--on-dark);
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: 0 6px 0 var(--lip), 0 12px 14px rgba(10, 26, 60, 0.2);
 }
 .danger-btn {
-  background: #b91c1c;
+  background: #d92d20;
   color: #fff;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.25), 0 6px 0 #8f1a12, 0 12px 14px rgba(10, 26, 60, 0.2);
 }
 .text-btn {
   background: none;
@@ -161,11 +194,11 @@ h2 {
   height: 96px;
   border-radius: 50%;
   border: 5px solid #fff;
-  background: #16a34a;
+  background: var(--green);
   color: #fff;
   display: grid;
   place-items: center;
-  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 4px 0 rgba(255, 255, 255, 0.3), 0 8px 0 var(--green-lip), 0 16px 18px rgba(10, 26, 60, 0.25);
 }
 .ready-btn .icon {
   width: 64%;
@@ -175,13 +208,16 @@ h2 {
 .is-glow {
   animation: glow 1.2s ease-in-out infinite;
 }
+/* An outline, not a shadow, so a glowing button keeps its thick bottom edge. */
 @keyframes glow {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.9);
+    outline: 5px solid rgba(255, 208, 40, 0.95);
+    outline-offset: 0;
   }
   50% {
-    box-shadow: 0 0 0 12px rgba(250, 204, 21, 0);
+    outline: 5px solid rgba(255, 208, 40, 0);
+    outline-offset: 10px;
   }
 }
 
@@ -199,16 +235,17 @@ h2 {
   border: none;
   border-radius: var(--radius);
   background: var(--accent);
-  color: #0b1a33;
-  font: 900 1.25rem var(--font);
-  box-shadow: 0 4px 0 #0b1a33;
+  color: var(--accent-ink);
+  font: 700 1.25rem var(--font);
+  box-shadow: inset 0 3px 0 #fff3a6, 0 6px 0 var(--accent-lip), 0 12px 14px rgba(10, 26, 60, 0.2);
+  margin-bottom: 6px;
 }
 .install-btn .icon {
   width: 32px;
   height: 32px;
 }
 .install-btn .icon-stroke {
-  stroke: #0b1a33;
+  stroke: var(--accent-ink);
 }
 .install-steps {
   list-style: none;
@@ -221,10 +258,11 @@ h2 {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--panel);
   border-radius: var(--radius);
   padding: 12px;
   font-size: 1.1rem;
+  box-shadow: 0 4px 0 var(--lip);
 }
 .step-icon {
   width: 52px;
@@ -232,8 +270,8 @@ h2 {
   flex: none;
   display: grid;
   place-items: center;
-  background: #fff;
-  color: #1d4ed8;
+  background: var(--blue);
+  color: #fff;
   border-radius: 12px;
 }
 .step-icon .icon {
@@ -253,7 +291,7 @@ h2 {
 .confirm {
   display: grid;
   gap: 8px;
-  background: rgba(185, 28, 28, 0.2);
+  background: #ffe1dd;
   border-radius: var(--radius);
   padding: 14px;
 }
@@ -269,7 +307,7 @@ h2 {
   font-size: 2.4rem;
   text-align: center;
   min-height: 3rem;
-  border-bottom: 3px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 3px solid var(--ink-soft);
 }
 .gate-entry.is-wrong {
   color: var(--wrong);
@@ -286,8 +324,12 @@ h2 {
   min-height: 60px;
   border-radius: 14px;
   border: none;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--panel);
+  color: var(--ink);
   font-size: 1.5rem;
+  font-weight: 600;
+  box-shadow: 0 5px 0 var(--lip);
+  margin-bottom: 5px;
 }
 
 /* ---------- Start: the title screen ---------- */
@@ -296,9 +338,7 @@ h2 {
   justify-content: center;
   text-align: center;
   gap: 12px;
-  background:
-    radial-gradient(circle at 50% 30%, rgba(250, 204, 21, 0.18), transparent 55%),
-    var(--bg);
+  background: radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.45), transparent 55%);
 }
 .title-block {
   display: flex;
@@ -321,27 +361,28 @@ h2 {
 }
 .title-text,
 .title-text-back {
-  font: 900 78px var(--font);
+  font: 400 68px var(--font-display);
+  stroke: var(--navy);
+  stroke-width: 8px;
+  stroke-linejoin: round;
+  paint-order: stroke;
 }
 .title-text {
   fill: var(--accent);
-  stroke: #0b1a33;
-  stroke-width: 3px;
-  paint-order: stroke;
 }
 .title-text-back {
-  fill: #0b1a33;
+  fill: var(--navy);
 }
 .title-ball {
   fill: #fff;
-  stroke: #0b1a33;
+  stroke: var(--navy);
   stroke-width: 3.5;
 }
 .title-ball-patch {
-  fill: #0b1a33;
+  fill: var(--navy);
 }
 .title-ball-seam {
-  stroke: #0b1a33;
+  stroke: var(--navy);
   stroke-width: 2.5;
   fill: none;
 }
@@ -349,13 +390,13 @@ h2 {
   margin: -4px 0 0;
   background: var(--blue);
   color: #fff;
-  font: 900 15px var(--font);
-  letter-spacing: 2px;
+  font: 400 16px var(--font-display);
+  letter-spacing: 2.5px;
   text-transform: uppercase;
-  padding: 5px 16px;
+  padding: 7px 18px;
   border-radius: 999px;
-  transform: rotate(-2deg);
-  box-shadow: 0 3px 0 #0b1a33;
+  transform: rotate(-3deg);
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.25), 0 5px 0 var(--blue-lip);
 }
 .title-art {
   position: relative;
@@ -366,7 +407,7 @@ h2 {
   height: auto;
   display: block;
   border-radius: 22px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 0 4px rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 5px #fff, 0 8px 0 5px var(--lip), 0 18px 26px rgba(10, 26, 60, 0.3);
 }
 .title-player {
   position: absolute;
@@ -375,7 +416,7 @@ h2 {
   filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.4));
 }
 .ts-line {
-  stroke: rgba(255, 255, 255, 0.75);
+  stroke: rgba(255, 255, 255, 0.9);
   stroke-width: 1.5;
   fill: none;
 }
@@ -409,57 +450,43 @@ h2 {
     offset-distance: 100%;
   }
 }
-.ts-spark {
-  fill: #fde047;
-  animation: twinkle 1.8s ease-in-out infinite;
-  transform-box: fill-box;
-  transform-origin: center;
+.ts-cloud {
+  animation: drift 9s ease-in-out infinite alternate;
 }
-@keyframes twinkle {
-  50% {
-    opacity: 0.2;
-    transform: scale(0.5);
+.ts-cloud-2 {
+  animation-duration: 13s;
+}
+@keyframes drift {
+  to {
+    transform: translateX(14px);
   }
 }
-.ts-beam {
-  animation: beam 4s ease-in-out infinite;
-}
-.ts-beam-2 {
-  animation-delay: 2s;
-}
-@keyframes beam {
-  50% {
-    opacity: 0.6;
-  }
-}
+/* One big yellow Play button, with the ball on it. */
 .play-btn {
-  position: relative;
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-width: 220px;
+  height: 84px;
+  border-radius: 42px;
   border: none;
-  background: transparent;
-  padding: 0;
-  margin-top: 8px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: 0 26px 0 14px;
+  margin-top: 14px;
+  margin-bottom: 8px;
+  box-shadow: inset 0 4px 0 #fff3a6, 0 8px 0 var(--accent-lip), 0 18px 22px rgba(10, 26, 60, 0.3);
   animation: bob 1.6s ease-in-out infinite;
 }
 .play-btn .icon {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.4));
+  width: 58px;
+  height: 58px;
+  flex: none;
 }
 .play-label {
-  position: absolute;
-  left: 50%;
-  bottom: -6px;
-  translate: -50% 0;
-  background: var(--accent);
-  color: #0b1a33;
-  font: 900 18px var(--font);
+  font: 400 42px/1 var(--font-display);
   letter-spacing: 2px;
-  padding: 4px 16px;
-  border-radius: 999px;
-  box-shadow: 0 3px 0 #0b1a33;
 }
 .start-note {
   margin: 4px 0 0;
@@ -486,8 +513,7 @@ h2 {
     grid-column: 1;
     grid-row: 2;
     justify-self: center;
-    width: 104px;
-    height: 104px;
+    height: 72px;
   }
   .start-note {
     grid-column: 1;
@@ -517,13 +543,13 @@ h2 {
 }
 .tap-here-bubble {
   background: var(--accent);
-  color: #0b1a33;
-  font: 900 15px/1.1 var(--font);
+  color: var(--accent-ink);
+  font: 700 15px/1.1 var(--font);
   text-align: center;
   width: 58px;
   padding: 5px 4px;
   border-radius: 12px;
-  box-shadow: 0 3px 0 #0b1a33;
+  box-shadow: 0 3px 0 var(--navy);
 }
 .tap-here-hand {
   width: 30px;
@@ -532,7 +558,7 @@ h2 {
 }
 .tap-here-fill {
   fill: var(--accent);
-  stroke: #0b1a33;
+  stroke: var(--navy);
   stroke-width: 2.5;
   stroke-linejoin: round;
 }
@@ -554,7 +580,7 @@ h2 {
 }
 @keyframes bob {
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-7px);
   }
 }
 
@@ -574,7 +600,7 @@ h2 {
 }
 .football.is-empty .football-shape {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.5);
+  stroke: var(--ink-soft);
   stroke-dasharray: 5 4;
 }
 .football.is-empty .football-patch,
@@ -594,11 +620,12 @@ h2 {
   justify-content: center;
 }
 .grown-up-box {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--panel);
   border-radius: var(--radius);
   padding: 12px;
   display: grid;
   gap: 6px;
+  box-shadow: 0 4px 0 var(--lip);
 }
 .grown-up-box label {
   font-size: 0.95rem;
@@ -608,12 +635,12 @@ h2 {
   font-size: 1.3rem;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid var(--line);
   background: #fff;
   color: var(--ink);
 }
 .name-note.is-warning {
-  color: var(--accent);
+  color: #b42318;
   opacity: 1;
   font-weight: 700;
 }
@@ -629,15 +656,17 @@ h2 {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  border: 4px solid transparent;
-  background: rgba(255, 255, 255, 0.12);
-  padding: 4px;
+  border: 4px solid #fff;
+  background: var(--panel);
+  padding: 3px;
   display: grid;
   place-items: center;
   overflow: hidden;
+  box-shadow: 0 4px 0 var(--lip);
 }
 .choice[aria-checked='true'] {
-  border-color: var(--accent);
+  border-color: var(--blue);
+  box-shadow: 0 4px 0 var(--blue-lip), 0 0 0 4px var(--accent);
 }
 .swatch {
   width: 100%;
@@ -689,9 +718,11 @@ h2 {
   width: 150px;
   height: 190px;
   border-radius: 24px;
-  border: 4px solid rgba(255, 255, 255, 0.4);
-  background: rgba(0, 0, 0, 0.2);
-  padding: 10px;
+  border: 4px solid #fff;
+  background: var(--panel);
+  color: #fff;
+  padding: 8px;
+  box-shadow: 0 8px 0 var(--lip), 0 16px 20px rgba(10, 26, 60, 0.22);
 }
 .chapter-btn.is-locked {
   opacity: 0.55;
@@ -704,9 +735,10 @@ h2 {
   position: absolute;
   left: 8px;
   top: 6px;
-  font-size: 2rem;
-  font-weight: 800;
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+  left: 14px;
+  top: 8px;
+  font: 400 2.1rem var(--font-display);
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
 }
 .chapter-lock,
 .chapter-done {
@@ -740,7 +772,7 @@ h2 {
   stroke-width: 1.5;
 }
 .mini-them {
-  fill: #dc2626;
+  fill: var(--wrong);
 }
 .mini-ball {
   fill: #fff;
@@ -749,9 +781,11 @@ h2 {
   border: none;
   border-radius: var(--radius);
   background: var(--accent);
-  color: #1f2937;
+  color: var(--accent-ink);
   padding: 12px;
   font-weight: 700;
+  box-shadow: 0 5px 0 var(--accent-lip);
+  margin-bottom: 5px;
 }
 
 /* ---------- Chapter ---------- */
@@ -857,12 +891,13 @@ h2 {
   width: 100%;
   height: 100%;
   display: block;
+  filter: drop-shadow(0 8px 10px rgba(10, 26, 60, 0.22));
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
 }
 .grass-edge {
-  fill: #23803f;
+  fill: var(--green-lip);
 }
 .grass-a {
   fill: var(--grass-a);
@@ -1029,11 +1064,11 @@ h2 {
   display: inline;
 }
 .token-label rect {
-  fill: rgba(0, 0, 0, 0.65);
+  fill: var(--navy);
 }
 .token-label text {
   fill: #fff;
-  font: 800 11px var(--font);
+  font: 700 11px var(--font);
 }
 .is-landscape .token-label {
   transform: rotate(-90deg);
@@ -1097,10 +1132,12 @@ h2 {
   inset: 0;
   display: grid;
   place-items: center;
-  font-size: 5rem;
-  font-weight: 900;
+  font: 400 5rem var(--font-display);
+  letter-spacing: 2px;
   color: var(--accent);
-  text-shadow: 0 5px 0 var(--blue), 0 0 30px rgba(0, 0, 0, 0.5);
+  -webkit-text-stroke: 3px var(--navy);
+  paint-order: stroke fill;
+  text-shadow: 0 6px 0 var(--navy);
   pointer-events: none;
   animation: pop 0.5s ease-out;
 }
@@ -1113,7 +1150,7 @@ h2 {
 .end-card {
   position: fixed;
   inset: 0;
-  background: rgba(19, 41, 75, 0.94);
+  background: linear-gradient(var(--bg), var(--bg-2));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1138,17 +1175,17 @@ h2 {
 }
 .sticker-num {
   fill: #fff;
-  font: 900 17px var(--font);
+  font: 400 17px var(--font-display);
 }
 .sticker-slot {
-  fill: rgba(255, 255, 255, 0.06);
-  stroke: rgba(255, 255, 255, 0.45);
+  fill: rgba(255, 255, 255, 0.4);
+  stroke: var(--ink-soft);
   stroke-width: 4;
   stroke-dasharray: 9 7;
 }
 .sticker-slot-text {
-  fill: rgba(255, 255, 255, 0.45);
-  font: 900 34px var(--font);
+  fill: var(--ink-soft);
+  font: 400 34px var(--font-display);
 }
 .end-sticker {
   position: relative;
@@ -1167,7 +1204,9 @@ h2 {
   position: absolute;
   inset: -40px;
   border-radius: 50%;
-  background: repeating-conic-gradient(rgba(250, 204, 21, 0.35) 0 12deg, transparent 12deg 30deg);
+  background: repeating-conic-gradient(rgba(255, 255, 255, 0.7) 0 12deg, transparent 12deg 30deg);
+  -webkit-mask-image: radial-gradient(circle, #000 30%, transparent 70%);
+  mask-image: radial-gradient(circle, #000 30%, transparent 70%);
   animation: spin 12s linear infinite;
 }
 @keyframes sticker-in {
@@ -1255,7 +1294,7 @@ h2 {
 }
 .sticker-bonus-text {
   fill: #fff;
-  font: 900 14px var(--font);
+  font: 400 13px var(--font-display);
   letter-spacing: 1px;
 }
 .quiz {
@@ -1279,22 +1318,21 @@ h2 {
 }
 .quiz-tag {
   display: inline-block;
-  background: #7c3aed;
+  background: var(--bonus);
   color: #fff;
-  font: 900 16px var(--font);
-  letter-spacing: 1px;
+  font: 400 20px var(--font-display);
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 5px 14px;
+  padding: 8px 18px;
   border-radius: 999px;
   transform: rotate(-3deg);
-  box-shadow: 0 3px 0 #4c1d95;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.3), 0 5px 0 var(--bonus-lip);
+  margin-bottom: 6px;
   animation: pop 0.4s cubic-bezier(0.2, 1.6, 0.4, 1) both;
 }
 .quiz-words {
-  font: 900 28px/1.15 var(--font);
-  color: var(--accent);
-  text-shadow: 0 3px 0 #1f2937, 0 0 18px rgba(250, 204, 21, 0.35);
-  -webkit-text-stroke: 1px #1f2937;
+  font: 700 30px/1.15 var(--font);
+  color: var(--ink);
 }
 .quiz-word {
   display: inline-block;
@@ -1316,10 +1354,12 @@ h2 {
   width: min(108px, calc((100vw - 48px - 20px) / 3));
   min-height: 150px;
   padding: 6px 6px 8px;
-  border: 4px solid transparent;
+  border: 4px solid #fff;
   border-radius: var(--radius);
-  background: var(--bg-2);
-  color: var(--on-dark);
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: 0 7px 0 var(--lip), 0 14px 16px rgba(10, 26, 60, 0.22);
+  margin-bottom: 7px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1332,15 +1372,15 @@ h2 {
   transform: scale(1.06);
 }
 .quiz-option.is-right {
-  border-color: #22c55e;
+  border-color: var(--green);
   transform: scale(1.1);
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.35);
+  box-shadow: 0 7px 0 var(--green-lip), 0 0 0 5px rgba(53, 176, 92, 0.4);
 }
 .quiz-option.is-faded {
   opacity: 0.35;
 }
 .quiz-option:disabled {
-  color: var(--on-dark);
+  color: var(--ink);
 }
 .quiz-pic {
   width: 100%;
@@ -1348,7 +1388,7 @@ h2 {
   max-height: 110px;
 }
 .quiz-label {
-  font: 800 14px/1.15 var(--font);
+  font: 600 15px/1.15 var(--font);
   text-align: center;
 }
 .quiz-grass {
@@ -1372,7 +1412,7 @@ h2 {
   stroke-width: 0.5;
 }
 .quiz-them {
-  fill: #dc2626;
+  fill: var(--wrong);
   stroke: #fff;
   stroke-width: 0.3;
 }
@@ -1494,7 +1534,7 @@ h2 {
 .key,
 .install-btn,
 .update-btn {
-  transition: scale 0.28s cubic-bezier(0.3, 1.6, 0.5, 1);
+  transition: scale 0.28s cubic-bezier(0.3, 1.6, 0.5, 1), translate 0.12s ease-out;
 }
 .icon-btn:active,
 .big-btn:active,
@@ -1508,7 +1548,8 @@ h2 {
 .key:active,
 .install-btn:active,
 .update-btn:active {
-  scale: 0.9;
+  scale: 0.94;
+  translate: 0 4px; /* sinks on to its thick bottom edge */
   transition-duration: 0.08s;
 }
 

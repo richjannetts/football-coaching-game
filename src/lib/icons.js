@@ -175,42 +175,36 @@ export function titleLogo() {
   );
 }
 
-// A floodlit match-day scene for the title screen: stadium lights, crowd,
-// striped grass, a goal, and a ball flying into the net.
+// A Saturday morning match scene for the title screen: blue sky, sun,
+// clouds, a hedge, striped grass, a goal, and a ball flying into the net.
 export function titleScene() {
   const svg = s('svg', { viewBox: '0 0 320 190', class: 'title-scene', 'aria-hidden': 'true' });
   const defs = s(
     'defs',
     {},
-    s('linearGradient', { id: 'ts-sky', x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, 'stop-color': '#0b1a33' }), s('stop', { offset: 1, 'stop-color': '#24508f' })),
-    s('linearGradient', { id: 'ts-beam', x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, 'stop-color': '#fff7c2', 'stop-opacity': 0.55 }), s('stop', { offset: 1, 'stop-color': '#fff7c2', 'stop-opacity': 0 })),
+    s('linearGradient', { id: 'ts-sky', x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, 'stop-color': '#58b8ff' }), s('stop', { offset: 1, 'stop-color': '#c4eaff' })),
     s('clipPath', { id: 'ts-clip' }, s('rect', { x: 0, y: 0, width: 320, height: 190, rx: 22 }))
   );
   const g = s('g', { 'clip-path': 'url(#ts-clip)' });
   g.append(s('rect', { x: 0, y: 0, width: 320, height: 190, fill: 'url(#ts-sky)' }));
-  // Floodlight beams and lights.
-  g.append(
-    s('polygon', { points: '30,22 0,120 120,120', fill: 'url(#ts-beam)', class: 'ts-beam' }),
-    s('polygon', { points: '290,22 200,120 320,120', fill: 'url(#ts-beam)', class: 'ts-beam ts-beam-2' })
-  );
-  for (const x of [30, 290]) {
-    g.append(s('rect', { x: x - 1.5, y: 22, width: 3, height: 60, fill: '#94a3b8' }), s('rect', { x: x - 12, y: 12, width: 24, height: 12, rx: 3, fill: '#fef9c3', class: 'ts-light' }));
+  // Sun and clouds.
+  g.append(s('circle', { cx: 276, cy: 30, r: 26, fill: '#ffe36b', opacity: 0.35 }), s('circle', { cx: 276, cy: 30, r: 17, fill: '#ffe36b' }));
+  const cloud = (x, y, k, cls) =>
+    s('g', { class: cls, fill: '#fff' }, s('ellipse', { cx: x, cy: y, rx: 26 * k, ry: 9 * k }), s('ellipse', { cx: x + 12 * k, cy: y - 7 * k, rx: 15 * k, ry: 9 * k }));
+  g.append(cloud(60, 36, 1, 'ts-cloud'), cloud(190, 22, 0.7, 'ts-cloud ts-cloud-2'));
+  // A hedge behind the pitch.
+  for (let i = 0; i < 12; i++) {
+    g.append(s('circle', { cx: 6 + i * 29, cy: 88 + (i % 3) * 3, r: 17 + (i % 2) * 4, fill: '#2a8f4b' }));
   }
-  // Crowd: rows of little heads in team colours.
-  const crowd = ['#1d4ed8', '#facc15', '#f4f7f2', '#dc2626', '#1d4ed8', '#facc15'];
-  for (let row = 0; row < 3; row++) {
-    for (let i = 0; i < 27; i++) {
-      const x = 8 + i * 11.6 + (row % 2) * 5;
-      g.append(s('circle', { cx: x, cy: 70 + row * 9, r: 3.6, fill: crowd[(i + row * 2) % crowd.length], opacity: 0.85 }));
-    }
+  for (let i = 0; i < 9; i++) {
+    g.append(s('circle', { cx: 22 + i * 37, cy: 97, r: 10, fill: '#37a65a' }));
   }
-  g.append(s('rect', { x: 0, y: 94, width: 320, height: 6, fill: '#0f2340' }));
   // Grass in perspective, with stripes.
   const stripes = 7;
   for (let i = 0; i < stripes; i++) {
     const y1 = 100 + (i * 90) / stripes;
     const y2 = 100 + ((i + 1) * 90) / stripes;
-    g.append(s('rect', { x: 0, y: y1, width: 320, height: y2 - y1 + 0.5, fill: i % 2 ? '#2f9e4f' : '#36ab57' }));
+    g.append(s('rect', { x: 0, y: y1, width: 320, height: y2 - y1 + 0.5, fill: i % 2 ? '#2ea252' : '#35b05c' }));
   }
   // Pitch lines.
   g.append(
@@ -234,17 +228,6 @@ export function titleScene() {
       s('path', { d: 'M0 -4 L3.8 -1.2 L2.4 3.2 L-2.4 3.2 L-3.8 -1.2 Z', fill: '#1f2937' })
     )
   );
-  // Sparkles.
-  const sparkle = (x, y, r, d) => {
-    const p = [];
-    for (let i = 0; i < 8; i++) {
-      const rr = i % 2 ? r * 0.35 : r;
-      const a = (Math.PI * 2 * i) / 8;
-      p.push(`${(x + rr * Math.cos(a)).toFixed(1)},${(y + rr * Math.sin(a)).toFixed(1)}`);
-    }
-    return s('polygon', { points: p.join(' '), class: 'ts-spark', style: `animation-delay:${d}s` });
-  };
-  g.append(sparkle(204, 66, 8, 0), sparkle(116, 58, 6, 0.6), sparkle(250, 40, 5, 1.1), sparkle(64, 40, 5, 1.5));
   svg.append(defs, g);
   return svg;
 }
