@@ -959,3 +959,8 @@ h2 {
   height: 28px;
   flex: none;
 }
+
+.grown-up-box input {
+  width: 100%;
+  min-width: 0;
+}

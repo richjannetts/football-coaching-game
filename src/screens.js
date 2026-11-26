@@ -95,6 +95,26 @@ export function setupScreen({ profile, onDone }) {
     state.name = cleaned;
   });
 
+  const nameBox = h(
+    'div',
+    { class: 'name-box grown-up-box' },
+    h('label', { for: 'player-name' }, 'Type your name (a grown-up can help)'),
+    nameInput,
+    h('span', { id: 'name-help' }, nameNote)
+  );
+  // When the name is done (Return, or tapping away), move on to skin colour.
+  let namePrompted = false;
+  const nameDone = () => {
+    if (namePrompted || !cleanName(nameInput.value)) return;
+    namePrompted = true;
+    narrator.say(['setup.skin']);
+    glow('setup.skin');
+  };
+  nameInput.addEventListener('change', nameDone);
+  nameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') nameInput.blur();
+  });
+
   const row = (key, items, render, next) =>
     h(
       'div',
@@ -114,14 +134,15 @@ export function setupScreen({ profile, onDone }) {
       })
     );
 
-  const skinRow = row('skin', looks.skin, (it) => h('span', { class: 'swatch', style: { background: it.colour } }), 'setup.hair');
-  const hairRow = row('hair', looks.hair, (it) => avatarHead({ ...state, hair: it.id }), 'setup.hairColour');
-  const colourRow = row('hairColour', looks.hairColour, (it) => h('span', { class: 'swatch', style: { background: it.colour } }), 'setup.done');
+  // Order: name, skin colour, hair colour, hair style (Rich's choice).
+  const skinRow = row('skin', looks.skin, (it) => h('span', { class: 'swatch', style: { background: it.colour } }), 'setup.hairColour');
+  const colourRow = row('hairColour', looks.hairColour, (it) => h('span', { class: 'swatch', style: { background: it.colour } }), 'setup.hair');
+  const hairRow = row('hair', looks.hair, (it) => avatarHead({ ...state, hair: it.id }), 'setup.done');
   const doneBtn = h('button', { class: 'ready-btn', type: 'button', 'aria-label': 'Done' }, tickIcon());
 
   function glow(lineId) {
-    [skinRow, hairRow, colourRow, doneBtn].forEach((r) => r.classList.remove('is-glow'));
-    ({ 'setup.skin': skinRow, 'setup.hair': hairRow, 'setup.hairColour': colourRow, 'setup.done': doneBtn })[lineId]?.classList.add('is-glow');
+    [nameBox, skinRow, hairRow, colourRow, doneBtn].forEach((r) => r.classList.remove('is-glow'));
+    ({ 'setup.name': nameBox, 'setup.skin': skinRow, 'setup.hair': hairRow, 'setup.hairColour': colourRow, 'setup.done': doneBtn })[lineId]?.classList.add('is-glow');
   }
   // Redraw hair buttons with the chosen skin so they match.
   skinRow.addEventListener('click', () => hairRow.querySelectorAll('.choice').forEach((b, i) => b.replaceChildren(avatarHead({ ...state, hair: looks.hair[i].id }))));
@@ -136,21 +157,15 @@ export function setupScreen({ profile, onDone }) {
     'section',
     { class: 'screen setup' },
     h('div', { class: 'setup-top' }, preview, againButton()),
-    h(
-      'div',
-      { class: 'name-box grown-up-box' },
-      h('label', { for: 'player-name' }, 'Grown-up: type the player’s name'),
-      nameInput,
-      h('span', { id: 'name-help' }, nameNote)
-    ),
+    nameBox,
     skinRow,
-    hairRow,
     colourRow,
+    hairRow,
     h('div', { class: 'setup-bottom' }, doneBtn)
   );
   el.begin = () => {
-    narrator.say(['setup.hello', 'setup.skin']);
-    glow('setup.skin');
+    narrator.say(['setup.hello', 'setup.name']);
+    glow('setup.name');
   };
   return el;
 }
