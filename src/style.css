@@ -406,9 +406,9 @@ h2 {
   display: flex;
   gap: 8px;
 }
-.tally .icon {
-  width: 52px;
-  height: 52px;
+.tally .sticker {
+  width: 64px;
+  height: 64px;
 }
 .chapters {
   display: flex;
@@ -451,7 +451,8 @@ h2 {
   height: 40px;
 }
 .chapter-lock .icon,
-.chapter-done .icon {
+.chapter-done .icon,
+.chapter-done .sticker {
   width: 100%;
   height: 100%;
 }
@@ -836,7 +837,7 @@ h2 {
 .end-card {
   position: fixed;
   inset: 0;
-  background: rgba(10, 40, 22, 0.92);
+  background: rgba(19, 41, 75, 0.94);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -844,18 +845,82 @@ h2 {
   gap: 22px;
   padding: var(--edge-top) var(--edge-right) var(--edge-bottom) var(--edge-left);
 }
-.end-ball .icon {
-  width: 140px;
-  height: 140px;
-  animation: pop 0.7s ease-out, bob 1.6s 0.7s ease-in-out infinite;
+/* Football stickers */
+.sticker {
+  width: 64px;
+  height: 64px;
+  overflow: visible;
+}
+.sticker-edge {
+  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.35));
+}
+.sticker-star {
+  fill: #fff;
+}
+.sticker-shine {
+  fill: rgba(255, 255, 255, 0.45);
+}
+.sticker-num {
+  fill: #fff;
+  font: 900 17px var(--font);
+}
+.sticker-slot {
+  fill: rgba(255, 255, 255, 0.06);
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 4;
+  stroke-dasharray: 9 7;
+}
+.sticker-slot-text {
+  fill: rgba(255, 255, 255, 0.45);
+  font: 900 34px var(--font);
+}
+.end-sticker {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: grid;
+  place-items: center;
+}
+.end-sticker .sticker {
+  width: 180px;
+  height: 180px;
+  position: relative;
+  animation: sticker-in 0.9s cubic-bezier(0.2, 1.6, 0.4, 1), wiggle 2.4s 0.9s ease-in-out infinite;
+}
+.end-rays {
+  position: absolute;
+  inset: -40px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(250, 204, 21, 0.35) 0 12deg, transparent 12deg 30deg);
+  animation: spin 12s linear infinite;
+}
+@keyframes sticker-in {
+  from {
+    transform: scale(0.1) rotate(-200deg);
+    opacity: 0;
+  }
+}
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-4deg) scale(1);
+  }
+  50% {
+    transform: rotate(4deg) scale(1.05);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 .end-tally {
   display: flex;
   gap: 10px;
 }
-.end-tally .icon {
-  width: 48px;
-  height: 48px;
+.end-tally .sticker {
+  width: 56px;
+  height: 56px;
 }
 .end-buttons {
   display: flex;

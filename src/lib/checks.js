@@ -45,7 +45,7 @@ export function checkRule({ kind, players, ruleSet, centre, halfway }) {
 // Pair players with shape spots so that as many spots as possible are
 // filled, using the smallest total distance to break ties.
 // Five players means 120 orderings, which is quick to try in full.
-export function matchShape(players, targets, tolerance) {
+export function matchShape(players, targets, tolerance, fits = () => true) {
   let best = { count: -1, total: Infinity, assign: [] };
   const n = targets.length;
   const used = new Array(players.length).fill(false);
@@ -61,7 +61,7 @@ export function matchShape(players, targets, tolerance) {
     // Option: leave this spot empty.
     walk(t + 1, count, total);
     for (let i = 0; i < players.length; i++) {
-      if (used[i]) continue;
+      if (used[i] || !fits(i, targets[t])) continue;
       const d = distance(players[i], targets[t]);
       if (d > tolerance) continue;
       used[i] = true;
@@ -76,11 +76,17 @@ export function matchShape(players, targets, tolerance) {
 }
 
 // shape: one entry from team.json "shapes". grid: team.json "grid".
+// keepers: indexes of players marked as our goalkeeper (Rich's choice,
+// 26th November 2026). A marked keeper fills the keeper spot and only that
+// spot. Everyone else can still fill any other spot. With no marked
+// keeper, any player can go in goal.
 // Returns { ok, roles, emptySpots, strayPlayers, problems }.
 // roles[i] is the role of shape spot i and which player filled it.
-export function checkShape({ players, shape, grid }) {
+export function checkShape({ players, shape, grid, keepers = [] }) {
   const targets = shape.spots.map((s) => ({ ...resolveAt(s.at, grid), role: s.role, hint: s.hint }));
-  const assign = matchShape(players, targets, shape.tolerance);
+  const isKeeper = (i) => keepers.includes(i);
+  const fits = (i, t) => !keepers.length || isKeeper(i) === (t.role === 'keeper');
+  const assign = matchShape(players, targets, shape.tolerance, fits);
   const filledBy = new Set(assign.filter((i) => i >= 0));
   const emptySpots = targets.map((t, i) => ({ ...t, index: i })).filter((t) => assign[t.index] < 0);
   const strayPlayers = players.map((_, i) => i).filter((i) => !filledBy.has(i));

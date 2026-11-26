@@ -47,7 +47,7 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
 
   // --- Grass and lines ---
   const grass = mk('grass');
-  grass.append(s('rect', { x: -40, y: -60, width: W + 80, height: L + 140, class: 'grass-edge' }));
+  grass.append(s('rect', { x: -40, y: -60, width: W + 80, height: L + 150, class: 'grass-edge' }));
   for (let i = 0; i < 8; i++) grass.append(s('rect', { x: 0, y: (i * L) / 8, width: W, height: L / 8, class: i % 2 ? 'grass-a' : 'grass-b' }));
 
   const why = mk('why'); // pictures of why an answer was wrong
@@ -97,13 +97,13 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
     const pad = 22;
     if (landscape) {
       root.setAttribute('transform', 'rotate(90)');
-      svg.setAttribute('viewBox', `${-(L + 70)} ${-pad} ${L + 70 + 40} ${W + pad * 2}`);
+      svg.setAttribute('viewBox', `${-(L + 82)} ${-pad} ${L + 82 + 40} ${W + pad * 2}`);
     } else {
       root.removeAttribute('transform');
-      svg.setAttribute('viewBox', `${-pad} -40 ${W + pad * 2} ${L + 110}`);
+      svg.setAttribute('viewBox', `${-pad} -40 ${W + pad * 2} ${L + 122}`);
     }
   }
-  svg.setAttribute('viewBox', `-22 -40 ${W + 44} ${L + 110}`);
+  svg.setAttribute('viewBox', `-22 -40 ${W + 44} ${L + 122}`);
   const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(layout) : null;
   ro?.observe(svg);
 

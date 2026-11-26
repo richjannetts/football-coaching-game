@@ -3,7 +3,7 @@
 
 import { h } from './lib/svg.js';
 import { avatarSvg } from './lib/avatar.js';
-import { ballIcon, chapterPicture, lockIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
+import { ballIcon, stickerSvg, chapterPicture, lockIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
 import * as narrator from './lib/narrator.js';
 import looks from './data/looks.json';
 
@@ -173,7 +173,7 @@ export function menuScreen({ profile, progress, updateReady, onChapter, onGrownU
       chapterPicture(side),
       h('span', { class: 'chapter-num' }, String(n)),
       locked ? h('span', { class: 'chapter-lock' }, lockIcon()) : null,
-      done ? h('span', { class: 'chapter-done' }, ballIcon(true)) : null
+      done ? h('span', { class: 'chapter-done' }, stickerSvg(n, true)) : null
     );
   const count = Number(done1) + Number(done2);
   return h(
@@ -190,7 +190,7 @@ export function menuScreen({ profile, progress, updateReady, onChapter, onGrownU
       'div',
       { class: 'menu-player' },
       h('button', { class: 'avatar-btn', type: 'button', 'aria-label': 'Change my player', onclick: onEditPlayer }, avatarSvg(profile, { size: 96, idSuffix: 'menu' })),
-      h('div', { class: 'tally', 'aria-label': `${count} of 2 footballs` }, ballIcon(done1), ballIcon(done2))
+      h('div', { class: 'tally', 'aria-label': `${count} of 2 football stickers` }, stickerSvg(1, done1), stickerSvg(2, done2))
     ),
     h('div', { class: 'chapters' }, chapterBtn(1, 'ours', false, done1, !done1), chapterBtn(2, 'theirs', !done1, done2, done1 && !done2))
   );

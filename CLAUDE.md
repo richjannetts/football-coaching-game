@@ -8,7 +8,7 @@ Background research is in `docs/research/`. The coaching content is in `docs/coa
 
 - An offline progressive web app, installed to the iPhone Home Screen.
 - A match-day story told in short chapters. Each chapter is a puzzle. Solving it plays out the next bit of the match.
-- The child places all five of our players. Any player can go on any spot. The game checks which spots are filled, not who is on them, because the FA advises rotating young players through every position.
+- The child places all five of our players. Any outfield player can go on any outfield spot. The game checks which spots are filled, not who is on them, because the FA advises rotating young players through every position. One squad player is marked as goalkeeper in `team.json` and wears the keeper top from the start; she is the one who goes in goal (Rich's choice, 26th November 2026). Change who is marked to rotate keepers.
 - Two kinds of right answer, kept separate in code and in wording:
   - "The rule says": the FA 5v5 rule. Objective.
   - "In our team": the coach's shape. A preference, stored as data. (Rich found "Our team does" unclear, 26th November 2026.)
@@ -61,7 +61,7 @@ These come from the research. Each has caused real failures in other web apps.
 - A wrong answer gets a friendly whistle, a picture of why, a hint, and another go straight away. Hints step up: nudge, show, do it together.
 - A wrong answer never loses the match or concedes a goal.
 - Praise effort, not cleverness.
-- No timer pressure, no streaks, no daily rewards. Footballs collected are a record of progress.
+- No timer pressure, no streaks, no daily rewards. Football stickers collected are a record of progress.
 - A correct line-up starts the play. Goals come from a passing move, so the message is "we were ready", not "stand here and score".
 - Explainer animations have no tappable extras. Touch is off while one plays.
 - Capable girl players. Not pink by default.
