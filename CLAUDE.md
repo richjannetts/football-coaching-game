@@ -26,6 +26,16 @@ Background research is in `docs/research/`. The coaching content is in `docs/coa
 - Storage: localStorage behind one small wrapper module.
 - Hosting: GitHub Pages. Set the Vite `base` to the repository name.
 
+## Look
+
+The "Saturday morning" look (Rich's choice, 26th November 2026). Colours and fonts are set once, at the top of `src/style.css`.
+
+- Blue sky background, navy words, white panels.
+- Yellow always means "tap me next". Purple only ever means the bonus.
+- Buttons are chunky: a thick bottom edge, and they sink when pressed.
+- Two fonts, kept in `src/fonts/` with their licences: Titan One for the logo and banners, Fredoka for everything she reads. Fredoka's a and g are the shapes children learn at school.
+- Still to build, in this order: mini players that copy the full player, a level path, a sticker album.
+
 ## Commands
 
 - `npm install`

@@ -79,3 +79,11 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - [ ] Does she stay interested through both levels?
 - [ ] Does she understand the bonus question pictures without help?
 - [ ] Anything she said that was funny, confusing or keen.
+
+## New look (Saturday morning)
+
+- The logo and the Play button use the chunky letters, not the phone's own.
+- Words are easy to read on the blue sky, indoors and outside in daylight.
+- Buttons sink a little when pressed and come back up.
+- The top of the screen, by the clock, looks right and is not cut off.
+- In aeroplane mode, the letters still look the same.
