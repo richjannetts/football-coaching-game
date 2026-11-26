@@ -47,7 +47,9 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
 
   // --- Grass and lines ---
   const grass = mk('grass');
-  grass.append(s('rect', { x: -40, y: -60, width: W + 80, height: L + 150, class: 'grass-edge' }));
+  // The dark green surround, with rounded corners. It matches the drawing's
+  // edges in portrait and in landscape.
+  grass.append(s('rect', { x: -22, y: -40, width: W + 44, height: L + 122, rx: 20, class: 'grass-edge' }));
   for (let i = 0; i < 8; i++) grass.append(s('rect', { x: 0, y: (i * L) / 8, width: W, height: L / 8, class: i % 2 ? 'grass-a' : 'grass-b' }));
 
   const why = mk('why'); // pictures of why an answer was wrong
