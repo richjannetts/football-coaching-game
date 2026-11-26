@@ -4,7 +4,20 @@
   "body": "Sheffield & Hallamshire Women and Girls League",
   "season": "2026/27",
   "format": "5v5",
-  "ageGroups": ["U8"],
+  "ageGroups": [
+    "U8"
+  ],
   "note": "The league follows the FA handbook for mini-soccer with no kick-off changes. Only pitch size can differ locally. The game draws the largest allowed pitch.",
-  "rules": {}
+  "rules": {
+    "pitch.penaltyArea": {
+      "value": {
+        "width": 16,
+        "depth": 10
+      },
+      "unit": "yards",
+      "source": "Drawn because Rich's pitches always have one. Size not checked against the FA handbook or league rules: measure your pitch and change it here.",
+      "confidence": "unconfirmed",
+      "lastChecked": "2026-11-26"
+    }
+  }
 }

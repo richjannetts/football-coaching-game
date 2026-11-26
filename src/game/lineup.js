@@ -1,6 +1,6 @@
 // The line-up puzzle used by both chapters.
 // The child places all five players, then taps the tick.
-// First the rule is checked ("The rule says"), then our shape ("Our team does").
+// First the rule is checked ("The rule says"), then our shape ("In our team").
 // A wrong answer gets a friendly whistle, a picture of why, a hint and another
 // go straight away. Hints step up: nudge, then show, then do one together.
 

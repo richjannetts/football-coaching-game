@@ -169,7 +169,7 @@ export function menuScreen({ profile, progress, updateReady, onChapter, onGrownU
   const chapterBtn = (n, side, locked, done, glow) =>
     h(
       'button',
-      { class: `chapter-btn${locked ? ' is-locked' : ''}${glow ? ' is-glow' : ''}`, type: 'button', 'aria-label': `Chapter ${n}${locked ? ', locked' : ''}`, onclick: () => onChapter(n, locked) },
+      { class: `chapter-btn${locked ? ' is-locked' : ''}${glow ? ' is-glow' : ''}`, type: 'button', 'aria-label': `Level ${n}${locked ? ', locked' : ''}`, onclick: () => onChapter(n, locked) },
       chapterPicture(side),
       h('span', { class: 'chapter-num' }, String(n)),
       locked ? h('span', { class: 'chapter-lock' }, lockIcon()) : null,
@@ -238,7 +238,7 @@ export function gateScreen({ onPass, onBack }) {
 }
 
 // ---------- Grown-ups area ----------
-export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer }) {
+export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWords, onToggleWords }) {
   const confirmBox = h(
     'div',
     { class: 'confirm is-hidden' },
@@ -255,10 +255,17 @@ export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer }) {
     h(
       'ul',
       { class: 'plain-list' },
-      h('li', {}, 'The game keeps a first name or nickname, the player’s look and which chapters are finished. That is all.'),
+      h('li', {}, 'The game keeps a first name or nickname, the player’s look, which levels are finished and the words-on-screen setting. That is all.'),
       h('li', {}, 'It is stored on this device only. Nothing is sent anywhere. There are no accounts, adverts or tracking.'),
       h('li', {}, 'The game does not use the camera, microphone, location or notifications.'),
       h('li', {}, 'Spoken lines use the phone’s own voice, which runs on the device.')
+    ),
+    h('h2', {}, 'Words on screen'),
+    h(
+      'label',
+      { class: 'toggle' },
+      h('input', { type: 'checkbox', checked: showWords, onchange: (e) => onToggleWords(e.target.checked) }),
+      h('span', {}, 'Show the spoken words during levels. They come on by themselves if the phone has no voice.')
     ),
     h('h2', {}, 'Player'),
     h('button', { class: 'big-btn secondary', type: 'button', onclick: onEditPlayer }, 'Change name or look'),

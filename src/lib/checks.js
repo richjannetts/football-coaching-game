@@ -1,6 +1,6 @@
 // The two line-up checks. They are kept apart on purpose:
 //   checkRule()  = "The rule says". The FA rule. Right or wrong for everyone.
-//   checkShape() = "Our team does". The coach's preference, stored as data.
+//   checkShape() = "In our team". The coach's preference, stored as data.
 // Both look only at which spots are filled, never at who is on them,
 // because young players should try every position.
 

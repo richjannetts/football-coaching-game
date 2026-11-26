@@ -28,17 +28,17 @@
     },
     {
       "id": "menu.welcome",
-      "text": "Hi {name}! Tap the glowing chapter to play.",
-      "cue": "The next chapter to play glows."
+      "text": "Hi {name}! Tap the glowing level to play.",
+      "cue": "The next level to play glows."
     },
     {
       "id": "menu.locked",
-      "text": "Play chapter one first. Then chapter two opens.",
-      "cue": "Chapter one glows."
+      "text": "Play level one first. Then level two opens.",
+      "cue": "Level one glows."
     },
     {
       "id": "menu.allDone",
-      "text": "You've played both chapters! You can play them again any time.",
+      "text": "You've played both levels! You can play them again any time.",
       "cue": "Two footballs are shown."
     },
     {
@@ -103,32 +103,32 @@
     },
     {
       "id": "shape.c1.kicker",
-      "text": "Our team does: one player on the ball to take the kick.",
+      "text": "In our team, one player stands on the ball to take the kick.",
       "cue": "The ball glows."
     },
     {
       "id": "shape.c1.friends",
-      "text": "Our team does: a friend either side of the ball, level with it, so there are two easy passes.",
+      "text": "In our team, a friend stands either side of the ball, close to the halfway line. Then there are two easy passes.",
       "cue": "The players in the wrong place have a red ring."
     },
     {
       "id": "shape.back",
-      "text": "Our team does: one player stays back, between our goal and halfway, a bit nearer our goal.",
+      "text": "In our team, one player stays back, between our goal and halfway, a bit nearer our goal.",
       "cue": "The players in the wrong place have a red ring."
     },
     {
       "id": "shape.keeper",
-      "text": "Our team does: a keeper in our goal.",
+      "text": "In our team, we always have a keeper in our goal.",
       "cue": "Our goal glows."
     },
     {
       "id": "shape.c2.up",
-      "text": "Our team does: our front player waits just behind the ring, in the middle, ready to chase.",
+      "text": "In our team, our front player waits just outside the ring, in the middle, ready to chase.",
       "cue": "The players in the wrong place have a red ring."
     },
     {
       "id": "shape.c2.middles",
-      "text": "Our team does: a friend either side, a little further back than our front player.",
+      "text": "In our team, a friend stands either side, further forward than our front player, opposite their players.",
       "cue": "The players in the wrong place have a red ring."
     },
     {
@@ -164,31 +164,36 @@
     {
       "id": "c1.passAsk",
       "text": "The ref blows the whistle. Where should the first pass go? Tap where the ball should go.",
-      "cue": "The two friends, the far end and their goal all glow."
+      "cue": "The two friends, the player behind, the far end and their goal all glow."
     },
     {
       "id": "c1.passShort",
-      "text": "Short pass to a friend. Good thinking!",
+      "text": "A pass across to a friend. Good thinking!",
       "cue": "The ball rolls to the friend."
     },
     {
       "id": "c1.passLong",
-      "text": "Our team does: short pass to a friend. A long kick gives the ball away.",
+      "text": "In our team, we pass across to a friend. A long kick gives the ball away.",
       "cue": "The ball flies long and the orange team gets it."
     },
     {
       "id": "c1.passShot",
-      "text": "The rule says: you can't score straight from a centre kick. Try a short pass to a friend.",
+      "text": "The rule says: you can't score straight from a centre kick. Try a pass across to a friend.",
       "cue": "The ball flies at their goal and a big cross appears."
     },
     {
+      "id": "c1.passBack",
+      "text": "In our team, we don't pass backwards at a centre kick. Pass across to a friend beside you.",
+      "cue": "The ball goes back towards our goal and a big cross appears."
+    },
+    {
       "id": "c1.passShow",
-      "text": "Look for the glowing friends. Tap one of them for a short pass.",
+      "text": "Look for the glowing friends beside you. Tap one of them.",
       "cue": "Only the two friends glow."
     },
     {
       "id": "c1.passTogether",
-      "text": "Let's do it together. A short pass to a friend.",
+      "text": "Let's do it together. A pass across to a friend.",
       "cue": "The ball rolls to a friend."
     },
     {
@@ -208,17 +213,17 @@
     },
     {
       "id": "c1.end",
-      "text": "You've earned a football for chapter one. Well played, {name}!",
+      "text": "You've earned a football for level one. Well played, {name}!",
       "cue": "A football flies into your collection."
     },
     {
       "id": "c2.intro1",
-      "text": "Later in the match, the other team has a centre kick.",
-      "cue": "The orange team lines up."
+      "text": "We scored, so the other team restarts the game with a centre kick.",
+      "cue": "Our goal from level one is remembered. The red team lines up."
     },
     {
       "id": "c2.intro2",
-      "text": "They're in orange. Their kicker is on the ball.",
+      "text": "They're in red. Their kicker is on the ball.",
       "cue": "Their kicker glows."
     },
     {
@@ -248,12 +253,12 @@
     },
     {
       "id": "c2.goalKick",
-      "text": "That means it's our goal kick! We'll find out what to do in the next chapter.",
+      "text": "That means it's our goal kick! We'll find out what to do in the next level.",
       "cue": "Our keeper picks up the ball."
     },
     {
       "id": "c2.end",
-      "text": "You've earned a football for chapter two. Brilliant defending, {name}!",
+      "text": "You've earned a football for level two. Brilliant defending, {name}!",
       "cue": "A football flies into your collection."
     }
   ]

@@ -118,6 +118,8 @@ function goGrownUps() {
       version: VERSION,
       onBack: () => goMenu(false),
       onEditPlayer: goSetup,
+      showWords: !!store.load('showWords'),
+      onToggleWords: (on) => store.save('showWords', on),
       onDelete: () => {
         narrator.stop();
         store.deleteEverything();
@@ -130,7 +132,7 @@ function goGrownUps() {
 }
 
 function goChapter(n) {
-  const stage = createStage({ profile, onHome: () => goMenu(true) });
+  const stage = createStage({ profile, onHome: () => goMenu(true), showWords: !!store.load('showWords') });
   show(stage.el);
   stage.el.dataset.chapter = n;
   // The chapter's first line is spoken now, inside the tap that opened it.

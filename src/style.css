@@ -1,7 +1,7 @@
 /* ---------- Colours and sizes ---------- */
 :root {
-  --bg: #0f3d23;
-  --bg-2: #14532d;
+  --bg: #13294b; /* deep navy around the pitch: Rich asked for more contrast */
+  --bg-2: #1c3a66;
   --panel: #ffffff;
   --ink: #10231a;
   --ink-soft: #3f5a4a;
@@ -495,6 +495,10 @@ h2 {
   overflow: hidden;
 }
 .chapter-top {
+  display: none;
+}
+/* Words are off by default: the voice reads every line. */
+.chapter.show-words .chapter-top {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -527,8 +531,14 @@ h2 {
 }
 .chapter-bottom {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
   min-height: 96px;
+}
+/* Keep the Home and hear-again buttons in place when the tick is away. */
+.chapter-bottom .ready-btn.is-hidden {
+  display: grid !important;
+  visibility: hidden;
 }
 /* The Home button stays on, so a child can always leave. */
 .chapter.is-busy button:not(.home-btn),
@@ -545,15 +555,11 @@ h2 {
     grid-template-rows: auto 1fr;
     column-gap: 16px;
   }
-  .chapter-top {
+  .chapter.show-words .chapter-top {
     grid-column: 2;
     grid-row: 1;
-    flex-wrap: wrap;
-    justify-content: space-between;
   }
   .caption {
-    order: 3;
-    flex-basis: 100%;
     font-size: 1.05rem;
   }
   .pitch-wrap {
@@ -563,7 +569,9 @@ h2 {
   .chapter-bottom {
     grid-column: 2;
     grid-row: 2;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
   }
 }
 
@@ -732,9 +740,43 @@ h2 {
 .token.is-keeper .token-shirt {
   fill: var(--keeper-shirt);
 }
-.token.is-you .token-shirt {
+.token.is-their-keeper .token-shirt {
+  fill: var(--their-keeper-shirt);
+}
+/* "GK" under each keeper, turned upright in landscape. */
+.token-label {
+  display: none;
+}
+.token.is-keeper .token-label,
+.token.is-their-keeper .token-label {
+  display: inline;
+}
+.token-label rect {
+  fill: rgba(0, 0, 0, 0.65);
+}
+.token-label text {
+  fill: #fff;
+  font: 800 11px var(--font);
+}
+.is-landscape .token-label {
+  transform: rotate(-90deg);
+}
+/* Her own player stands out: a white and gold ring that gently glows. */
+.token-you-ring,
+.token-you-glow {
+  fill: none;
+  display: none;
+}
+.token.is-you .token-you-ring {
+  display: inline;
   stroke: #fff;
-  stroke-width: 3;
+  stroke-width: 3.5;
+}
+.token.is-you .token-you-glow {
+  display: inline;
+  stroke: var(--accent);
+  stroke-width: 4;
+  animation: pulse-op 1.6s ease-in-out infinite;
 }
 .token.is-dragging .token-body {
   transform: scale(1.2);
@@ -839,4 +881,16 @@ h2 {
 }
 .setup .grown-up-box input {
   padding: 6px 10px;
+}
+
+.toggle {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 1.05rem;
+}
+.toggle input {
+  width: 28px;
+  height: 28px;
+  flex: none;
 }

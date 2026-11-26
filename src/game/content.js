@@ -13,6 +13,7 @@ export const pitchSize = {
   width: ruleValue(ruleSet, 'pitch.width'),
   goalWidth: ruleValue(ruleSet, 'goal.width'),
   ringYards: ruleValue(ruleSet, 'kickoff.opponentDistance'),
+  penaltyArea: ruleValue(ruleSet, 'pitch.penaltyArea'),
 };
 
 export const gridSpots = buildSpots(team.grid);
