@@ -7,6 +7,7 @@ import { createStage, ABORT } from './game/stage.js';
 import { chapter1 } from './game/chapter1.js';
 import { chapter2 } from './game/chapter2.js';
 import quiz from './data/quiz.json';
+import levels from './data/levels.json';
 import { quizFor } from './lib/quiz.js';
 import { detectPlatform } from './lib/platform.js';
 import { installScreen, welcomeScreen, startScreen, setupScreen, menuScreen, teamScreen, gateScreen, grownUpsScreen } from './screens.js';
@@ -169,11 +170,21 @@ function goTeam(speak = true) {
   if (speak) el.begin();
 }
 
+// justPassed: the level she has only now finished for the first time, so
+// the path can show her player walking up from it.
+let justPassed = null;
 function goMenu(speak) {
+  const movedFrom = justPassed;
+  justPassed = null;
+  const allLevels = levels.matches.flatMap((m) => m.levels);
+  const allDone = allLevels.every((n) => progress[`ch${n}`]);
   show(
     menuScreen({
       profile,
       progress,
+      levels,
+      movedFrom,
+      onSoon: () => narrator.say(['menu.soon']),
       team: teams.myTeam(profile),
       onTeam: () => goTeam(true),
       updateReady,
@@ -186,11 +197,10 @@ function goMenu(speak) {
       },
       onGrownUps: () => show(gateScreen({ onPass: goGrownUps, onBack: () => goMenu(false) })),
       onUpdate: () => applyUpdate(true),
-      onEditPlayer: () => goSetup(),
     })
   );
   onMenu = true;
-  if (speak) narrator.say([progress.ch1 && progress.ch2 ? 'menu.allDone' : 'menu.welcome']);
+  if (speak) narrator.say([allDone ? 'menu.allDone' : movedFrom != null ? 'menu.moved' : 'menu.welcome']);
 }
 
 function goGrownUps() {
@@ -235,6 +245,7 @@ function goChapter(n) {
 
 async function finishChapter(n, stage) {
   const firstTime = !progress[`ch${n}`];
+  if (firstTime && chapters[n + 1]) justPassed = n;
   progress = { ...progress, [`ch${n}`]: true };
   store.save('progress', progress);
   const levels = Object.keys(chapters);
@@ -249,7 +260,9 @@ async function finishChapter(n, stage) {
       progress = { ...progress, [`bonus${n}`]: true };
       store.save('progress', progress);
     },
-    onNext: chapters[n + 1] ? () => goChapter(n + 1) : null,
+    // The first time, the arrow goes back to the path so she sees her player
+    // move up. Playing a level again goes straight on to the next one.
+    onNext: chapters[n + 1] ? () => (firstTime ? goMenu(true) : goChapter(n + 1)) : null,
   });
   stage.setBusy(false);
   stage.showReady(false);

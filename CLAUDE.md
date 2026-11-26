@@ -37,7 +37,8 @@ The "Saturday morning" look (Rich's choice, 26th November 2026). Colours and fon
 - Players on the pitch are mini copies of the full player, drawn by the same code in `src/lib/avatar.js`, so any look carries across. They stay upright in landscape. A keeper has a round GK badge by her shoulder.
 - Each of our players has her name on a small plate under her feet. Long names are cut short there. In landscape, names on the bench wait until a player is picked up, because the bench is a column.
 - A small scoreboard above the pitch shows both team names with a dot of each kit colour.
-- Still to build, in this order: a level path, a sticker album.
+- The menu is a level path that scrolls (`src/lib/path.js`, drawn in `src/screens.js`). Finished levels are green, the one to play next is yellow and glows, the rest are white and locked. Her player stands beside her level and walks up one place when she passes a level for the first time. Levels are grouped into matches, each starting with a flag.
+- Still to build: a sticker album.
 
 ## Commands
 
@@ -107,6 +108,7 @@ Keep content out of the code so it can be swapped later.
 - `src/data/rules/`: one file per rule set (body, season, format, age groups). Each rule has a value, source and last-checked date. A local file can extend a parent.
 - `src/data/team.json`: the starting team name and player names (made up), kit colours, the colours she can pick for the other team, and the coach's shapes, as spots on a grid.
 - The child can change every player's name and look, both team names and the other team's colour on the "My team" screen. Her changes are saved on the phone and laid over `team.json` by `src/lib/myteam.js`. Our own kit colours are not changeable yet.
+- `src/data/levels.json`: the levels on the path, grouped into matches, and how many locked "more soon" places to draw after the last one.
 - `src/data/script.json`: every spoken line as `{ id, text, cue }`.
 - `src/data/quiz.json`: the bonus question for each level: words on screen, the three pictures, which one is right, and the script lines it speaks.
 - `public/voices/<pack>/<id>.mp3`: one file per line. `public/voices/packs.json` names the active pack.

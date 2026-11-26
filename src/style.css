@@ -1680,44 +1680,6 @@ h2 {
   display: none;
 }
 
-.team-btn {
-  align-self: center;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 16px 6px 10px;
-  border: 3px solid #fff;
-  border-radius: 999px;
-  background: var(--panel);
-  color: var(--ink);
-  box-shadow: 0 5px 0 var(--lip);
-  max-width: 100%;
-}
-.team-btn:active {
-  translate: 0 4px;
-  box-shadow: 0 1px 0 var(--lip);
-}
-.team-btn-faces {
-  display: flex;
-}
-.team-btn-faces svg {
-  margin-left: -8px;
-  border-radius: 50%;
-  background: var(--bg-2);
-  border: 2px solid #fff;
-}
-.team-btn-faces svg:first-child {
-  margin-left: 0;
-}
-.team-btn-name {
-  font: 400 1.05rem/1.1 var(--font-display);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .team {
   gap: 8px;
 }
@@ -1916,4 +1878,263 @@ h2 {
   align-items: center;
   gap: 7px;
   min-width: 0;
+}
+
+/* ---------- Menu: the level path ----------
+   The trail scrolls under the buttons. Finished levels are green, the one
+   to play next is yellow and glows, and the rest are white and locked. */
+.menu {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+.path-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+}
+.path-map {
+  position: relative;
+  flex: none;
+  /* A short path sits at the bottom of the screen, like the start of a road. */
+  margin: auto auto 0;
+}
+.path-trail {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.path-trail path {
+  fill: none;
+  stroke-linecap: round;
+}
+.trail-lip {
+  stroke: #2a6fb5;
+  stroke-width: 28;
+  transform: translateY(4px);
+}
+.trail {
+  stroke: #3f8fdc;
+  stroke-width: 20;
+}
+.trail-done {
+  stroke: var(--accent);
+  stroke-width: 20;
+}
+.trail-dots {
+  stroke: #fff;
+  stroke-width: 4;
+  stroke-dasharray: 1 14;
+  opacity: 0.9;
+}
+.path-node {
+  position: absolute;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font: 400 38px/1 var(--font-display);
+  border: 4px solid #fff;
+  background: var(--panel);
+  color: var(--ink-soft);
+  box-shadow: 0 8px 0 var(--lip), 0 16px 18px rgba(10, 26, 60, 0.2);
+}
+.path-node:active {
+  translate: 0 6px;
+  box-shadow: 0 2px 0 var(--lip);
+}
+.path-node .icon {
+  width: 34px;
+  height: 34px;
+  opacity: 0.55;
+}
+.path-node.is-locked,
+.path-node.is-soon {
+  color: #8aa3c4;
+}
+.path-node.is-soon {
+  width: 60px;
+  height: 60px;
+  margin: 8px;
+  opacity: 0.85;
+}
+.path-node.is-done {
+  background: var(--green);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 4px 0 rgba(255, 255, 255, 0.3), 0 8px 0 var(--green-lip), 0 16px 18px rgba(10, 26, 60, 0.25);
+}
+.path-node.is-done:active {
+  box-shadow: 0 2px 0 var(--green-lip);
+}
+.path-node.is-now {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: #fff8cf;
+  box-shadow: inset 0 4px 0 #fff3a6, 0 8px 0 var(--accent-lip), 0 16px 18px rgba(10, 26, 60, 0.25);
+  animation: now-glow 1.6s ease-in-out infinite;
+}
+.path-node.is-now:active {
+  box-shadow: 0 2px 0 var(--accent-lip);
+}
+@keyframes now-glow {
+  0%,
+  100% {
+    outline: 6px solid rgba(255, 208, 40, 0.55);
+    outline-offset: 2px;
+  }
+  50% {
+    outline: 6px solid rgba(255, 208, 40, 0);
+    outline-offset: 14px;
+  }
+}
+.node-bonus {
+  position: absolute;
+  right: -14px;
+  bottom: -12px;
+  width: 36px;
+  height: 36px;
+  rotate: 8deg;
+}
+.node-bonus .sticker {
+  width: 100%;
+  height: 100%;
+}
+.path-flag {
+  position: absolute;
+  background: var(--blue);
+  color: #fff;
+  font: 400 15px/1 var(--font-display);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  border-radius: 12px;
+  rotate: -4deg;
+  box-shadow: 0 4px 0 var(--blue-lip);
+  white-space: nowrap;
+}
+.path-flag.is-soon {
+  background: #fff;
+  color: var(--ink-soft);
+  box-shadow: 0 4px 0 var(--lip);
+  rotate: 3deg;
+}
+.path-you {
+  position: absolute;
+  width: 60px;
+  pointer-events: none;
+}
+.path-you .avatar {
+  display: block;
+  position: relative;
+  animation: bob 1.8s ease-in-out infinite;
+}
+.path-you-shadow {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -5px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(10, 26, 60, 0.25);
+}
+/* The sky fades over the trail behind the top buttons. */
+.path-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(var(--edge-top) + 110px);
+  background: linear-gradient(var(--bg) 45%, rgba(88, 184, 255, 0));
+  pointer-events: none;
+}
+.path-top {
+  position: absolute;
+  top: var(--edge-top);
+  left: var(--edge-left);
+  right: var(--edge-right);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+.path-top > * {
+  pointer-events: auto;
+}
+.path-top .again {
+  margin-left: auto;
+  flex: none;
+}
+.chip {
+  height: 56px;
+  min-width: 0;
+  padding: 6px 16px 6px 6px;
+  border: none;
+  border-radius: 28px;
+  background: var(--panel);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 20px/1 var(--font);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  box-shadow: 0 5px 0 var(--lip);
+}
+button.chip:active {
+  translate: 0 4px;
+  box-shadow: 0 1px 0 var(--lip);
+}
+.chip-face {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg-2);
+  flex: none;
+}
+.chip-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chip-count {
+  flex: none;
+  padding-left: 10px;
+}
+.chip-count .icon {
+  width: 34px;
+  height: 34px;
+}
+.menu .grown-ups-btn {
+  position: absolute;
+  left: var(--edge-left);
+  bottom: var(--edge-bottom);
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  padding: 8px 14px;
+}
+.menu .update-btn {
+  position: absolute;
+  left: var(--edge-left);
+  right: var(--edge-right);
+  top: calc(var(--edge-top) + 76px);
+}
+/* Small phones: the whole path shrinks a little to fit. */
+@media (max-width: 370px) {
+  .path-map {
+    zoom: 0.86;
+  }
+  .chip-count .icon {
+    display: none;
+  }
+  .chip-count {
+    padding-left: 16px;
+  }
 }
