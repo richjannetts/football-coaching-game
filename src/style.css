@@ -542,6 +542,11 @@ h2 {
   }
 }
 
+/* Make room for the pointer so it stays clear of the screen edge. */
+.end-buttons:has(.has-pointer) {
+  padding-right: 72px;
+}
+
 /* Setup: the tick looks quieter until everything is chosen. */
 .ready-btn.is-waiting {
   opacity: 0.45;
