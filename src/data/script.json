@@ -38,8 +38,8 @@
     },
     {
       "id": "menu.allDone",
-      "text": "You've played both levels! You can play them again any time.",
-      "cue": "Two footballs are shown."
+      "text": "You've got both football stickers! You can play the levels again any time.",
+      "cue": "Two football stickers are shown."
     },
     {
       "id": "sfx.whistle",
@@ -63,7 +63,7 @@
     },
     {
       "id": "ring.helper",
-      "text": "The dotted ring is a helper. Real pitches don't have one. It shows five yards from the ball. That's about five big grown-up steps.",
+      "text": "The dotted ring is a helper. Some pitches have a ring like this and some don't. It shows how far to stay from the ball: about five metres. That's about five big grown-up steps.",
       "cue": "The dotted ring around the ball glows."
     },
     {
@@ -98,7 +98,7 @@
     },
     {
       "id": "rule.ring",
-      "text": "The rule says: stay five yards away from the ball until it's kicked. Keep outside the dotted ring.",
+      "text": "The rule says: stay about five metres away from the ball until it's kicked. That's five big grown-up steps. Keep outside the dotted ring.",
       "cue": "The ring turns red. The player inside it has a red ring."
     },
     {
@@ -117,8 +117,13 @@
       "cue": "The players in the wrong place have a red ring."
     },
     {
+      "id": "shape.c2.back",
+      "text": "In our team, our back player stands just in front of our penalty box, in the middle.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
       "id": "shape.keeper",
-      "text": "In our team, we always have a keeper in our goal.",
+      "text": "In our team, our keeper in the orange top goes in our goal.",
       "cue": "Our goal glows."
     },
     {
@@ -213,8 +218,8 @@
     },
     {
       "id": "c1.end",
-      "text": "You've earned a football for level one. Well played, {name}!",
-      "cue": "A football flies into your collection."
+      "text": "You've earned a football sticker for level one. Well played, {name}!",
+      "cue": "A shiny football sticker pops into your sticker book."
     },
     {
       "id": "c2.intro1",
@@ -253,13 +258,13 @@
     },
     {
       "id": "c2.goalKick",
-      "text": "That means it's our goal kick! We'll find out what to do in the next level.",
+      "text": "That means it's our goal kick! We'll find out about goal kicks in the next level.",
       "cue": "Our keeper picks up the ball."
     },
     {
       "id": "c2.end",
-      "text": "You've earned a football for level two. Brilliant defending, {name}!",
-      "cue": "A football flies into your collection."
+      "text": "You've earned a football sticker for level two. Brilliant defending, {name}!",
+      "cue": "A shiny football sticker pops into your sticker book."
     }
   ]
 }

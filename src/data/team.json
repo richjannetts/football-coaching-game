@@ -1,6 +1,6 @@
 {
   "teamName": "The Stripes",
-  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper.",
+  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal.",
   "kit": {
     "us": {
       "shirt": "#1d4ed8",
@@ -78,7 +78,8 @@
     {
       "skin": "s1",
       "hair": "ponytail",
-      "hairColour": "h5"
+      "hairColour": "h5",
+      "keeper": true
     }
   ],
   "shapes": {
@@ -157,9 +158,9 @@
           "role": "back",
           "at": [
             2,
-            1
+            2
           ],
-          "hint": "shape.back"
+          "hint": "shape.c2.back"
         },
         {
           "role": "keeper",

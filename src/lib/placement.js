@@ -20,6 +20,7 @@ export function createPlacement({ pitch, players, spots, keeperAt, onChange, onE
   let active = null; // { pointerId, index, startX, startY, dragging, from }
   let last = { t: -Infinity, x: 0, y: 0 };
   const svg = pitch.svg;
+  const anyMarked = players.some((p) => p.keeper);
 
   function occupant(spotId, except = -1) {
     return players.findIndex((p, i) => i !== except && p.spotId === spotId);
@@ -29,7 +30,10 @@ export function createPlacement({ pitch, players, spots, keeperAt, onChange, onE
     players.forEach((p, i) => {
       const sp = spotById.get(p.spotId);
       p.el.classList.toggle('is-selected', i === selected);
-      p.el.classList.toggle('is-keeper', !!sp && distance(sp, keeperAt) < 0.5);
+      // A marked keeper always wears the keeper top. Without one, whoever
+      // stands in goal wears it.
+      const inGoal = !!sp && distance(sp, keeperAt) < 0.5;
+      p.el.classList.toggle('is-keeper', anyMarked ? !!p.keeper : inGoal);
     });
     svg.classList.toggle('has-selection', selected >= 0);
     pitch.layers.spots.querySelectorAll('.spot').forEach((dot) => {
@@ -190,6 +194,9 @@ export function createPlacement({ pitch, players, spots, keeperAt, onChange, onE
       return players.map((p, i) => (spotById.get(p.spotId).bench ? i : -1)).filter((i) => i >= 0);
     },
     moveTo(index, spotId, ms = 900) {
+      // If someone is already there, she swaps to the mover's old spot.
+      const other = occupant(spotId, index);
+      if (other >= 0) putAt(other, players[index].spotId, true, ms);
       return putAt(index, spotId, true, ms);
     },
     refresh,

@@ -150,11 +150,12 @@ async function finishChapter(n, stage) {
   progress = { ...progress, [`ch${n}`]: true };
   store.save('progress', progress);
   const total = Object.keys(chapters).length;
-  const footballs = Object.keys(chapters).filter((k) => progress[`ch${k}`]).length;
+  const earned = Object.keys(chapters).map((k) => !!progress[`ch${k}`]);
   stage.setBusy(false);
   stage.showReady(false);
   stage.showEnd({
-    footballs,
+    level: n,
+    earned,
     total,
     onNext: chapters[n + 1] ? () => goChapter(n + 1) : null,
   });

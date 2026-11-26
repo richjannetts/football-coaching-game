@@ -4,7 +4,7 @@
 import { h } from '../lib/svg.js';
 import { createPitch } from '../lib/pitch.js';
 import { createPlacement } from '../lib/placement.js';
-import { homeIcon, speakerIcon, tickIcon, ballIcon, nextIcon } from '../lib/icons.js';
+import { homeIcon, speakerIcon, tickIcon, stickerSvg, nextIcon } from '../lib/icons.js';
 import * as narrator from '../lib/narrator.js';
 import { team, pitchSize, gridSpots, benchSpots, keeperAt } from './content.js';
 
@@ -87,7 +87,7 @@ export function createStage({ profile, onHome, showWords = false }) {
     const t = pitch.addPlayer(look.you ? profile : look, 'us');
     t.dataset.player = i;
     if (look.you) t.classList.add('is-you');
-    return { el: t, spotId: benchSpots[i].id };
+    return { el: t, spotId: benchSpots[i].id, keeper: !!look.keeper };
   });
   stage.placement = createPlacement({
     pitch,
@@ -204,10 +204,10 @@ export function createStage({ profile, onHome, showWords = false }) {
       stage.cancelPick = () => pitch.svg.removeEventListener('pointerup', handler);
     });
 
-  stage.showEnd = ({ footballs, total, nextLabel, onNext }) => {
+  stage.showEnd = ({ level, earned, total, nextLabel, onNext }) => {
     endCard.replaceChildren(
-      h('div', { class: 'end-ball' }, ballIcon(true)),
-      h('div', { class: 'end-tally', 'aria-label': `${footballs} of ${total} footballs` }, Array.from({ length: total }, (_, i) => ballIcon(i < footballs))),
+      h('div', { class: 'end-sticker' }, h('div', { class: 'end-rays' }), stickerSvg(level, true)),
+      h('div', { class: 'end-tally', 'aria-label': `${earned.filter(Boolean).length} of ${total} football stickers` }, earned.map((got, i) => stickerSvg(i + 1, got))),
       h(
         'div',
         { class: 'end-buttons' },

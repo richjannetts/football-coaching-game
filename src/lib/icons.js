@@ -47,3 +47,50 @@ export function chapterPicture(side) {
   svg.append(s('circle', { cx: 30, cy: 40, r: 2, class: 'mini-ball' }));
   return svg;
 }
+
+// A football sticker, the award for finishing a level. Bright, with a
+// starburst, a shine and the level number, like a collectable sticker.
+const STICKER_COLOURS = [
+  { burst: '#facc15', ring: '#1d4ed8', badge: '#1d4ed8' },
+  { burst: '#22d3ee', ring: '#f97316', badge: '#f97316' },
+  { burst: '#a3e635', ring: '#7c3aed', badge: '#7c3aed' },
+];
+
+export function stickerSvg(level, earned = true) {
+  const svg = s('svg', { viewBox: '0 0 120 120', class: `sticker${earned ? '' : ' is-empty'}`, 'aria-hidden': 'true' });
+  if (!earned) {
+    svg.append(s('circle', { cx: 60, cy: 60, r: 50, class: 'sticker-slot' }), s('text', { x: 60, y: 72, 'text-anchor': 'middle', class: 'sticker-slot-text' }, String(level)));
+    return svg;
+  }
+  const c = STICKER_COLOURS[(level - 1) % STICKER_COLOURS.length];
+  const points = [];
+  for (let i = 0; i < 24; i++) {
+    const r = i % 2 ? 44 : 56;
+    const a = (Math.PI * 2 * i) / 24 - Math.PI / 2;
+    points.push(`${(60 + r * Math.cos(a)).toFixed(1)},${(60 + r * Math.sin(a)).toFixed(1)}`);
+  }
+  const star = (x, y, r) => {
+    const p = [];
+    for (let i = 0; i < 10; i++) {
+      const rr = i % 2 ? r * 0.45 : r;
+      const a = (Math.PI * 2 * i) / 10 - Math.PI / 2;
+      p.push(`${(x + rr * Math.cos(a)).toFixed(1)},${(y + rr * Math.sin(a)).toFixed(1)}`);
+    }
+    return s('polygon', { points: p.join(' '), class: 'sticker-star' });
+  };
+  svg.append(
+    s('polygon', { points: points.join(' '), fill: '#fff', class: 'sticker-edge', transform: 'translate(60 60) scale(1.08) translate(-60 -60)' }),
+    s('polygon', { points: points.join(' '), fill: c.burst }),
+    s('circle', { cx: 60, cy: 60, r: 34, fill: c.ring }),
+    s('circle', { cx: 60, cy: 60, r: 27, fill: '#fff', stroke: '#1f2937', 'stroke-width': 2.5 }),
+    s('path', { d: 'M60 48 L71 56 L67 69 L53 69 L49 56 Z', fill: '#1f2937' }),
+    s('path', { d: 'M60 48 V34 M71 56 L84 51 M67 69 L75 81 M53 69 L45 81 M49 56 L36 51', stroke: '#1f2937', 'stroke-width': 2.5 }),
+    star(22, 24, 9),
+    star(99, 98, 8),
+    star(101, 26, 6),
+    s('path', { d: 'M30 30 Q60 6 92 26 Q62 18 34 40 Z', class: 'sticker-shine' }),
+    s('circle', { cx: 96, cy: 90, r: 14, fill: c.badge, stroke: '#fff', 'stroke-width': 3 }),
+    s('text', { x: 96, y: 96, 'text-anchor': 'middle', class: 'sticker-num' }, String(level))
+  );
+  return svg;
+}

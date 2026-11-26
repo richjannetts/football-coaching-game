@@ -12,10 +12,10 @@
     "pitch.penaltyArea": {
       "value": {
         "width": 16,
-        "depth": 10
+        "depth": 7.5
       },
       "unit": "yards",
-      "source": "Drawn because Rich's pitches always have one. Size not checked against the FA handbook or league rules: measure your pitch and change it here.",
+      "source": "Drawn because Rich's pitches always have one. Rich set the depth to end on the dot row 7.5 yards out (26th November 2026). Not checked against the FA handbook.",
       "confidence": "unconfirmed",
       "lastChecked": "2026-11-26"
     }

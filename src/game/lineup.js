@@ -13,6 +13,8 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
   const { pitch, placement } = stage;
   const shape = team.shapes[shapeKey];
   let attempts = 0;
+  // Our marked goalkeeper (from team.json), who must be the one in goal.
+  const keepers = team.squad.map((p, i) => (p.keeper ? i : -1)).filter((i) => i >= 0);
   let hintsOn = false;
   let changed = true; // has a player moved since the last check?
   let lastTick = -Infinity;
@@ -36,7 +38,7 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
     };
     stage.afterChange = () => {
       changed = true;
-      if (hintsOn) pitch.showHints(checkShape({ players: placement.positions(), shape, grid: team.grid }).emptySpots);
+      if (hintsOn) pitch.showHints(checkShape({ players: placement.positions(), shape, grid: team.grid, keepers }).emptySpots);
     };
     start();
     stage.play(promptIds, opening).catch(() => {});
@@ -59,7 +61,7 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
       }
       const players = placement.positions();
       const rule = checkRule({ kind, players, ruleSet, centre: pitch.centre, halfway: pitch.halfway });
-      const fit = checkShape({ players, shape, grid: team.grid });
+      const fit = checkShape({ players, shape, grid: team.grid, keepers });
       stage.clearWhy();
 
       if (rule.ok && fit.ok) {
@@ -103,8 +105,22 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
     async function doOneTogether(fit, rule, lines) {
       stage.setBusy(true);
       const spoken = stage.play([...lines, 'hint.together']).catch(() => {});
-      let mover = fit.strayPlayers[0];
+      // Pick a player and an empty spot that belong together: the keeper
+      // goes in goal, anyone else goes to any other spot.
       let target = fit.emptySpots[0];
+      const fitsSpot = (i, t) => !keepers.length || keepers.includes(i) === (t.role === 'keeper');
+      let mover = fit.strayPlayers.find((i) => target && fitsSpot(i, target));
+      if (mover === undefined) {
+        for (const t of fit.emptySpots) {
+          const i = fit.strayPlayers.find((k) => fitsSpot(k, t));
+          if (i !== undefined) {
+            mover = i;
+            target = t;
+            break;
+          }
+        }
+      }
+      if (mover === undefined) mover = fit.strayPlayers[0];
       if (mover === undefined || !target) {
         // Shape is right but the rule is not: only possible if data changes.
         mover = rule.problems[0]?.players[0] ?? 0;
@@ -118,7 +134,7 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
       await wait(motion(400));
       if (!stage.alive) return;
       const rest = placement.positions();
-      const now = checkShape({ players: rest, shape, grid: team.grid });
+      const now = checkShape({ players: rest, shape, grid: team.grid, keepers });
       pitch.showHints(now.emptySpots);
       stage.setBusy(false);
       changed = true;
