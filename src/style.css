@@ -474,7 +474,7 @@ h2 {
   stroke-width: 1.5;
 }
 .mini-them {
-  fill: #ea580c;
+  fill: #dc2626;
 }
 .mini-ball {
   fill: #fff;
@@ -925,6 +925,240 @@ h2 {
 .end-buttons {
   display: flex;
   gap: 28px;
+}
+
+/* Bonus question. Its words are always on screen, big and bright
+   (Rich's choice, 26th November 2026), and spoken as well. */
+.end-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  max-width: 100%;
+}
+.end-award {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.end-sticker {
+  transition: width 0.5s ease, height 0.5s ease;
+}
+.end-sticker .sticker {
+  transition: width 0.5s ease, height 0.5s ease;
+}
+.end-card.has-quiz .end-sticker {
+  width: 96px;
+  height: 96px;
+}
+.end-card.has-quiz .end-sticker > .sticker {
+  width: 88px;
+  height: 88px;
+}
+.end-card.has-quiz .end-rays {
+  inset: -14px;
+}
+.end-bonus {
+  position: absolute;
+  right: -56px;
+  top: 4px;
+}
+.end-bonus .sticker {
+  width: 80px;
+  height: 80px;
+  animation: sticker-in 0.9s cubic-bezier(0.2, 1.6, 0.4, 1), wiggle 2.4s 0.9s ease-in-out infinite;
+}
+.end-tally .sticker.bonus {
+  width: 48px;
+  height: 48px;
+}
+.tally .sticker {
+  width: 56px;
+  height: 56px;
+}
+.sticker-bonus-text {
+  fill: #fff;
+  font: 900 14px var(--font);
+  letter-spacing: 1px;
+}
+.quiz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: 100%;
+}
+.quiz.is-hidden {
+  display: none;
+}
+.quiz-question {
+  margin: 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  max-width: 340px;
+}
+.quiz-tag {
+  display: inline-block;
+  background: #7c3aed;
+  color: #fff;
+  font: 900 16px var(--font);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 999px;
+  transform: rotate(-3deg);
+  box-shadow: 0 3px 0 #4c1d95;
+  animation: pop 0.4s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+.quiz-words {
+  font: 900 28px/1.15 var(--font);
+  color: var(--accent);
+  text-shadow: 0 3px 0 #1f2937, 0 0 18px rgba(250, 204, 21, 0.35);
+  -webkit-text-stroke: 1px #1f2937;
+}
+.quiz-word {
+  display: inline-block;
+  margin: 0 0.14em;
+  animation: word-pop 0.5s cubic-bezier(0.2, 1.8, 0.4, 1) both;
+}
+@keyframes word-pop {
+  from {
+    transform: translateY(14px) scale(0.3) rotate(-8deg);
+    opacity: 0;
+  }
+}
+.quiz-options {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.quiz-option {
+  width: min(108px, calc((100vw - 48px - 20px) / 3));
+  min-height: 150px;
+  padding: 6px 6px 8px;
+  border: 4px solid transparent;
+  border-radius: var(--radius);
+  background: var(--bg-2);
+  color: var(--on-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.25s ease, opacity 0.4s ease, border-color 0.25s ease;
+  touch-action: manipulation;
+}
+.quiz-option.is-glow {
+  border-color: var(--hint);
+  transform: scale(1.06);
+}
+.quiz-option.is-right {
+  border-color: #22c55e;
+  transform: scale(1.1);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.35);
+}
+.quiz-option.is-faded {
+  opacity: 0.35;
+}
+.quiz-option:disabled {
+  color: var(--on-dark);
+}
+.quiz-pic {
+  width: 100%;
+  height: auto;
+  max-height: 110px;
+}
+.quiz-label {
+  font: 800 14px/1.15 var(--font);
+  text-align: center;
+}
+.quiz-grass {
+  fill: var(--grass-a);
+}
+.quiz-line,
+.quiz-ring {
+  stroke: #fff;
+  stroke-width: 0.4;
+  fill: none;
+}
+.quiz-ring {
+  stroke-dasharray: 1 0.8;
+}
+.quiz-goal {
+  fill: #fff;
+}
+.quiz-us {
+  fill: var(--blue);
+  stroke: var(--accent);
+  stroke-width: 0.5;
+}
+.quiz-them {
+  fill: #dc2626;
+  stroke: #fff;
+  stroke-width: 0.3;
+}
+.quiz-ball {
+  fill: #fff;
+  stroke: #1f2937;
+  stroke-width: 0.3;
+}
+.quiz-arrow {
+  stroke: var(--accent);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+}
+.quiz-arrow-head {
+  fill: var(--accent);
+}
+.quiz-again {
+  width: 56px;
+  height: 56px;
+}
+@media (orientation: landscape) {
+  .end-card.has-quiz {
+    gap: 10px;
+  }
+  .end-card.has-quiz .end-main {
+    flex-direction: row;
+    gap: 28px;
+  }
+  .end-card.has-quiz .quiz {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 520px;
+    gap: 10px;
+  }
+  .end-card.has-quiz .quiz-question {
+    flex-basis: 100%;
+    max-width: none;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .quiz-words {
+    font-size: 22px;
+  }
+  .quiz-tag {
+    font-size: 13px;
+    padding: 3px 12px;
+  }
+  .quiz-option {
+    width: 96px;
+    min-height: 0;
+    padding: 4px 4px 6px;
+    gap: 3px;
+  }
+  .quiz-pic {
+    max-height: 72px;
+  }
+  .end-card.has-quiz .icon-btn.big {
+    width: 64px;
+    height: 64px;
+  }
 }
 
 /* Fewer moving parts when the phone asks for reduced motion. */

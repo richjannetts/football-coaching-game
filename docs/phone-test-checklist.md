@@ -36,9 +36,19 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - [ ] Turn the phone sideways. The pitch turns and everything still works.
 - [ ] Turn on Settings, Accessibility, Motion, Reduce Motion. The game still plays, with less movement.
 
+## Bonus question
+
+- [ ] After each level's sticker, the bonus question pops up in big yellow words and is read out.
+- [ ] Each picture glows as its answer is read out. The answers can be tapped once the voice has finished.
+- [ ] A right answer: a gold bonus sticker spins in next to the level sticker, and the next-level arrow appears.
+- [ ] A wrong answer: no "wrong", no whistle. The right picture glows, the others fade, and the voice explains it.
+- [ ] The speaker button under the pictures reads the question out again.
+- [ ] The menu shows four sticker spaces: level 1, bonus 1, level 2, bonus 2.
+
 ## With your daughter
 
 - [ ] Can she place players without help after the first go?
 - [ ] Do the hints (glowing spots, then "let's do one together") help when she is stuck?
-- [ ] Does she stay interested through both chapters?
+- [ ] Does she stay interested through both levels?
+- [ ] Does she understand the bonus question pictures without help?
 - [ ] Anything she said that was funny, confusing or keen.

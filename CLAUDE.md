@@ -57,11 +57,12 @@ These come from the research. Each has caused real failures in other web apps.
 
 ## How it should feel
 
-- Every instruction is spoken and shown in pictures. Words on screen are off by default (Rich's choice, 26th November 2026), switch on in the grown-ups area, and come on by themselves if the phone has no voice. Many 6 year olds cannot read fluently.
+- Every instruction is spoken and shown in pictures. Words on screen are off by default (Rich's choice, 26th November 2026), switch on in the grown-ups area, and come on by themselves if the phone has no voice. Many 6 year olds cannot read fluently. The one exception is the bonus question: its question and answer labels are always shown, big and bold, as well as spoken (Rich's choice, 26th November 2026).
 - A wrong answer gets a friendly whistle, a picture of why, a hint, and another go straight away. Hints step up: nudge, show, do it together.
 - A wrong answer never loses the match or concedes a goal.
 - Praise effort, not cleverness.
 - No timer pressure, no streaks, no daily rewards. Football stickers collected are a record of progress.
+- Each level ends with one bonus question on what it taught, with three picture answers. Right earns a bonus sticker. Wrong is never called wrong: the right picture glows and the voice explains it. She can try again next time she plays the level.
 - A correct line-up starts the play. Goals come from a passing move, so the message is "we were ready", not "stand here and score".
 - Explainer animations have no tappable extras. Touch is off while one plays.
 - Capable girl players. Not pink by default.
@@ -82,6 +83,7 @@ Keep content out of the code so it can be swapped later.
 - `src/data/rules/`: one file per rule set (body, season, format, age groups). Each rule has a value, source and last-checked date. A local file can extend a parent.
 - `src/data/team.json`: team name, kit colours and the coach's shapes, as spots on a grid.
 - `src/data/script.json`: every spoken line as `{ id, text, cue }`.
+- `src/data/quiz.json`: the bonus question for each level: words on screen, the three pictures, which one is right, and the script lines it speaks.
 - `public/voices/<pack>/<id>.mp3`: one file per line. `public/voices/packs.json` names the active pack.
 - Speech fallback order: recorded file, then device speech in en-GB, then caption and visual cue, which are always shown.
 - Avatar parts are layered SVG with fixed layer names and colours set by CSS variables.
