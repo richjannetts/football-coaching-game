@@ -891,7 +891,6 @@ h2 {
   width: 100%;
   height: 100%;
   display: block;
-  border-radius: 22px;
   filter: drop-shadow(0 8px 10px rgba(10, 26, 60, 0.22));
   touch-action: none;
   -webkit-user-select: none;
@@ -1013,8 +1012,11 @@ h2 {
   transform-box: fill-box;
   transform-origin: center;
 }
-.token-them .token-body {
-  transform: rotate(180deg);
+/* Mini players stay upright when the pitch turns in landscape. They are a
+   little smaller there, because the bench becomes a column and they would
+   stand on each other's heads. */
+.is-landscape .token-figure {
+  transform: rotate(-90deg) scale(0.82);
 }
 .token-hit {
   fill: transparent;
@@ -1046,17 +1048,18 @@ h2 {
 .token-shadow {
   fill: rgba(0, 0, 0, 0.25);
 }
-.token-shirt {
-  stroke: rgba(0, 0, 0, 0.35);
-  stroke-width: 1.5;
+/* Keepers wear one plain colour: shirt, stripes and socks. */
+.token.is-keeper .token-figure {
+  --shirt: var(--keeper-shirt);
+  --stripe: var(--keeper-shirt);
+  --socks: var(--keeper-shirt);
 }
-.token.is-keeper .token-shirt {
-  fill: var(--keeper-shirt);
+.token.is-their-keeper .token-figure {
+  --shirt: var(--their-keeper-shirt);
+  --stripe: var(--their-keeper-shirt);
+  --socks: var(--their-keeper-shirt);
 }
-.token.is-their-keeper .token-shirt {
-  fill: var(--their-keeper-shirt);
-}
-/* "GK" under each keeper, turned upright in landscape. */
+/* A round "GK" badge by each keeper's shoulder, upright in landscape. */
 .token-label {
   display: none;
 }
@@ -1064,12 +1067,15 @@ h2 {
 .token.is-their-keeper .token-label {
   display: inline;
 }
-.token-label rect {
+.token-label circle {
   fill: var(--navy);
+  stroke: #fff;
+  stroke-width: 2;
 }
 .token-label text {
   fill: #fff;
-  font: 700 11px var(--font);
+  font: 700 8.5px var(--font);
+  letter-spacing: 0.3px;
 }
 .is-landscape .token-label {
   transform: rotate(-90deg);
@@ -1109,12 +1115,8 @@ h2 {
   }
 }
 @keyframes hop-them {
-  0%,
-  100% {
-    transform: rotate(180deg);
-  }
   50% {
-    transform: rotate(180deg) scale(1.25);
+    transform: scale(1.25);
   }
 }
 

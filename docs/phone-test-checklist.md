@@ -87,3 +87,11 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - Buttons sink a little when pressed and come back up.
 - The top of the screen, by the clock, looks right and is not cut off.
 - In aeroplane mode, the letters still look the same.
+
+## Mini players
+
+- Each player on the pitch looks like a small copy of the player on the menu, with the same hair and skin.
+- A player is easy to pick up with a small finger, by her head or her feet.
+- Two players standing close can still be told apart.
+- Turn the phone sideways: players stay upright and the bench players do not hide each other.
+- The GK badge is readable on both keepers.

@@ -34,7 +34,8 @@ The "Saturday morning" look (Rich's choice, 26th November 2026). Colours and fon
 - Yellow always means "tap me next". Purple only ever means the bonus.
 - Buttons are chunky: a thick bottom edge, and they sink when pressed.
 - Two fonts, kept in `src/fonts/` with their licences: Titan One for the logo and banners, Fredoka for everything she reads. Fredoka's a and g are the shapes children learn at school.
-- Still to build, in this order: mini players that copy the full player, a level path, a sticker album.
+- Players on the pitch are mini copies of the full player, drawn by the same code in `src/lib/avatar.js`, so any look carries across. They stay upright in landscape. A keeper has a round GK badge by her shoulder.
+- Still to build, in this order: a level path, a sticker album.
 
 ## Commands
 

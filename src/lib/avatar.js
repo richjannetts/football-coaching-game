@@ -32,12 +32,11 @@ function applyVars(el, look, kitName = 'us') {
 
 const layer = (name, ...children) => s('g', { 'data-layer': name }, ...children);
 
-// Front view, for the setup screen and menu. viewBox 0 0 100 150.
-export function avatarSvg(look, { size = 160, kit = 'us', idSuffix = 'a' } = {}) {
-  const svg = s('svg', { viewBox: '0 0 100 150', width: size, height: size * 1.5, class: 'avatar', 'aria-hidden': 'true' });
-  const v = applyVars(svg, look, kit);
-  const clipId = `shirt-clip-${idSuffix}`;
-  svg.append(
+// The player's body parts, front view, in a 100 by 150 box. Used at full
+// size on the setup screen and menu, and shrunk for the mini players on
+// the pitch, so the two always match.
+function avatarParts(v, clipId) {
+  return [
     s('defs', {}, s('clipPath', { id: clipId }, s('path', { d: 'M28 62 Q50 54 72 62 L78 100 L22 100 Z' }))),
     layer('hair-back', hairBack(v.hairStyle)),
     layer('legs', s('rect', { x: 36, y: 112, width: 11, height: 26, rx: 5, fill: 'var(--skin)' }), s('rect', { x: 53, y: 112, width: 11, height: 26, rx: 5, fill: 'var(--skin)' })),
@@ -60,8 +59,15 @@ export function avatarSvg(look, { size = 160, kit = 'us', idSuffix = 'a' } = {})
       s('path', { d: 'M43 43 Q50 49 57 43', stroke: '#1f2937', 'stroke-width': 2, fill: 'none', 'stroke-linecap': 'round' })
     ),
     layer('hair-front', hairFront(v.hairStyle)),
-    layer('headwear', headwear(v.hairStyle))
-  );
+    layer('headwear', headwear(v.hairStyle)),
+  ];
+}
+
+// Front view, for the setup screen and menu. viewBox 0 0 100 150.
+export function avatarSvg(look, { size = 160, kit = 'us', idSuffix = 'a' } = {}) {
+  const svg = s('svg', { viewBox: '0 0 100 150', width: size, height: size * 1.5, class: 'avatar', 'aria-hidden': 'true' });
+  const v = applyVars(svg, look, kit);
+  svg.append(...avatarParts(v, `shirt-clip-${idSuffix}`));
   return svg;
 }
 
@@ -104,48 +110,34 @@ function headwear(style) {
   return s('path', { d: 'M28 38 Q28 14 50 14 Q72 14 72 38 L72 50 Q66 56 62 56 Q70 46 68 34 Q64 22 50 22 Q36 22 32 34 Q30 46 38 56 Q34 56 28 50 Z', fill: 'var(--hair)' });
 }
 
-// Top-down token for the pitch. Drawn around (0, 0), radius about 17 units.
-// kit: 'us' or 'them'. The keeper colour is switched on with a class.
+// A mini copy of the full player, for the pitch (Rich's choice, 26th
+// November 2026). Drawn around (0, 0), which is the spot she stands on:
+// her feet are just below it and her head about 50 units above.
+// kit: 'us' or 'them'. The keeper colours are switched on with a class.
+let tokenCount = 0;
+const MINI = 0.44; // size of the mini player against the full drawing
 export function tokenSvg(look, kit = 'us') {
   const g = s('g', { class: `token token-${kit}` });
   const v = applyVars(g, look, kit);
   g.style.setProperty('--keeper-shirt', team.kit.keeper.shirt);
   g.style.setProperty('--their-keeper-shirt', team.kit.theirKeeper.shirt);
   const body = s('g', { class: 'token-body' });
-  body.append(
-    layer('token-hit', s('circle', { r: 30, class: 'token-hit' })),
-    layer('token-halo', s('circle', { r: 24, class: 'token-halo' })),
-    layer('token-wrong', s('circle', { r: 23, class: 'token-wrong' })),
-    layer('token-you', s('circle', { r: 22, class: 'token-you-glow' }), s('circle', { r: 19, class: 'token-you-ring' })),
-    layer('token-shadow', s('ellipse', { cx: 2, cy: 4, rx: 17, ry: 15, class: 'token-shadow' })),
-    layer('token-shirt', s('circle', { r: 16, class: 'token-shirt', fill: kit === 'us' ? 'url(#stripes-us)' : 'var(--shirt)' })),
-    layer('token-arms', s('circle', { cx: -15, cy: 0, r: 4.5, fill: 'var(--skin)' }), s('circle', { cx: 15, cy: 0, r: 4.5, fill: 'var(--skin)' })),
-    layer('token-head', s('circle', { r: 8.5, fill: 'var(--skin)' })),
-    layer('token-hair', tokenHair(v.hairStyle))
+  // Everything here stays upright when the pitch turns in landscape.
+  const figure = s('g', { class: 'token-figure' });
+  const ring = (cls, grow = 0) => s('ellipse', { cx: 0, cy: 7, rx: 21 + grow, ry: 9.5 + grow / 2, class: cls });
+  figure.append(
+    layer('token-hit', s('circle', { cy: -18, r: 34, class: 'token-hit' })),
+    layer('token-halo', ring('token-halo', 3)),
+    layer('token-wrong', ring('token-wrong', 2)),
+    layer('token-you', ring('token-you-glow', 3), ring('token-you-ring')),
+    layer('token-shadow', s('ellipse', { cx: 1, cy: 8, rx: 17, ry: 6.5, class: 'token-shadow' })),
+    s('g', { class: 'token-mini', transform: `translate(${-50 * MINI} ${-128 * MINI}) scale(${MINI})` }, ...avatarParts(v, `token-clip-${++tokenCount}`))
   );
+  body.append(figure);
   g.append(body);
-  // "GK" under a keeper. Kept outside the body so it never turns upside down.
-  g.append(s('g', { class: 'token-label', 'data-layer': 'token-label' }, s('rect', { x: -13, y: 20, width: 26, height: 15, rx: 4 }), s('text', { x: 0, y: 31.5, 'text-anchor': 'middle' }, 'GK')));
+  // A round "GK" badge by a keeper's shoulder. Kept outside the body so it
+  // stays still while she hops.
+  g.append(s('g', { class: 'token-label', 'data-layer': 'token-label' }, s('circle', { cx: 17, cy: -27, r: 9.5 }), s('text', { x: 17, y: -23.4, 'text-anchor': 'middle' }, 'GK')));
   return g;
 }
 
-// Seen from above, facing up the screen (towards their goal).
-function tokenHair(style) {
-  const f = { fill: 'var(--hair)' };
-  switch (style) {
-    case 'short':
-      return s('path', { d: 'M-8.5 0 A8.5 8.5 0 0 0 8.5 0 Q0 -3 -8.5 0 Z', ...f });
-    case 'curls':
-      return s('path', { d: 'M-10 -1 A10 10 0 0 0 10 -1 Q0 -5 -10 -1 Z', ...f });
-    case 'braids':
-      return [s('path', { d: 'M-8.5 0 A8.5 8.5 0 0 0 8.5 0 Q0 -3 -8.5 0 Z', ...f }), s('rect', { x: -7, y: 6, width: 3.5, height: 9, rx: 1.7, ...f }), s('rect', { x: 3.5, y: 6, width: 3.5, height: 9, rx: 1.7, ...f })];
-    case 'bun':
-      return [s('path', { d: 'M-8.5 0 A8.5 8.5 0 0 0 8.5 0 Q0 -3 -8.5 0 Z', ...f }), s('circle', { cx: 0, cy: 8, r: 4.5, ...f })];
-    case 'ponytail':
-      return [s('path', { d: 'M-8.5 0 A8.5 8.5 0 0 0 8.5 0 Q0 -3 -8.5 0 Z', ...f }), s('ellipse', { cx: 0, cy: 11, rx: 3, ry: 6, ...f })];
-    case 'hijab':
-      return s('path', { d: 'M-9.5 -2 A9.5 9.5 0 1 0 9.5 -2 Q0 -6 -9.5 -2 Z', ...f });
-    default:
-      return null;
-  }
-}
