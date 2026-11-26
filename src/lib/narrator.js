@@ -26,10 +26,13 @@ const synth = typeof speechSynthesis !== 'undefined' ? speechSynthesis : null;
 function pickVoice() {
   if (!synth) return;
   const voices = synth.getVoices();
+  // Only voices that run on the device. Some browsers offer online voices,
+  // which would send the words (and the child's name) to another company.
+  const local = voices.filter((v) => v.localService);
   voice =
-    voices.find((v) => v.lang === 'en-GB' && v.localService) ||
-    voices.find((v) => v.lang === 'en-GB') ||
-    voices.find((v) => v.lang && v.lang.startsWith('en-GB')) ||
+    local.find((v) => v.lang === 'en-GB') ||
+    local.find((v) => v.lang && v.lang.replace('_', '-').startsWith('en-GB')) ||
+    local.find((v) => v.lang && v.lang.startsWith('en')) ||
     null;
 }
 if (synth) {
@@ -97,8 +100,10 @@ export function unlock() {
     /* ignore */
   }
   try {
-    if (synth) {
+    if (!voice) pickVoice();
+    if (synth && voice) {
       const u = new SpeechSynthesisUtterance(' ');
+      u.voice = voice;
       u.volume = 0;
       synth.speak(u);
     }
@@ -223,15 +228,17 @@ function speak(text, mine) {
     };
     // If the phone's voice is missing or never reports that it finished,
     // move on after a generous reading time so the child is never stuck.
-    const timer = setTimeout(finish, synth ? readingTime(text) * 1.8 + 1500 : readingTime(text));
+    const timer = setTimeout(finish, synth && voice ? readingTime(text) * 1.8 + 1500 : readingTime(text));
     const watch = setInterval(() => {
       if (mine !== run) finish();
     }, 100);
     if (!synth) return;
+    if (!voice) pickVoice();
+    if (!voice) return; // no on-device voice: the caption carries the line
     try {
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-GB';
-      if (voice) u.voice = voice;
+      u.lang = voice.lang;
+      u.voice = voice;
       u.rate = 0.92;
       u.pitch = 1.05;
       u.onend = finish;

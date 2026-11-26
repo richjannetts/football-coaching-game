@@ -5,7 +5,7 @@
 
 import { team } from './content.js';
 import { runLineup } from './lineup.js';
-import { wait, motion } from '../lib/svg.js';
+import { wait, motion, hold } from '../lib/svg.js';
 
 export async function chapter2(stage) {
   const { pitch } = stage;
@@ -19,12 +19,12 @@ export async function chapter2(stage) {
     'c2.intro1': () => stage.jump(them),
     'c2.intro2': async () => {
       kicker.classList.add('is-glow');
-      await wait(motion(2500));
+      await wait(hold(2500));
       kicker.classList.remove('is-glow');
     },
     'ring.helper': async () => {
       pitch.setRing(true, true);
-      await wait(motion(3000));
+      await wait(hold(3000));
       pitch.setRing(true, false);
     },
   });
@@ -68,7 +68,7 @@ export async function chapter2(stage) {
     'c2.out': async () => {
       await pitch.moveBall({ x: 23, y: -1.6 }, 800, 'ease-out');
       pitch.svg.classList.add('flash-goal-line');
-      await wait(motion(1500));
+      await wait(hold(1500));
       pitch.svg.classList.remove('flash-goal-line');
     },
     'c2.goalKick': () => Promise.all([pitch.moveTo(keeper, { x: 21.5, y: -0.4 }, 1200), pitch.moveTo(theirR, { x: 23, y: 14 }, 1400)]),

@@ -14,6 +14,9 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
   const shape = team.shapes[shapeKey];
   let attempts = 0;
   let hintsOn = false;
+  let changed = true; // has a player moved since the last check?
+  let lastTick = -Infinity;
+  let lastFeedback = null;
 
   return new Promise((resolve) => {
     const start = () => {
@@ -32,12 +35,22 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
       },
     };
     stage.afterChange = () => {
+      changed = true;
       if (hintsOn) pitch.showHints(checkShape({ players: placement.positions(), shape, grid: team.grid }).emptySpots);
     };
     start();
     stage.play(promptIds, opening).catch(() => {});
 
     stage.onReady = () => {
+      const now = performance.now();
+      if (now - lastTick < 300) return; // a double tap counts once
+      lastTick = now;
+      // Nothing moved since the last try: say the same help again, without
+      // stepping the hints up. Hints only step up after a real new attempt.
+      if (!changed && lastFeedback) {
+        stage.say(lastFeedback);
+        return;
+      }
       const bench = placement.onBench();
       if (bench.length) {
         stage.say(['place.notAll'], {}, { remember: false });
@@ -54,6 +67,7 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
         stage.showReady(false);
         pitch.showHints([]);
         stage.onReady = null;
+        stage.setBusy(true);
         stage.afterChange = null;
         stage.jump(stage.players.map((p) => p.el));
         const roles = fit.roles.map((r) => ({ ...r, el: stage.players[r.player].el }));
@@ -63,6 +77,7 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
       }
 
       attempts++;
+      changed = false;
       // The rule comes first: it is the same for every team.
       const problem = rule.ok ? fit.problems[0] : rule.problems[0];
       problem.players.forEach((i) => stage.players[i].el.classList.add('is-wrong'));
@@ -75,9 +90,11 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
         if (attempts === 2) lines.push('hint.show');
       }
       if (attempts >= 3) {
+        lastFeedback = lines.filter((id) => id !== 'sfx.whistle');
         doOneTogether(fit, rule, lines);
       } else {
         lines.push('hint.tryAgain');
+        lastFeedback = lines.filter((id) => id !== 'sfx.whistle');
         stage.say(lines);
       }
     };
@@ -104,6 +121,7 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
       const now = checkShape({ players: rest, shape, grid: team.grid });
       pitch.showHints(now.emptySpots);
       stage.setBusy(false);
+      changed = true;
       start();
       stage.say(now.ok ? ['place.ready'] : ['hint.yourTurn', 'place.ready']);
     }

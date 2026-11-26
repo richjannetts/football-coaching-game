@@ -4,7 +4,7 @@
 
 import { team } from './content.js';
 import { runLineup } from './lineup.js';
-import { wait, motion } from '../lib/svg.js';
+import { wait, motion, hold } from '../lib/svg.js';
 
 export async function chapter1(stage) {
   const { pitch } = stage;
@@ -19,7 +19,7 @@ export async function chapter1(stage) {
     'c1.intro1': () => stage.jump(stage.players.map((p) => p.el)),
     'c1.intro2': async () => {
       pitch.showArrow({ x: 15, y: 6 }, { x: 15, y: 34 });
-      await wait(motion(2600));
+      await wait(hold(2600));
       pitch.clear('arrow');
     },
     'c1.intro3': async () => {
@@ -28,7 +28,7 @@ export async function chapter1(stage) {
     },
     'ring.helper': async () => {
       pitch.setRing(true, true);
-      await wait(motion(3000));
+      await wait(hold(3000));
       pitch.setRing(true, false);
     },
   });
@@ -54,15 +54,28 @@ export async function chapter1(stage) {
     { kind: 'shot', x: 15, y: 40.6, drawR: 30 },
   ];
   await stage.play(['c1.passAsk']);
+  stage.setBusy(false);
 
+  // Hints step up here too: after two wrong picks only the friends glow,
+  // and after three we make the short pass together.
+  let wrong = 0;
   for (;;) {
     stage.check();
-    const pick = await stage.pickTarget(targets, (t) => {
+    if (wrong >= 3) {
+      stage.setBusy(true);
+      await Promise.all([stage.play(['c1.passTogether']), pitch.moveBall(sideL, 900)]);
+      await passingMove(sideL, sideR);
+      return;
+    }
+    const choices = wrong >= 2 ? targets.filter((t) => t.kind === 'friend') : targets;
+    const pick = await stage.pickTarget(choices, (t) => {
       // Inside the tap: start the sound now.
       stage.setBusy(true);
       if (t.kind === 'friend') return stage.play(['c1.passShort'], { 'c1.passShort': () => pitch.moveBall(t, 700) });
-      if (t.kind === 'long') return stage.play(['sfx.whistle', 'c1.passLong', 'hint.tryAgain'], {}, { remember: false });
-      return stage.play(['sfx.whistle', 'c1.passShot', 'hint.tryAgain'], {}, { remember: false });
+      wrong++;
+      const next = wrong >= 3 ? [] : wrong === 2 ? ['c1.passShow'] : ['hint.tryAgain'];
+      const why = t.kind === 'long' ? 'c1.passLong' : 'c1.passShot';
+      return stage.play(['sfx.whistle', why, ...next], {}, { remember: wrong === 2 });
     });
     const t = pick.target;
     if (t.kind === 'long') {
@@ -82,14 +95,14 @@ export async function chapter1(stage) {
     await pitch.moveBall({ x: 15, y: 30.8 }, 900, 'ease-out');
     await pitch.moveTo(theirBack, { x: 15, y: 31.5 }, 300);
     stage.jump([theirBack]);
-    await wait(motion(1200));
+    await wait(hold(1200));
     await Promise.all([pitch.moveBall(pitch.centre, 700), pitch.moveTo(theirBack, { x: 15, y: 30 }, 700)]);
   }
 
   async function shot() {
     await pitch.moveBall({ x: 15, y: 40.6 }, 1000, 'ease-out');
     const cross = pitch.showCross({ x: 15, y: 40.6 });
-    await wait(motion(1800));
+    await wait(hold(1800));
     cross.remove();
     await pitch.moveBall(pitch.centre, 700);
   }
@@ -115,7 +128,7 @@ export async function chapter1(stage) {
         await pitch.moveBall({ x: flip(13.6), y: 40.9 }, 500, 'ease-in');
         stage.goalBanner(true);
         stage.jump(stage.players.map((p) => p.el));
-        await wait(motion(2200));
+        await wait(hold(2200));
         stage.goalBanner(false);
       },
     });

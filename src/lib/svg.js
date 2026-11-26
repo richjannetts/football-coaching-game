@@ -35,6 +35,10 @@ export function motion(ms) {
   return reduce ? Math.min(ms, 1) : ms;
 }
 
+// How long a picture stays on screen. Not shortened by reduced motion,
+// because the picture has to stay up while its line is spoken.
+export const hold = (ms) => ms;
+
 export function wait(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }

@@ -88,13 +88,13 @@ export function createPitch({ length, width, goalWidth, ringYards }) {
     const pad = 22;
     if (landscape) {
       root.setAttribute('transform', 'rotate(90)');
-      svg.setAttribute('viewBox', `${-(L + 70)} ${-pad} ${L + 70 + 30} ${W + pad * 2}`);
+      svg.setAttribute('viewBox', `${-(L + 70)} ${-pad} ${L + 70 + 40} ${W + pad * 2}`);
     } else {
       root.removeAttribute('transform');
-      svg.setAttribute('viewBox', `${-pad} -30 ${W + pad * 2} ${L + 100}`);
+      svg.setAttribute('viewBox', `${-pad} -40 ${W + pad * 2} ${L + 110}`);
     }
   }
-  svg.setAttribute('viewBox', `-22 -30 ${W + 44} ${L + 100}`);
+  svg.setAttribute('viewBox', `-22 -40 ${W + 44} ${L + 110}`);
   const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(layout) : null;
   ro?.observe(svg);
 

@@ -20,7 +20,7 @@ const THEIR_LOOKS = [
 
 export function createStage({ profile, onHome }) {
   const caption = h('p', { class: 'caption', 'aria-live': 'polite' });
-  const homeBtn = h('button', { class: 'icon-btn', type: 'button', 'aria-label': 'Home' }, homeIcon());
+  const homeBtn = h('button', { class: 'icon-btn home-btn', type: 'button', 'aria-label': 'Home' }, homeIcon());
   const againBtn = h('button', { class: 'icon-btn again', type: 'button', 'aria-label': 'Hear it again' }, speakerIcon());
   const readyBtn = h('button', { class: 'ready-btn is-hidden', type: 'button', 'aria-label': 'Ready' }, tickIcon());
   const pitchWrap = h('div', { class: 'pitch-wrap' });

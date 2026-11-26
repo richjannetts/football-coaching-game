@@ -13,7 +13,7 @@
   --grass-a: #2f9e4f;
   --grass-b: #36ab57;
   --edge: max(24px, env(safe-area-inset-left));
-  --edge-top: max(20px, env(safe-area-inset-top));
+  --edge-top: max(24px, env(safe-area-inset-top));
   --edge-bottom: max(24px, env(safe-area-inset-bottom));
   --edge-left: max(24px, env(safe-area-inset-left));
   --edge-right: max(24px, env(safe-area-inset-right));
@@ -530,7 +530,8 @@ h2 {
   justify-content: center;
   min-height: 96px;
 }
-.chapter.is-busy button,
+/* The Home button stays on, so a child can always leave. */
+.chapter.is-busy button:not(.home-btn),
 .chapter.is-busy .pitch {
   pointer-events: none;
 }

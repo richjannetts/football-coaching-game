@@ -67,11 +67,11 @@ function boot() {
     );
     return;
   }
-  if (!profile) return goSetup();
+  // Always start with one tap, so sound is allowed to play.
   show(
     startScreen({
       profile,
-      onStart: () => goMenu(true),
+      onStart: () => (profile ? goMenu(true) : goSetup()),
     })
   );
 }
