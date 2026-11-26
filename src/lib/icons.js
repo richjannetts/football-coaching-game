@@ -249,7 +249,8 @@ export function titleScene() {
   return svg;
 }
 
-// A "tap here" pointer that bounces above a button.
+// A "tap here" pointer: an arrow and a bubble that nudge at a button
+// from its right-hand side, so nothing above it is covered.
 export function tapHere(label = 'Tap here!') {
   const el = document.createElement('span');
   el.className = 'tap-here';
@@ -257,7 +258,14 @@ export function tapHere(label = 'Tap here!') {
   const bubble = document.createElement('span');
   bubble.className = 'tap-here-bubble';
   bubble.textContent = label;
-  const hand = s('svg', { viewBox: '0 0 40 48', class: 'tap-here-hand' }, s('path', { d: 'M15 4 a4 4 0 0 1 8 0 V24 l2 -1 a4 4 0 0 1 4 0 l1 1 a4 4 0 0 1 5 2 V34 Q35 46 22 46 H18 Q8 46 6 36 L4 28 a3.5 3.5 0 0 1 6 -3 L15 31 Z', class: 'tap-here-fill' }));
-  el.append(bubble, hand);
+  const hand = s('svg', { viewBox: '0 0 40 40', class: 'tap-here-hand' }, s('path', { d: 'M4 20 L20 5 V13 H36 V27 H20 V35 Z', class: 'tap-here-fill' }));
+  el.append(hand, bubble);
   return el;
 }
+
+// Chrome's menu button on Android: three dots in a column.
+export const menuDotsIcon = () => icon(s('circle', { cx: 24, cy: 11, r: 4, class: 'icon-fill' }), s('circle', { cx: 24, cy: 24, r: 4, class: 'icon-fill' }), s('circle', { cx: 24, cy: 37, r: 4, class: 'icon-fill' }));
+
+// A phone with a download arrow, for "Install app".
+export const installIcon = () =>
+  icon(s('rect', { x: 13, y: 5, width: 22, height: 38, rx: 4, class: 'icon-stroke' }), s('path', { d: 'M24 13 V29 M17 23 L24 30 L31 23', class: 'icon-stroke' }));

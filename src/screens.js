@@ -4,6 +4,7 @@
 import { h } from './lib/svg.js';
 import { avatarSvg } from './lib/avatar.js';
 import { missingStep } from './lib/profile.js';
+import { menuDotsIcon, installIcon } from './lib/icons.js';
 import { ballIcon, stickerSvg, bonusStickerSvg, titleLogo, titleScene, chapterPicture, lockIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
 import * as narrator from './lib/narrator.js';
 import looks from './data/looks.json';
@@ -21,24 +22,58 @@ const againButton = () =>
   h('button', { class: 'icon-btn again', type: 'button', 'aria-label': 'Hear it again', onclick: () => narrator.replay() }, speakerIcon());
 
 // ---------- Install (grown-up) ----------
-export function installScreen({ onSkip }) {
+// The steps differ by phone and browser (Rich asked for iPhone Safari,
+// iPhone Chrome and Android Chrome, 26th November 2026).
+export function installScreen({ platform, canInstall, onInstall, onSkip }) {
+  const step = (iconEl, ...text) => h('li', {}, h('span', { class: 'step-icon' }, iconEl), h('span', {}, ...text));
+  const openStep = (where) => h('li', {}, h('span', { class: 'step-icon icon-app' }, ballIcon(true)), h('span', {}, 'Then open ', h('strong', {}, 'Spots!'), ` from ${where}.`));
+  let steps;
+  let why;
+  if (platform === 'ios-safari') {
+    steps = [
+      step(shareIcon(), 'In Safari, tap the Share button.'),
+      step(plusSquareIcon(), 'Scroll down and tap ', h('strong', {}, 'Add to Home Screen'), ', then ', h('strong', {}, 'Add'), '.'),
+      openStep('your Home Screen'),
+    ];
+  } else if (platform === 'ios-other') {
+    steps = [
+      step(shareIcon(), 'Tap the Share button, at the top right next to the web address.'),
+      step(plusSquareIcon(), 'Scroll down and tap ', h('strong', {}, 'Add to Home Screen'), ', then ', h('strong', {}, 'Add'), '.'),
+      openStep('your Home Screen'),
+    ];
+  } else if (platform === 'android-chrome') {
+    steps = [
+      step(menuDotsIcon(), 'Tap the menu button, the three dots at the top right.'),
+      step(installIcon(), 'Tap ', h('strong', {}, 'Install app'), ' (on some phones it says ', h('strong', {}, 'Add to Home screen'), '), then ', h('strong', {}, 'Install'), '.'),
+      openStep('your Home Screen or app list'),
+    ];
+  } else if (platform === 'android-samsung') {
+    steps = [
+      step(menuDotsIcon(), 'Tap the menu button, the three lines at the bottom right.'),
+      step(installIcon(), 'Tap ', h('strong', {}, 'Add page to'), ', then ', h('strong', {}, 'Home screen'), '.'),
+      openStep('your Home Screen'),
+    ];
+  } else {
+    steps = [
+      step(menuDotsIcon(), 'Open your browser menu.'),
+      step(installIcon(), 'Look for ', h('strong', {}, 'Install app'), ' or ', h('strong', {}, 'Add to Home Screen'), '.'),
+      openStep('your Home Screen'),
+    ];
+  }
+  if (platform.startsWith('ios')) {
+    why = 'Why: iPhone clears saved games from websites after 7 days without use. Games on the Home Screen are kept. Progress made in the browser will not carry over to the Home Screen game.';
+  } else {
+    why = 'Why: installed, the game opens full screen, works without internet and keeps her progress on this phone.';
+  }
   return h(
     'section',
     { class: 'screen grown-up install' },
     h('h1', {}, 'Spots!'),
     h('p', { class: 'lead' }, 'Grown-ups: please add this game to your Home Screen before playing.'),
-    h(
-      'ol',
-      { class: 'install-steps' },
-      h('li', {}, h('span', { class: 'step-icon' }, shareIcon()), h('span', {}, 'In Safari, tap the Share button.')),
-      h('li', {}, h('span', { class: 'step-icon' }, plusSquareIcon()), h('span', {}, 'Scroll down and tap ', h('strong', {}, 'Add to Home Screen'), ', then ', h('strong', {}, 'Add'), '.')),
-      h('li', {}, h('span', { class: 'step-icon icon-app' }, ballIcon(true)), h('span', {}, 'Close Safari and open ', h('strong', {}, 'Spots!'), ' from your Home Screen.'))
-    ),
-    h(
-      'p',
-      { class: 'small' },
-      'Why: Safari clears saved games from websites after 7 days without use. Games on the Home Screen are kept. Progress made here in Safari will not carry over to the Home Screen game.'
-    ),
+    canInstall ? h('button', { class: 'install-btn', type: 'button', onclick: onInstall }, installIcon(), 'Install Spots!') : null,
+    canInstall ? h('p', { class: 'small' }, 'Or do it from the browser menu:') : null,
+    h('ol', { class: 'install-steps' }, ...steps),
+    h('p', { class: 'small' }, why),
     h('button', { class: 'text-btn', type: 'button', onclick: onSkip }, 'Play in the browser anyway (progress may not be kept)')
   );
 }

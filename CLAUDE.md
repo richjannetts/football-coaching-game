@@ -1,6 +1,6 @@
 # Football coaching puzzle game
 
-A story-led puzzle game that teaches 6 to 9 year old footballers where to stand and what to do at restarts. Built by Rich, a grassroots coach in England, for his under-8 girls team. Version one is for Rich and his daughter on one iPhone. Rich is learning to build with Claude Code, so explain choices in plain language.
+A story-led puzzle game that teaches 6 to 9 year old footballers where to stand and what to do at restarts. Built by Rich, a grassroots coach in England, for his under-8 girls team. Version one is for Rich and his daughter on one iPhone, and should also install on other iPhones and Android phones. Rich is learning to build with Claude Code, so explain choices in plain language.
 
 Background research is in `docs/research/`. The coaching content is in `docs/coaching-shape.md`. Read both before changing game content.
 
@@ -46,6 +46,15 @@ These come from the research. Each has caused real failures in other web apps.
 6. Use `100dvh` with a `100vh` fallback, `viewport-fit=cover` and the safe-area insets.
 7. Service worker: versioned cache, old caches deleted on activate, fixed `sw.js` name. Offer an update only between chapters.
 8. Always show a "hear it again" button. Never leave the child stuck if sound fails.
+
+## Android and Chrome
+
+Added at Rich's request, 26th November 2026, so others can play on their own phones.
+
+- The install screen picks its steps from the phone and browser (`src/lib/platform.js`): iPhone Safari, iPhone Chrome (Share, then Add to Home Screen), Android Chrome (menu, then Install app) and Samsung Internet.
+- On Android Chrome, keep the `beforeinstallprompt` event and offer a one-tap "Install Spots!" button.
+- The manifest must keep a name, 192 and 512 px icons, `start_url`, `display: standalone` and the service worker, or Chrome stops offering "Install app".
+- Voice: only voices on the device. Google's female British voices on Android are named `en-gb-x-gba`, `gbc` and `gbg`.
 
 ## Touch rules for small hands
 

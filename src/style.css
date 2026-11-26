@@ -190,6 +190,26 @@ h2 {
   max-width: 640px;
   margin: 0 auto;
 }
+.install-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #0b1a33;
+  font: 900 1.25rem var(--font);
+  box-shadow: 0 4px 0 #0b1a33;
+}
+.install-btn .icon {
+  width: 32px;
+  height: 32px;
+}
+.install-btn .icon-stroke {
+  stroke: #0b1a33;
+}
 .install-steps {
   list-style: none;
   padding: 0;
@@ -485,39 +505,40 @@ h2 {
 }
 .tap-here {
   position: absolute;
-  left: 50%;
-  bottom: 100%;
-  translate: -50% 0;
+  left: calc(100% + 2px);
+  top: 50%;
+  translate: 0 -50%;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  gap: 2px;
   pointer-events: none;
-  animation: tap-bounce 0.9s ease-in-out infinite;
+  animation: tap-nudge 0.9s ease-in-out infinite;
+  z-index: 2;
 }
 .tap-here-bubble {
   background: var(--accent);
   color: #0b1a33;
-  font: 900 16px var(--font);
-  white-space: nowrap;
-  padding: 5px 12px;
+  font: 900 15px/1.1 var(--font);
+  text-align: center;
+  width: 58px;
+  padding: 5px 4px;
   border-radius: 12px;
   box-shadow: 0 3px 0 #0b1a33;
 }
 .tap-here-hand {
-  width: 34px;
-  height: 40px;
-  transform: rotate(180deg);
-  margin-top: 2px;
+  width: 30px;
+  height: 30px;
+  flex: none;
 }
 .tap-here-fill {
-  fill: #fff;
+  fill: var(--accent);
   stroke: #0b1a33;
   stroke-width: 2.5;
   stroke-linejoin: round;
 }
-@keyframes tap-bounce {
+@keyframes tap-nudge {
   50% {
-    transform: translateY(8px);
+    transform: translateX(8px);
   }
 }
 
