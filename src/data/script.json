@@ -52,6 +52,31 @@
       "cue": "A whistle sound. Not spoken."
     },
     {
+      "id": "sfx.kick",
+      "text": "Thump!",
+      "cue": "The ball is kicked. A sound, not spoken."
+    },
+    {
+      "id": "sfx.cheer",
+      "text": "Ta-dah!",
+      "cue": "Two happy rising notes for a good line-up. Not spoken."
+    },
+    {
+      "id": "sfx.goal",
+      "text": "Ta-ta-ta-daaa!",
+      "cue": "A short goal fanfare with confetti. Not spoken."
+    },
+    {
+      "id": "sfx.sticker",
+      "text": "Twinkle!",
+      "cue": "Twinkly notes as a football sticker arrives. Not spoken."
+    },
+    {
+      "id": "sfx.chime",
+      "text": "Ding-ding!",
+      "cue": "A warm bell for a right bonus answer. Not spoken."
+    },
+    {
       "id": "c1.intro1",
       "text": "It's match day! We're the blue and yellow team.",
       "cue": "Our five players stand at the side of the pitch."

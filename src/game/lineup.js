@@ -72,8 +72,9 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
         stage.setBusy(true);
         stage.afterChange = null;
         stage.jump(stage.players.map((p) => p.el));
+        stage.confetti(pitch.svg, 40);
         const roles = fit.roles.map((r) => ({ ...r, el: stage.players[r.player].el }));
-        const spoken = stage.play([attempts ? 'good.lineupEffort' : 'good.lineup']);
+        const spoken = stage.play(['sfx.cheer', attempts ? 'good.lineupEffort' : 'good.lineup']);
         resolve({ roles, attempts, spoken });
         return;
       }
@@ -83,6 +84,7 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
       // The rule comes first: it is the same for every team.
       const problem = rule.ok ? fit.problems[0] : rule.problems[0];
       problem.players.forEach((i) => stage.players[i].el.classList.add('is-wrong'));
+      stage.shake(problem.players);
       pitch.setWhy(problem.type);
 
       const lines = ['sfx.whistle', problem.line];

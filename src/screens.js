@@ -18,6 +18,14 @@ export function cleanName(raw) {
   return first.replace(/[^\p{L}'-]/gu, '').slice(0, NAME_MAX);
 }
 
+// A quick "not yet" wobble, for a locked level.
+function shake(el) {
+  el.classList.remove('is-shaking');
+  void el.offsetWidth;
+  el.classList.add('is-shaking');
+  setTimeout(() => el.classList.remove('is-shaking'), 600);
+}
+
 const againButton = () =>
   h('button', { class: 'icon-btn again', type: 'button', 'aria-label': 'Hear it again', onclick: () => narrator.replay() }, speakerIcon());
 
@@ -250,7 +258,10 @@ export function menuScreen({ profile, progress, updateReady, onChapter, onGrownU
   const chapterBtn = (n, side, locked, done, glow) =>
     h(
       'button',
-      { class: `chapter-btn${locked ? ' is-locked' : ''}${glow ? ' is-glow' : ''}`, type: 'button', 'aria-label': `Level ${n}${locked ? ', locked' : ''}`, onclick: () => onChapter(n, locked) },
+      { class: `chapter-btn${locked ? ' is-locked' : ''}${glow ? ' is-glow' : ''}`, type: 'button', 'aria-label': `Level ${n}${locked ? ', locked' : ''}`, onclick: (e) => {
+          if (locked) shake(e.currentTarget);
+          onChapter(n, locked);
+        } },
       chapterPicture(side),
       h('span', { class: 'chapter-num' }, String(n)),
       locked ? h('span', { class: 'chapter-lock' }, lockIcon()) : null,
@@ -321,7 +332,7 @@ export function gateScreen({ onPass, onBack }) {
 }
 
 // ---------- Grown-ups area ----------
-export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWords, onToggleWords }) {
+export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWords, onToggleWords, sounds = true, onToggleSounds }) {
   const confirmBox = h(
     'div',
     { class: 'confirm is-hidden' },
@@ -338,7 +349,7 @@ export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWo
     h(
       'ul',
       { class: 'plain-list' },
-      h('li', {}, 'The game keeps a first name or nickname, the player’s look, which levels are finished and the words-on-screen setting. That is all.'),
+      h('li', {}, 'The game keeps a first name or nickname, the player’s look, which levels are finished and the two settings below. That is all.'),
       h('li', {}, 'It is stored on this device only. Nothing is sent anywhere. There are no accounts, adverts or tracking.'),
       h('li', {}, 'The game does not use the camera, microphone, location or notifications.'),
       h('li', {}, 'Spoken lines use the phone’s own voice, which runs on the device.')
@@ -349,6 +360,13 @@ export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWo
       { class: 'toggle' },
       h('input', { type: 'checkbox', checked: showWords, onchange: (e) => onToggleWords(e.target.checked) }),
       h('span', {}, 'Show the spoken words during levels. They come on by themselves if the phone has no voice.')
+    ),
+    h('h2', {}, 'Game sounds'),
+    h(
+      'label',
+      { class: 'toggle' },
+      h('input', { type: 'checkbox', checked: sounds, onchange: (e) => onToggleSounds?.(e.target.checked) }),
+      h('span', {}, 'Little sounds for taps, cheers and stickers, and a tiny buzz on Android phones. The referee’s whistle and the voice always stay on.')
     ),
     h('h2', {}, 'Player'),
     h('button', { class: 'big-btn secondary', type: 'button', onclick: onEditPlayer }, 'Change name or look'),

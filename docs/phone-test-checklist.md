@@ -53,6 +53,21 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - [ ] The voice sounds English and, ideally, female. Note the voice if not.
 - [ ] Play both levels, then turn on Airplane Mode and play again.
 
+## Game sounds and feel
+
+- [ ] Phone volume up, silent switch off. Every button gives a tiny tick when tapped.
+- [ ] Picking up a player gives a soft "pop". Putting her down gives a "tock", and she lands with a little squash.
+- [ ] Dragging a player: she floats just above your finger, and the spot she will land on grows yellow.
+- [ ] No tick, pop or tock plays while the voice is talking. The voice is never cut off by a sound.
+- [ ] A good line-up: two happy notes, confetti, then "Great work!".
+- [ ] A wrong line-up: the whistle, and the player who needs to move gives a wobble.
+- [ ] The goal: a kick sound, the net ripples, a short fanfare with confetti, then the voice says "Goal!".
+- [ ] The sticker arrives with a twinkle and confetti. A right bonus answer gets a bell and more confetti.
+- [ ] A locked level wobbles when tapped.
+- [ ] Grown-ups area: switch "Game sounds" off. The ticks, cheers and fanfare stop. The whistle and voice stay.
+- [ ] Silent switch on: note whether the game sounds still play. (They should, like the voice.)
+- [ ] Android only: a tiny buzz when picking up and putting down players.
+
 ## Turning the phone
 
 - [ ] In a level, turn the phone sideways, then back upright. The pitch turns back each time.

@@ -73,7 +73,7 @@ export async function chapter1(stage) {
     const pick = await stage.pickTarget(choices, (t) => {
       // Inside the tap: start the sound now.
       stage.setBusy(true);
-      if (t.kind === 'friend') return stage.play(['c1.passShort'], { 'c1.passShort': () => passAcross(t.role) });
+      if (t.kind === 'friend') return stage.play(['sfx.kick', 'c1.passShort'], { 'c1.passShort': () => passAcross(t.role) });
       wrong++;
       const next = wrong >= 3 ? [] : wrong === 2 ? ['c1.passShow'] : ['hint.tryAgain'];
       const why = { long: 'c1.passLong', shot: 'c1.passShot', back: 'c1.passBack' }[t.kind];
@@ -131,7 +131,9 @@ export async function chapter1(stage) {
     const flip = friend.x > 15 ? (x) => 30 - x : (x) => x; // mirror when passing right
     const [gk, back, wideA, wideB] = them;
     const nearWide = friend.x > 15 ? wideB : wideA;
-    await stage.play(['c1.move1', 'c1.move2', 'c1.goal'], {
+    // The shot, a kick sound, then the goal fanfare and confetti before the
+    // voice says "Goal!", so the celebration never talks over the words.
+    await stage.play(['c1.move1', 'c1.move2', 'sfx.kick', 'sfx.goal', 'c1.goal'], {
       'c1.move1': () =>
         Promise.all([
           pitch.moveTo(friend.el, { x: flip(9), y: 28.5 }, 1800),
@@ -143,10 +145,14 @@ export async function chapter1(stage) {
         ]),
       'c1.move2': () =>
         Promise.all([pitch.moveBall({ x: flip(19), y: 33.2 }, 700), pitch.moveTo(gk, { x: flip(16.5), y: 38.6 }, 800)]),
-      'c1.goal': async () => {
-        await pitch.moveBall({ x: flip(13.6), y: 40.9 }, 500, 'ease-in');
+      'sfx.kick': () => pitch.moveBall({ x: flip(13.6), y: 40.9 }, 500, 'ease-in'),
+      'sfx.goal': () => {
         stage.goalBanner(true);
+        stage.netShake();
+        stage.confetti(null, 70);
         stage.jump(stage.players.map((p) => p.el));
+      },
+      'c1.goal': async () => {
         await wait(hold(2200));
         stage.goalBanner(false);
       },
