@@ -4,7 +4,7 @@
 import { h } from '../lib/svg.js';
 import { createPitch } from '../lib/pitch.js';
 import { createPlacement } from '../lib/placement.js';
-import { homeIcon, speakerIcon, tickIcon, stickerSvg, bonusStickerSvg, nextIcon } from '../lib/icons.js';
+import { homeIcon, speakerIcon, tickIcon, stickerSvg, bonusStickerSvg, nextIcon, tapHere } from '../lib/icons.js';
 import { createQuiz } from './quiz.js';
 import * as narrator from '../lib/narrator.js';
 import { team, pitchSize, gridSpots, benchSpots, keeperAt } from './content.js';
@@ -207,7 +207,7 @@ export function createStage({ profile, onHome, showWords = false }) {
 
   // The end of a level: the football sticker, then the bonus question.
   // The next-level button appears once the question is answered.
-  stage.showEnd = ({ level, earned, bonus, total, nextLabel, onNext, question, onBonus }) => {
+  stage.showEnd = ({ level, earned, bonus, total, nextLabel, onNext, question, onBonus, firstTime = false }) => {
     const tally = h('div', { class: 'end-tally' });
     const drawTally = () => {
       const got = earned.filter(Boolean).length + bonus.filter(Boolean).length;
@@ -219,12 +219,17 @@ export function createStage({ profile, onHome, showWords = false }) {
     const nextBtn = onNext
       ? h('button', { class: 'icon-btn big is-glow', type: 'button', 'aria-label': nextLabel || 'Next level', onclick: () => (stage.leave(), onNext()) }, nextIcon())
       : null;
-    const buttons = h(
-      'div',
-      { class: 'end-buttons' },
-      h('button', { class: 'icon-btn big', type: 'button', 'aria-label': 'Home', onclick: () => (stage.leave(), onHome()) }, homeIcon()),
-      nextBtn
-    );
+    const homeEnd = h('button', { class: 'icon-btn big', type: 'button', 'aria-label': 'Home', onclick: () => (stage.leave(), onHome()) }, homeIcon());
+    const buttons = h('div', { class: 'end-buttons' }, homeEnd, nextBtn);
+    // The first time through, a hand points at what to tap next
+    // (Rich's daughter didn't know what to press, 26th November 2026).
+    const pointLine = firstTime ? (nextBtn ? 'end.tapNext' : 'end.tapHome') : null;
+    const point = () => {
+      if (!firstTime) return;
+      const target = nextBtn || homeEnd;
+      target.classList.add('has-pointer');
+      target.append(tapHere());
+    };
     let quiz = null;
     if (question) {
       nextBtn?.classList.add('is-hidden');
@@ -233,6 +238,7 @@ export function createStage({ profile, onHome, showWords = false }) {
         play: stage.play,
         say: stage.say,
         onShow: () => endCard.classList.add('has-quiz'),
+        thenLines: pointLine ? [pointLine] : [],
         onAnswer: (right) => {
           if (right) {
             bonus = bonus.map((b, i) => b || i === level - 1);
@@ -241,12 +247,15 @@ export function createStage({ profile, onHome, showWords = false }) {
             onBonus?.();
           }
           nextBtn?.classList.remove('is-hidden');
+          point();
         },
       });
+    } else {
+      point();
     }
     endCard.replaceChildren(h('div', { class: 'end-main' }, h('div', { class: 'end-award' }, award, tally), quiz ? quiz.el : null), buttons);
     endCard.classList.remove('is-hidden');
-    return { startQuiz: () => (quiz ? quiz.start() : Promise.resolve()) };
+    return { startQuiz: () => (quiz ? quiz.start() : pointLine ? stage.play([pointLine]) : Promise.resolve()) };
   };
 
   stage.leave = () => {

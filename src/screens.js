@@ -3,7 +3,8 @@
 
 import { h } from './lib/svg.js';
 import { avatarSvg } from './lib/avatar.js';
-import { ballIcon, stickerSvg, bonusStickerSvg, chapterPicture, lockIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
+import { missingStep } from './lib/profile.js';
+import { ballIcon, stickerSvg, bonusStickerSvg, titleLogo, titleScene, chapterPicture, lockIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
 import * as narrator from './lib/narrator.js';
 import looks from './data/looks.json';
 
@@ -62,21 +63,31 @@ export function welcomeScreen({ onAgree }) {
 
 // ---------- Start (one tap so sound can begin) ----------
 export function startScreen({ profile, onStart }) {
+  const scene = h('div', { class: 'title-art' }, titleScene());
+  if (profile) scene.append(h('div', { class: 'title-player' }, avatarSvg(profile, { size: 78, idSuffix: 'start' })));
   return h(
     'section',
     { class: 'screen start' },
-    h('div', { class: 'start-avatar' }, avatarSvg(profile, { size: 120, idSuffix: 'start' })),
-    h('button', { class: 'play-btn', type: 'button', 'aria-label': 'Play', onclick: onStart }, ballIcon(true)),
-    h('p', { class: 'small' }, 'Tap the ball to start. Turn the sound up.')
+    h('div', { class: 'title-block' }, titleLogo(), h('p', { class: 'title-sub' }, 'Football puzzles')),
+    scene,
+    h('button', { class: 'play-btn', type: 'button', 'aria-label': 'Play', onclick: onStart }, ballIcon(true), h('span', { class: 'play-label' }, 'PLAY')),
+    h('p', { class: 'small start-note' }, 'Turn the sound up.')
   );
 }
 
 // ---------- Player setup ----------
+const STEP_LINES = { name: 'setup.name', skin: 'setup.skin', hairColour: 'setup.hairColour', hair: 'setup.hair' };
 export function setupScreen({ profile, onDone }) {
-  const state = { name: profile?.name || '', skin: profile?.skin || looks.default.skin, hair: profile?.hair || looks.default.hair, hairColour: profile?.hairColour || looks.default.hairColour };
+  // A new player starts with nothing chosen. Done only works once the name,
+  // skin colour, hair colour and hair style are all chosen (Rich's choice
+  // after the first test, 26th November 2026).
+  const state = { name: profile?.name || '', skin: profile?.skin || null, hair: profile?.hair || null, hairColour: profile?.hairColour || null };
+  const shown = () => ({ name: state.name, skin: state.skin || looks.default.skin, hair: state.hair || looks.default.hair, hairColour: state.hairColour || looks.default.hairColour });
   const preview = h('div', { class: 'setup-preview' });
-  const drawPreview = () => preview.replaceChildren(avatarSvg(state, { size: 84, idSuffix: 'preview' }));
-  drawPreview();
+  const drawPreview = () => {
+    preview.replaceChildren(avatarSvg(shown(), { size: 84, idSuffix: 'preview' }));
+    doneBtn.classList.toggle('is-waiting', !!missingStep(state));
+  };
 
   const nameNote = h('p', { class: 'small name-note' }, 'First name or nickname only, please. Not a full name.');
   const nameInput = h('input', {
@@ -93,6 +104,7 @@ export function setupScreen({ profile, onDone }) {
     const cleaned = cleanName(nameInput.value);
     nameNote.classList.toggle('is-warning', /\s/.test(nameInput.value.trim()) || nameInput.value.length > NAME_MAX);
     state.name = cleaned;
+    drawPreview();
   });
 
   const nameBox = h(
@@ -107,15 +119,19 @@ export function setupScreen({ profile, onDone }) {
   const nameDone = () => {
     if (namePrompted || !cleanName(nameInput.value)) return;
     namePrompted = true;
-    narrator.say(['setup.skin']);
-    glow('setup.skin');
+    const step = missingStep(state);
+    const line = step ? STEP_LINES[step] : 'setup.done';
+    lastPrompt = line;
+    narrator.say([line]);
+    glow(line);
   };
   nameInput.addEventListener('change', nameDone);
   nameInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') nameInput.blur();
   });
 
-  const row = (key, items, render, next) =>
+  let lastPrompt = 'setup.name';
+  const row = (key, items, render) =>
     h(
       'div',
       { class: `choice-row row-${key}`, role: 'radiogroup' },
@@ -125,31 +141,46 @@ export function setupScreen({ profile, onDone }) {
           state[key] = item.id;
           b.parentElement.querySelectorAll('.choice').forEach((c) => c.setAttribute('aria-checked', String(c === b)));
           drawPreview();
-          if (next) {
-            narrator.say([next]);
-            glow(next);
+          // Move on to the next thing still to choose.
+          const step = missingStep(state);
+          const line = step ? STEP_LINES[step] : 'setup.done';
+          if (line !== lastPrompt) {
+            lastPrompt = line;
+            narrator.say([line]);
           }
+          glow(line);
         });
         return b;
       })
     );
 
   // Order: name, skin colour, hair colour, hair style (Rich's choice).
-  const skinRow = row('skin', looks.skin, (it) => h('span', { class: 'swatch', style: { background: it.colour } }), 'setup.hairColour');
-  const colourRow = row('hairColour', looks.hairColour, (it) => h('span', { class: 'swatch', style: { background: it.colour } }), 'setup.hair');
-  const hairRow = row('hair', looks.hair, (it) => avatarHead({ ...state, hair: it.id }), 'setup.done');
+  const skinRow = row('skin', looks.skin, (it) => h('span', { class: 'swatch', style: { background: it.colour } }));
+  const colourRow = row('hairColour', looks.hairColour, (it) => h('span', { class: 'swatch', style: { background: it.colour } }));
+  const hairRow = row('hair', looks.hair, (it) => avatarHead({ ...shown(), hair: it.id }));
   const doneBtn = h('button', { class: 'ready-btn', type: 'button', 'aria-label': 'Done' }, tickIcon());
+  drawPreview();
 
   function glow(lineId) {
     [nameBox, skinRow, hairRow, colourRow, doneBtn].forEach((r) => r.classList.remove('is-glow'));
     ({ 'setup.name': nameBox, 'setup.skin': skinRow, 'setup.hair': hairRow, 'setup.hairColour': colourRow, 'setup.done': doneBtn })[lineId]?.classList.add('is-glow');
   }
   // Redraw hair buttons with the chosen skin so they match.
-  skinRow.addEventListener('click', () => hairRow.querySelectorAll('.choice').forEach((b, i) => b.replaceChildren(avatarHead({ ...state, hair: looks.hair[i].id }))));
-  colourRow.addEventListener('click', () => hairRow.querySelectorAll('.choice').forEach((b, i) => b.replaceChildren(avatarHead({ ...state, hair: looks.hair[i].id }))));
+  skinRow.addEventListener('click', () => hairRow.querySelectorAll('.choice').forEach((b, i) => b.replaceChildren(avatarHead({ ...shown(), hair: looks.hair[i].id }))));
+  colourRow.addEventListener('click', () => hairRow.querySelectorAll('.choice').forEach((b, i) => b.replaceChildren(avatarHead({ ...shown(), hair: looks.hair[i].id }))));
 
   doneBtn.addEventListener('click', () => {
     state.name = cleanName(nameInput.value);
+    // Something still to choose: say what, and make it glow.
+    const step = missingStep(state);
+    if (step) {
+      const line = STEP_LINES[step];
+      lastPrompt = line;
+      narrator.say([line]);
+      glow(line);
+      if (step === 'name') nameInput.focus();
+      return;
+    }
     onDone({ ...state });
   });
 

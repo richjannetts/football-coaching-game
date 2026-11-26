@@ -15,17 +15,14 @@ export async function chapter2(stage) {
   pitch.setRing(true);
 
   stage.setBusy(true);
-  await stage.play(['c2.intro1', 'c2.intro2', 'ring.helper'], {
+  // The dotted ring was explained in level 1, so it is not repeated here
+  // (Rich's choice after the first test, 26th November 2026).
+  await stage.play(['c2.intro1', 'c2.intro2'], {
     'c2.intro1': () => stage.jump(them),
     'c2.intro2': async () => {
       kicker.classList.add('is-glow');
       await wait(hold(2500));
       kicker.classList.remove('is-glow');
-    },
-    'ring.helper': async () => {
-      pitch.setRing(true, true);
-      await wait(hold(3000));
-      pitch.setRing(true, false);
     },
   });
   stage.setBusy(false);

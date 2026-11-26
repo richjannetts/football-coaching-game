@@ -29,6 +29,18 @@ function show(el) {
   window.scrollTo(0, 0);
 }
 
+// ---- Screen size ----
+// Use the real window height, and check again after the phone turns, so the
+// game always fills the screen the right way round.
+function fitHeight() {
+  document.documentElement.style.setProperty('--app-h', `${window.innerHeight}px`);
+  window.scrollTo(0, 0);
+}
+const refit = () => [0, 150, 500].forEach((ms) => setTimeout(fitHeight, ms));
+window.addEventListener('resize', refit);
+window.addEventListener('orientationchange', refit);
+fitHeight();
+
 // ---- Offline support and updates ----
 // The service worker stores every file on first visit. A new version is only
 // offered on the menu, between chapters, never in the middle of one.
@@ -149,6 +161,7 @@ function goChapter(n) {
 }
 
 async function finishChapter(n, stage) {
+  const firstTime = !progress[`ch${n}`];
   progress = { ...progress, [`ch${n}`]: true };
   store.save('progress', progress);
   const levels = Object.keys(chapters);
@@ -158,6 +171,7 @@ async function finishChapter(n, stage) {
     bonus: levels.map((k) => !!progress[`bonus${k}`]),
     total: levels.length,
     question: quizFor(quiz, n),
+    firstTime,
     onBonus: () => {
       progress = { ...progress, [`bonus${n}`]: true };
       store.save('progress', progress);

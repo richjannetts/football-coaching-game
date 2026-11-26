@@ -106,6 +106,11 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
   svg.setAttribute('viewBox', `-22 -40 ${W + 44} ${L + 122}`);
   const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(layout) : null;
   ro?.observe(svg);
+  // iPhone can report the old size while the phone is still turning, so
+  // check again once the turn has settled.
+  const relayout = () => [0, 150, 500].forEach((ms) => setTimeout(layout, ms));
+  window.addEventListener('resize', relayout);
+  window.addEventListener('orientationchange', relayout);
 
   // Pointer position to yards, whichever way the pitch is turned.
   function eventToYards(e) {
@@ -214,6 +219,8 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
 
   function destroy() {
     ro?.disconnect();
+    window.removeEventListener('resize', relayout);
+    window.removeEventListener('orientationchange', relayout);
   }
 
   return {
