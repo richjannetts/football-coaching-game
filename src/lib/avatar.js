@@ -4,7 +4,7 @@
 // artwork can be redrawn later without touching the game code.
 
 import looks from '../data/looks.json';
-import team from '../data/team.json';
+import { kitFor } from './teamState.js';
 import { s } from './svg.js';
 
 const byId = (list, id, fallback) => list.find((x) => x.id === id) || list.find((x) => x.id === fallback);
@@ -19,7 +19,7 @@ export function lookVars(look) {
 
 function applyVars(el, look, kitName = 'us') {
   const v = lookVars(look);
-  const kit = team.kit[kitName];
+  const kit = kitFor(kitName);
   el.style.setProperty('--skin', v.skin);
   el.style.setProperty('--hair', v.hair);
   el.style.setProperty('--shirt', kit.shirt);
@@ -116,11 +116,11 @@ function headwear(style) {
 // kit: 'us' or 'them'. The keeper colours are switched on with a class.
 let tokenCount = 0;
 const MINI = 0.44; // size of the mini player against the full drawing
-export function tokenSvg(look, kit = 'us') {
+export function tokenSvg(look, kit = 'us', name = '') {
   const g = s('g', { class: `token token-${kit}` });
   const v = applyVars(g, look, kit);
-  g.style.setProperty('--keeper-shirt', team.kit.keeper.shirt);
-  g.style.setProperty('--their-keeper-shirt', team.kit.theirKeeper.shirt);
+  g.style.setProperty('--keeper-shirt', kitFor('keeper').shirt);
+  g.style.setProperty('--their-keeper-shirt', kitFor('theirKeeper').shirt);
   const body = s('g', { class: 'token-body' });
   // Everything here stays upright when the pitch turns in landscape.
   const figure = s('g', { class: 'token-figure' });
@@ -133,6 +133,17 @@ export function tokenSvg(look, kit = 'us') {
     layer('token-shadow', s('ellipse', { cx: 1, cy: 8, rx: 17, ry: 6.5, class: 'token-shadow' })),
     s('g', { class: 'token-mini', transform: `translate(${-50 * MINI} ${-128 * MINI}) scale(${MINI})` }, ...avatarParts(v, `token-clip-${++tokenCount}`))
   );
+  // Her name on a small white plate under her feet.
+  if (name) {
+    // Long names are cut short here so neighbours never overlap. The full
+    // name is on the team screen.
+    const shown = name.length > 8 ? `${name.slice(0, 7)}…` : name;
+    const size = shown.length <= 6 ? 11 : 9;
+    const w = Math.min(46, shown.length * size * 0.6 + 12);
+    figure.append(
+      s('g', { class: 'token-name', 'data-layer': 'token-name' }, s('rect', { x: -w / 2, y: 17, width: w, height: 15, rx: 7.5 }), s('text', { x: 0, y: 28.3, 'text-anchor': 'middle', 'font-size': size }, shown))
+    );
+  }
   body.append(figure);
   g.append(body);
   // A round "GK" badge by a keeper's shoulder. Kept outside the body so it

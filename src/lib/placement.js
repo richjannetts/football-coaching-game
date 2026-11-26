@@ -38,6 +38,7 @@ export function createPlacement({ pitch, players, spots, keeperAt, onChange, onE
     players.forEach((p, i) => {
       const sp = spotById.get(p.spotId);
       p.el.classList.toggle('is-selected', i === selected);
+      p.el.classList.toggle('on-bench', !!sp?.bench);
       // A marked keeper always wears the keeper top. Without one, whoever
       // stands in goal wears it.
       const inGoal = !!sp && distance(sp, keeperAt) < 0.5;

@@ -1,6 +1,7 @@
 {
   "teamName": "The Stripes",
-  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal.",
+  "opponentName": "The Rovers",
+  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal. Squad names are made-up starting names; the child can change them on her phone. theirKits are the colours she can pick for the other team; kit.them is only used if that list is missing.",
   "kit": {
     "us": {
       "shirt": "#1d4ed8",
@@ -27,6 +28,105 @@
       "socks": "#1f2937"
     }
   },
+  "defaultTheirKit": "red",
+  "theirKits": [
+    {
+      "id": "red",
+      "label": "Red",
+      "them": {
+        "shirt": "#dc2626",
+        "stripe": "#dc2626",
+        "shorts": "#ffffff",
+        "socks": "#dc2626"
+      },
+      "theirKeeper": {
+        "shirt": "#1f2937",
+        "stripe": "#1f2937",
+        "shorts": "#ffffff",
+        "socks": "#1f2937"
+      }
+    },
+    {
+      "id": "white",
+      "label": "White",
+      "them": {
+        "shirt": "#f8fafc",
+        "stripe": "#f8fafc",
+        "shorts": "#111827",
+        "socks": "#f8fafc"
+      },
+      "theirKeeper": {
+        "shirt": "#84cc16",
+        "stripe": "#84cc16",
+        "shorts": "#111827",
+        "socks": "#84cc16"
+      }
+    },
+    {
+      "id": "black",
+      "label": "Black",
+      "them": {
+        "shirt": "#1f2937",
+        "stripe": "#1f2937",
+        "shorts": "#1f2937",
+        "socks": "#1f2937"
+      },
+      "theirKeeper": {
+        "shirt": "#84cc16",
+        "stripe": "#84cc16",
+        "shorts": "#1f2937",
+        "socks": "#84cc16"
+      }
+    },
+    {
+      "id": "pink",
+      "label": "Pink",
+      "them": {
+        "shirt": "#ec4899",
+        "stripe": "#ec4899",
+        "shorts": "#ffffff",
+        "socks": "#ec4899"
+      },
+      "theirKeeper": {
+        "shirt": "#1f2937",
+        "stripe": "#1f2937",
+        "shorts": "#ffffff",
+        "socks": "#1f2937"
+      }
+    },
+    {
+      "id": "purple",
+      "label": "Purple",
+      "them": {
+        "shirt": "#7e22ce",
+        "stripe": "#7e22ce",
+        "shorts": "#ffffff",
+        "socks": "#7e22ce"
+      },
+      "theirKeeper": {
+        "shirt": "#1f2937",
+        "stripe": "#1f2937",
+        "shorts": "#ffffff",
+        "socks": "#1f2937"
+      }
+    },
+    {
+      "id": "green",
+      "label": "Green",
+      "them": {
+        "shirt": "#065f46",
+        "stripe": "#065f46",
+        "shorts": "#ffffff",
+        "socks": "#065f46"
+      },
+      "theirKeeper": {
+        "shirt": "#1f2937",
+        "stripe": "#1f2937",
+        "shorts": "#ffffff",
+        "socks": "#1f2937"
+      }
+    }
+  ],
   "grid": {
     "cols": [
       4,
@@ -61,21 +161,25 @@
       "you": true
     },
     {
+      "name": "Ace",
       "skin": "s2",
       "hair": "braids",
       "hairColour": "h1"
     },
     {
+      "name": "Dash",
       "skin": "s5",
       "hair": "bun",
       "hairColour": "h4"
     },
     {
+      "name": "Sunny",
       "skin": "s4",
       "hair": "hijab",
       "hairColour": "h1"
     },
     {
+      "name": "Sky",
       "skin": "s1",
       "hair": "ponytail",
       "hairColour": "h5",

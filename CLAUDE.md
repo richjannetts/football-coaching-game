@@ -35,6 +35,8 @@ The "Saturday morning" look (Rich's choice, 26th November 2026). Colours and fon
 - Buttons are chunky: a thick bottom edge, and they sink when pressed.
 - Two fonts, kept in `src/fonts/` with their licences: Titan One for the logo and banners, Fredoka for everything she reads. Fredoka's a and g are the shapes children learn at school.
 - Players on the pitch are mini copies of the full player, drawn by the same code in `src/lib/avatar.js`, so any look carries across. They stay upright in landscape. A keeper has a round GK badge by her shoulder.
+- Each of our players has her name on a small plate under her feet. Long names are cut short there. In landscape, names on the bench wait until a player is picked up, because the bench is a column.
+- A small scoreboard above the pitch shows both team names with a dot of each kit colour.
 - Still to build, in this order: a level path, a sticker album.
 
 ## Commands
@@ -91,7 +93,7 @@ Added at Rich's request, 26th November 2026, so others can play on their own pho
 
 ## Privacy rules
 
-- First name or nickname only, short, with a prompt not to use a full name. No other free text.
+- First name or nickname only, short, with a prompt not to use a full name. This goes for every player. The only other free text is the two team names: letters and spaces only, 16 characters at most, with a prompt to make them up (Rich asked for team names, 26th November 2026).
 - Avatar from preset options. No photos.
 - No camera, microphone, location or notification permissions.
 - No requests to any other website. Fonts, images and audio all sit inside the app. No analytics.
@@ -103,7 +105,8 @@ Added at Rich's request, 26th November 2026, so others can play on their own pho
 Keep content out of the code so it can be swapped later.
 
 - `src/data/rules/`: one file per rule set (body, season, format, age groups). Each rule has a value, source and last-checked date. A local file can extend a parent.
-- `src/data/team.json`: team name, kit colours and the coach's shapes, as spots on a grid.
+- `src/data/team.json`: the starting team name and player names (made up), kit colours, the colours she can pick for the other team, and the coach's shapes, as spots on a grid.
+- The child can change every player's name and look, both team names and the other team's colour on the "My team" screen. Her changes are saved on the phone and laid over `team.json` by `src/lib/myteam.js`. Our own kit colours are not changeable yet.
 - `src/data/script.json`: every spoken line as `{ id, text, cue }`.
 - `src/data/quiz.json`: the bonus question for each level: words on screen, the three pictures, which one is right, and the script lines it speaks.
 - `public/voices/<pack>/<id>.mp3`: one file per line. `public/voices/packs.json` names the active pack.

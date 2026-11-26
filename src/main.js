@@ -9,7 +9,8 @@ import { chapter2 } from './game/chapter2.js';
 import quiz from './data/quiz.json';
 import { quizFor } from './lib/quiz.js';
 import { detectPlatform } from './lib/platform.js';
-import { installScreen, welcomeScreen, startScreen, setupScreen, menuScreen, gateScreen, grownUpsScreen } from './screens.js';
+import { installScreen, welcomeScreen, startScreen, setupScreen, menuScreen, teamScreen, gateScreen, grownUpsScreen } from './screens.js';
+import * as teams from './lib/teamState.js';
 
 
 const app = document.getElementById('app');
@@ -71,7 +72,11 @@ if ('serviceWorker' in navigator) {
 
 narrator.prepare(import.meta.env.BASE_URL);
 sfx.setEnabled(!store.load('soundsOff'));
-if (profile) narrator.setVars({ name: profile.name });
+const tellNames = () => {
+  const t = teams.myTeam(profile);
+  narrator.setVars({ name: profile?.name || '', team: t.name, them: t.theirName });
+};
+tellNames();
 if (isInstalled()) store.askToKeepData();
 
 // ---- Screens ----
@@ -117,18 +122,51 @@ function boot() {
   );
 }
 
-function goSetup() {
+function goSetup(then) {
   const el = setupScreen({
     profile,
     onDone: (next) => {
       profile = next;
       store.save('profile', profile);
-      narrator.setVars({ name: profile.name });
-      goMenu(true);
+      tellNames();
+      if (typeof then === 'function') then();
+      else goMenu(true);
     },
   });
   show(el);
   el.begin(); // called from a tap, so sound can start
+}
+
+// The team screen. Tapping a player opens the same setup screen as her own.
+function goTeam(speak = true) {
+  const el = teamScreen({
+    team: teams.myTeam(profile),
+    kits: teams.theirKits,
+    onBack: () => {
+      tellNames();
+      goMenu(false);
+    },
+    onPlayer: (i) => {
+      const p = teams.myTeam(profile).squad[i];
+      if (p.you) return goSetup(() => goTeam(false));
+      const setup = setupScreen({
+        profile: p,
+        who: 'friend',
+        kit: p.keeper ? 'keeper' : 'us',
+        onDone: (next) => {
+          teams.savePlayer(i, next);
+          goTeam(false);
+        },
+      });
+      show(setup);
+      setup.begin();
+    },
+    onTeamName: teams.saveTeamName,
+    onTheirName: teams.saveTheirName,
+    onTheirKit: teams.saveTheirKit,
+  });
+  show(el);
+  if (speak) el.begin();
 }
 
 function goMenu(speak) {
@@ -136,6 +174,8 @@ function goMenu(speak) {
     menuScreen({
       profile,
       progress,
+      team: teams.myTeam(profile),
+      onTeam: () => goTeam(true),
       updateReady,
       onChapter: (n, locked) => {
         if (locked) {
@@ -146,7 +186,7 @@ function goMenu(speak) {
       },
       onGrownUps: () => show(gateScreen({ onPass: goGrownUps, onBack: () => goMenu(false) })),
       onUpdate: () => applyUpdate(true),
-      onEditPlayer: goSetup,
+      onEditPlayer: () => goSetup(),
     })
   );
   onMenu = true;
@@ -158,7 +198,7 @@ function goGrownUps() {
     grownUpsScreen({
       version: VERSION,
       onBack: () => goMenu(false),
-      onEditPlayer: goSetup,
+      onEditPlayer: () => goSetup(),
       showWords: !!store.load('showWords'),
       onToggleWords: (on) => store.save('showWords', on),
       sounds: sfx.isEnabled(),
@@ -169,6 +209,7 @@ function goGrownUps() {
       onDelete: () => {
         narrator.stop();
         store.deleteEverything();
+        teams.forgetTeam();
         profile = null;
         progress = {};
         location.reload();

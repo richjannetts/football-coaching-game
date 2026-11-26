@@ -81,8 +81,9 @@ export function lineText(id) {
 
 function fill(text) {
   const name = (vars.name || '').trim();
-  if (!name) return text.replace(/,?\s*\{name\}/g, '');
-  return text.replace(/\{name\}/g, name);
+  const out = text.replace(/\{team\}/g, vars.team || 'our team').replace(/\{them\}/g, vars.them || 'the other team');
+  if (!name) return out.replace(/,?\s*\{name\}/g, '');
+  return out.replace(/\{name\}/g, name);
 }
 
 // Load the voice pack list and turn each recorded file into a Blob URL now,

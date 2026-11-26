@@ -10,6 +10,7 @@ import * as narrator from '../lib/narrator.js';
 import * as sfx from '../lib/sfx.js';
 import { burst, burstFrom } from '../lib/confetti.js';
 import { team, pitchSize, gridSpots, benchSpots, keeperAt } from './content.js';
+import { myTeam } from '../lib/teamState.js';
 
 export const ABORT = Symbol('left the chapter');
 
@@ -33,10 +34,20 @@ export function createStage({ profile, onHome, showWords = false }) {
   const endCard = h('div', { class: 'end-card is-hidden', role: 'dialog', 'aria-label': 'Level finished' });
   const goalBanner = h('div', { class: 'goal-banner is-hidden', 'aria-hidden': 'true' }, 'GOAL!');
 
+  // Who is playing: both team names with a dot of each kit colour.
+  const mine = myTeam(profile);
+  const scoreboard = h(
+    'div',
+    { class: 'scoreboard', 'aria-label': `${mine.name} against ${mine.theirName}` },
+    h('span', { class: 'scoreboard-side' }, h('span', { class: 'kit-dot', style: { background: mine.kit.us.shirt, borderColor: mine.kit.us.stripe } }), h('span', { class: 'scoreboard-name' }, mine.name)),
+    h('span', { class: 'scoreboard-v' }, 'v'),
+    h('span', { class: 'scoreboard-side' }, h('span', { class: 'scoreboard-name' }, mine.theirName), h('span', { class: 'kit-dot', style: { background: mine.kit.them.shirt } }))
+  );
+
   const el = h(
     'section',
     { class: 'screen chapter' },
-    h('header', { class: 'chapter-top' }, caption),
+    h('header', { class: 'chapter-top' }, scoreboard, caption),
     pitchWrap,
     h('footer', { class: 'chapter-bottom' }, homeBtn, readyBtn, againBtn),
     goalBanner,
@@ -89,8 +100,8 @@ export function createStage({ profile, onHome, showWords = false }) {
   });
 
   // Our five players. The first one is the child's own player.
-  stage.players = team.squad.map((look, i) => {
-    const t = pitch.addPlayer(look.you ? profile : look, 'us');
+  stage.players = mine.squad.map((look, i) => {
+    const t = pitch.addPlayer(look, 'us', look.name);
     t.dataset.player = i;
     if (look.you) t.classList.add('is-you');
     return { el: t, spotId: benchSpots[i].id, keeper: !!look.keeper };

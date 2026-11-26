@@ -1,5 +1,5 @@
 {
-  "note": "Every spoken line in the game. 'text' is spoken and shown as a caption. 'cue' says what the child sees at the same time. {name} is replaced with the player's first name or nickname. To record a line, save it as public/voices/rich/<id>.mp3 and add the id to public/voices/packs.json.",
+  "note": "Every spoken line in the game. 'text' is spoken and shown as a caption. 'cue' says what the child sees at the same time. {name} is replaced with the player's first name or nickname, {team} with our team's name and {them} with the other team's name. To record a line, save it as public/voices/rich/<id>.mp3 and add the id to public/voices/packs.json.",
   "lines": [
     {
       "id": "setup.hello",
@@ -29,6 +29,26 @@
     {
       "id": "setup.done",
       "text": "Looking great, {name}! Tap the tick when you're ready.",
+      "cue": "The tick button glows."
+    },
+    {
+      "id": "team.hello",
+      "text": "This is your team! Tap a player to change her name or her look. You can name both teams, and pick a colour for the other team.",
+      "cue": "Our five players stand in a row with their names. The other team's colours are underneath."
+    },
+    {
+      "id": "setup.friendHello",
+      "text": "Let's get your team-mate ready.",
+      "cue": "Your team-mate appears in our kit."
+    },
+    {
+      "id": "setup.friendName",
+      "text": "Type her name in the white box, then choose her look. A grown-up can help.",
+      "cue": "The name box glows."
+    },
+    {
+      "id": "setup.friendDone",
+      "text": "She looks great! Tap the tick when you're ready.",
       "cue": "The tick button glows."
     },
     {
@@ -78,7 +98,7 @@
     },
     {
       "id": "c1.intro1",
-      "text": "It's match day! We're the blue and yellow team.",
+      "text": "It's match day! We're {team}, in blue and yellow.",
       "cue": "Our five players stand at the side of the pitch."
     },
     {
@@ -249,11 +269,11 @@
     {
       "id": "c2.intro1",
       "text": "We scored, so the other team restarts the game with a centre kick.",
-      "cue": "Our goal from level one is remembered. The red team lines up."
+      "cue": "Our goal from level one is remembered. The other team lines up."
     },
     {
       "id": "c2.intro2",
-      "text": "They're in red. Their kicker is on the ball.",
+      "text": "Here come {them}. Their kicker is on the ball.",
       "cue": "Their kicker glows."
     },
     {
