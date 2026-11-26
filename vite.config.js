@@ -29,8 +29,8 @@ export default defineConfig({
         scope: base,
         display: 'standalone',
         orientation: 'any',
-        background_color: '#13294b',
-        theme_color: '#13294b',
+        background_color: '#58b8ff',
+        theme_color: '#58b8ff',
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
@@ -39,7 +39,7 @@ export default defineConfig({
       },
       workbox: {
         // Store every file, including voice recordings, for offline play.
-        globPatterns: ['**/*.{js,css,html,svg,png,json,mp3,webmanifest}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,json,mp3,webmanifest,woff2}'],
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
         // Each file is stored with a fingerprint of its contents. When a new
         // version activates, files that changed or went are deleted, and
