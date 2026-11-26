@@ -29,7 +29,8 @@ Background research is in `docs/research/`. The coaching content is in `docs/coa
 - `npm install`
 - `npm run dev`
 - `npm run build`
-- `npm test`
+- `npm test` (Node's own test runner, no extra library)
+- `npm run preview`: serve the built game locally, to try it offline
 
 Keep these four working. Add a line here if a new command is introduced.
 
