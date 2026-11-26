@@ -94,3 +94,59 @@ export function stickerSvg(level, earned = true) {
   );
   return svg;
 }
+
+// A little pitch for a bonus question option. Positions are in yards,
+// with our goal at the bottom, the same way round as the big pitch.
+export function quizPicture(pic, length = 40, width = 30) {
+  const Y = (y) => length - y;
+  const svg = s('svg', { viewBox: `-1 -1 ${width + 2} ${length + 2}`, class: 'quiz-pic', 'aria-hidden': 'true' });
+  svg.append(
+    s('rect', { x: 0, y: 0, width, height: length, rx: 1.5, class: 'quiz-grass' }),
+    s('line', { x1: 0, y1: length / 2, x2: width, y2: length / 2, class: 'quiz-line' }),
+    s('rect', { x: width / 2 - 2, y: -0.8, width: 4, height: 0.8, class: 'quiz-goal' }),
+    s('rect', { x: width / 2 - 2, y: length, width: 4, height: 0.8, class: 'quiz-goal' })
+  );
+  if (pic.ring) svg.append(s('circle', { cx: pic.ball[0], cy: Y(pic.ball[1]), r: 5, class: 'quiz-ring' }));
+  (pic.them || []).forEach(([x, y]) => svg.append(s('circle', { cx: x, cy: Y(y), r: 1.6, class: 'quiz-them' })));
+  (pic.us || []).forEach(([x, y]) => svg.append(s('circle', { cx: x, cy: Y(y), r: 1.6, class: 'quiz-us' })));
+  if (pic.arrow) {
+    const [[x1, y1], [x2, y2]] = pic.arrow;
+    const a = Math.atan2(Y(y2) - Y(y1), x2 - x1);
+    const head = [0.5, -0.5].map((t) => `${(x2 - 2.6 * Math.cos(a + t)).toFixed(2)},${(Y(y2) - 2.6 * Math.sin(a + t)).toFixed(2)}`);
+    svg.append(
+      s('line', { x1, y1: Y(y1), x2: x2 - 1.2 * Math.cos(a), y2: Y(y2) - 1.2 * Math.sin(a), class: 'quiz-arrow' }),
+      s('polygon', { points: `${x2},${Y(y2)} ${head.join(' ')}`, class: 'quiz-arrow-head' })
+    );
+  }
+  if (pic.ball) svg.append(s('circle', { cx: pic.ball[0], cy: Y(pic.ball[1]), r: 0.9, class: 'quiz-ball' }));
+  return svg;
+}
+
+// A gold bonus sticker, for getting a level's bonus question right.
+export function bonusStickerSvg(level, earned = true) {
+  const svg = s('svg', { viewBox: '0 0 120 120', class: `sticker bonus${earned ? '' : ' is-empty'}`, 'aria-hidden': 'true' });
+  const star = (cx, cy, r, inner) => {
+    const p = [];
+    for (let i = 0; i < 10; i++) {
+      const rr = i % 2 ? r * inner : r;
+      const a = (Math.PI * 2 * i) / 10 - Math.PI / 2;
+      p.push(`${(cx + rr * Math.cos(a)).toFixed(1)},${(cy + rr * Math.sin(a)).toFixed(1)}`);
+    }
+    return p.join(' ');
+  };
+  if (!earned) {
+    svg.append(s('polygon', { points: star(60, 62, 52, 0.5), class: 'sticker-slot' }), s('text', { x: 60, y: 76, 'text-anchor': 'middle', class: 'sticker-slot-text' }, '?'));
+    return svg;
+  }
+  svg.append(
+    s('polygon', { points: star(60, 62, 56, 0.52), fill: '#fff', class: 'sticker-edge' }),
+    s('polygon', { points: star(60, 62, 50, 0.52), fill: '#f59e0b' }),
+    s('polygon', { points: star(60, 62, 38, 0.52), fill: '#fde047' }),
+    s('circle', { cx: 60, cy: 64, r: 15, fill: '#7c3aed', stroke: '#fff', 'stroke-width': 3 }),
+    s('text', { x: 60, y: 71, 'text-anchor': 'middle', class: 'sticker-num' }, String(level)),
+    s('path', { d: 'M38 34 Q60 18 82 34 Q60 28 42 42 Z', class: 'sticker-shine' }),
+    s('rect', { x: 26, y: 92, width: 68, height: 20, rx: 6, fill: '#7c3aed', stroke: '#fff', 'stroke-width': 3 }),
+    s('text', { x: 60, y: 107, 'text-anchor': 'middle', class: 'sticker-bonus-text' }, 'BONUS')
+  );
+  return svg;
+}

@@ -1,0 +1,90 @@
+{
+  "note": "One bonus question at the end of each level. The spoken words are in script.json (the ids below). 'question' and each 'label' are the big words shown on screen, which are always on for the quiz (Rich's choice, 26th November 2026). Each option is a little pitch picture. Positions are in yards: x from the left touchline (0 to 30), y from our goal line (0 to 40). 'answer' is which option is right, counting from 0. 'teaches' says whether the question checks the rule or our team's shape, so the wording stays clear.",
+  "levels": {
+    "1": {
+      "teaches": "inOurTeam",
+      "question": "Where does our first pass go?",
+      "bonus": "quiz.bonus",
+      "ask": "quiz.c1.ask",
+      "right": "quiz.c1.right",
+      "reveal": "quiz.c1.reveal",
+      "answer": 1,
+      "options": [
+        {
+          "label": "Long kick",
+          "line": "quiz.c1.a",
+          "pass": "long",
+          "picture": {
+            "us": [[15, 20], [9, 18.5], [21, 18.5], [15, 7.5], [15, 1.5]],
+            "them": [[15, 38.5]],
+            "ball": [15, 20],
+            "arrow": [[15, 20], [15, 36]]
+          }
+        },
+        {
+          "label": "Pass across",
+          "line": "quiz.c1.b",
+          "pass": "across",
+          "picture": {
+            "us": [[15, 20], [9, 18.5], [21, 18.5], [15, 7.5], [15, 1.5]],
+            "them": [[15, 38.5]],
+            "ball": [15, 20],
+            "arrow": [[15, 20], [10.5, 18.9]]
+          }
+        },
+        {
+          "label": "Pass back",
+          "line": "quiz.c1.c",
+          "pass": "back",
+          "picture": {
+            "us": [[15, 20], [9, 18.5], [21, 18.5], [15, 7.5], [15, 1.5]],
+            "them": [[15, 38.5]],
+            "ball": [15, 20],
+            "arrow": [[15, 20], [15, 9]]
+          }
+        }
+      ]
+    },
+    "2": {
+      "teaches": "theRuleSays",
+      "question": "Their centre kick. Where do we stand?",
+      "bonus": "quiz.bonus",
+      "ask": "quiz.c2.ask",
+      "right": "quiz.c2.right",
+      "reveal": "quiz.c2.reveal",
+      "answer": 2,
+      "options": [
+        {
+          "label": "Next to the ball",
+          "line": "quiz.c2.a",
+          "picture": {
+            "us": [[15, 17.5], [9, 18.5], [21, 18.5], [15, 7.5], [15, 1.5]],
+            "them": [[15, 20], [15, 38.5]],
+            "ball": [15, 20],
+            "ring": true
+          }
+        },
+        {
+          "label": "In their half",
+          "line": "quiz.c2.b",
+          "picture": {
+            "us": [[15, 14], [9, 26], [21, 18.5], [15, 7.5], [15, 1.5]],
+            "them": [[15, 20], [15, 38.5]],
+            "ball": [15, 20],
+            "ring": true
+          }
+        },
+        {
+          "label": "Our half, away from the ball",
+          "line": "quiz.c2.c",
+          "picture": {
+            "us": [[15, 14], [9, 18.5], [21, 18.5], [15, 7.5], [15, 1.5]],
+            "them": [[15, 20], [15, 38.5]],
+            "ball": [15, 20],
+            "ring": true
+          }
+        }
+      ]
+    }
+  }
+}

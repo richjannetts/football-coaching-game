@@ -5,6 +5,8 @@ import * as narrator from './lib/narrator.js';
 import { createStage, ABORT } from './game/stage.js';
 import { chapter1 } from './game/chapter1.js';
 import { chapter2 } from './game/chapter2.js';
+import quiz from './data/quiz.json';
+import { quizFor } from './lib/quiz.js';
 import { installScreen, welcomeScreen, startScreen, setupScreen, menuScreen, gateScreen, grownUpsScreen } from './screens.js';
 
 
@@ -149,17 +151,23 @@ function goChapter(n) {
 async function finishChapter(n, stage) {
   progress = { ...progress, [`ch${n}`]: true };
   store.save('progress', progress);
-  const total = Object.keys(chapters).length;
-  const earned = Object.keys(chapters).map((k) => !!progress[`ch${k}`]);
-  stage.setBusy(false);
-  stage.showReady(false);
-  stage.showEnd({
+  const levels = Object.keys(chapters);
+  const end = stage.showEnd({
     level: n,
-    earned,
-    total,
+    earned: levels.map((k) => !!progress[`ch${k}`]),
+    bonus: levels.map((k) => !!progress[`bonus${k}`]),
+    total: levels.length,
+    question: quizFor(quiz, n),
+    onBonus: () => {
+      progress = { ...progress, [`bonus${n}`]: true };
+      store.save('progress', progress);
+    },
     onNext: chapters[n + 1] ? () => goChapter(n + 1) : null,
   });
+  stage.setBusy(false);
+  stage.showReady(false);
   await stage.play([`c${n}.end`]).catch(() => {});
+  await end.startQuiz().catch(() => {});
 }
 
 boot();

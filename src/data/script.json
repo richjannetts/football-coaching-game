@@ -265,6 +265,71 @@
       "id": "c2.end",
       "text": "You've earned a football sticker for level two. Brilliant defending, {name}!",
       "cue": "A shiny football sticker pops into your sticker book."
+    },
+    {
+      "id": "quiz.bonus",
+      "text": "Bonus question! Get it right for a bonus sticker.",
+      "cue": "The level sticker gets smaller and three pictures appear."
+    },
+    {
+      "id": "quiz.c1.ask",
+      "text": "At our centre kick, where does our first pass go? Tap the right picture.",
+      "cue": "Three little pitches. Each one shows our team and an arrow from the ball."
+    },
+    {
+      "id": "quiz.c1.a",
+      "text": "A long kick at their goal?",
+      "cue": "The first picture glows."
+    },
+    {
+      "id": "quiz.c1.b",
+      "text": "A pass across to a friend?",
+      "cue": "The middle picture glows."
+    },
+    {
+      "id": "quiz.c1.c",
+      "text": "A pass back towards our goal?",
+      "cue": "The last picture glows."
+    },
+    {
+      "id": "quiz.c1.right",
+      "text": "That's right! In our team, the first pass goes across to a friend. Here's your bonus sticker, {name}!",
+      "cue": "A gold bonus sticker spins into your sticker book."
+    },
+    {
+      "id": "quiz.c1.reveal",
+      "text": "Good try. In our team, the first pass goes across to a friend beside you, like this one. You can try for the bonus sticker again next time you play level one.",
+      "cue": "The pass across glows. The other two pictures fade."
+    },
+    {
+      "id": "quiz.c2.ask",
+      "text": "When the other team takes the centre kick, where do we stand? Tap the right picture.",
+      "cue": "Three little pitches. Their kicker is on the ball, with the helper ring round it."
+    },
+    {
+      "id": "quiz.c2.a",
+      "text": "One of us right next to the ball?",
+      "cue": "The first picture glows."
+    },
+    {
+      "id": "quiz.c2.b",
+      "text": "One of us in their half?",
+      "cue": "The middle picture glows."
+    },
+    {
+      "id": "quiz.c2.c",
+      "text": "All of us in our own half, away from the ball?",
+      "cue": "The last picture glows."
+    },
+    {
+      "id": "quiz.c2.right",
+      "text": "That's right! The rule says we all stay in our own half, about five big grown-up steps from the ball. Here's your bonus sticker, {name}!",
+      "cue": "A gold bonus sticker spins into your sticker book."
+    },
+    {
+      "id": "quiz.c2.reveal",
+      "text": "Good try. The rule says we all stay in our own half, about five big grown-up steps from the ball, like this one. You can try for the bonus sticker again next time you play level two.",
+      "cue": "The right picture glows. The other two pictures fade."
     }
   ]
 }

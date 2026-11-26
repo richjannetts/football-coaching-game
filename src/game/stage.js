@@ -4,7 +4,8 @@
 import { h } from '../lib/svg.js';
 import { createPitch } from '../lib/pitch.js';
 import { createPlacement } from '../lib/placement.js';
-import { homeIcon, speakerIcon, tickIcon, stickerSvg, nextIcon } from '../lib/icons.js';
+import { homeIcon, speakerIcon, tickIcon, stickerSvg, bonusStickerSvg, nextIcon } from '../lib/icons.js';
+import { createQuiz } from './quiz.js';
 import * as narrator from '../lib/narrator.js';
 import { team, pitchSize, gridSpots, benchSpots, keeperAt } from './content.js';
 
@@ -204,18 +205,48 @@ export function createStage({ profile, onHome, showWords = false }) {
       stage.cancelPick = () => pitch.svg.removeEventListener('pointerup', handler);
     });
 
-  stage.showEnd = ({ level, earned, total, nextLabel, onNext }) => {
-    endCard.replaceChildren(
-      h('div', { class: 'end-sticker' }, h('div', { class: 'end-rays' }), stickerSvg(level, true)),
-      h('div', { class: 'end-tally', 'aria-label': `${earned.filter(Boolean).length} of ${total} football stickers` }, earned.map((got, i) => stickerSvg(i + 1, got))),
-      h(
-        'div',
-        { class: 'end-buttons' },
-        h('button', { class: 'icon-btn big', type: 'button', 'aria-label': 'Home', onclick: () => (stage.leave(), onHome()) }, homeIcon()),
-        onNext ? h('button', { class: 'icon-btn big is-glow', type: 'button', 'aria-label': nextLabel || 'Next level', onclick: () => (stage.leave(), onNext()) }, nextIcon()) : null
-      )
+  // The end of a level: the football sticker, then the bonus question.
+  // The next-level button appears once the question is answered.
+  stage.showEnd = ({ level, earned, bonus, total, nextLabel, onNext, question, onBonus }) => {
+    const tally = h('div', { class: 'end-tally' });
+    const drawTally = () => {
+      const got = earned.filter(Boolean).length + bonus.filter(Boolean).length;
+      tally.setAttribute('aria-label', `${got} of ${total * 2} football stickers`);
+      tally.replaceChildren(...earned.flatMap((e, i) => [stickerSvg(i + 1, e), bonusStickerSvg(i + 1, bonus[i])]));
+    };
+    drawTally();
+    const award = h('div', { class: 'end-sticker' }, h('div', { class: 'end-rays' }), stickerSvg(level, true));
+    const nextBtn = onNext
+      ? h('button', { class: 'icon-btn big is-glow', type: 'button', 'aria-label': nextLabel || 'Next level', onclick: () => (stage.leave(), onNext()) }, nextIcon())
+      : null;
+    const buttons = h(
+      'div',
+      { class: 'end-buttons' },
+      h('button', { class: 'icon-btn big', type: 'button', 'aria-label': 'Home', onclick: () => (stage.leave(), onHome()) }, homeIcon()),
+      nextBtn
     );
+    let quiz = null;
+    if (question) {
+      nextBtn?.classList.add('is-hidden');
+      quiz = createQuiz({
+        question,
+        play: stage.play,
+        say: stage.say,
+        onShow: () => endCard.classList.add('has-quiz'),
+        onAnswer: (right) => {
+          if (right) {
+            bonus = bonus.map((b, i) => b || i === level - 1);
+            award.append(h('div', { class: 'end-bonus' }, bonusStickerSvg(level, true)));
+            drawTally();
+            onBonus?.();
+          }
+          nextBtn?.classList.remove('is-hidden');
+        },
+      });
+    }
+    endCard.replaceChildren(h('div', { class: 'end-main' }, h('div', { class: 'end-award' }, award, tally), quiz ? quiz.el : null), buttons);
     endCard.classList.remove('is-hidden');
+    return { startQuiz: () => (quiz ? quiz.start() : Promise.resolve()) };
   };
 
   stage.leave = () => {
