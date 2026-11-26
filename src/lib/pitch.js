@@ -147,8 +147,8 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
     return anim.finished.catch(() => {});
   }
 
-  function addPlayer(look, kitName = 'us') {
-    const t = tokenSvg(look, kitName);
+  function addPlayer(look, kitName = 'us', name = '') {
+    const t = tokenSvg(look, kitName, name);
     (kitName === 'us' ? usLayer : themLayer).append(t);
     return t;
   }

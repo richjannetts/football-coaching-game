@@ -95,3 +95,14 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - Two players standing close can still be told apart.
 - Turn the phone sideways: players stay upright and the bench players do not hide each other.
 - The GK badge is readable on both keepers.
+
+## My team
+
+- [ ] On the menu, tap the white button with five faces and the team name. The team screen opens and the voice explains it.
+- [ ] Tap a team-mate. Change her name and look, then tap the tick. She shows the new name and look on the team screen.
+- [ ] Type a new name for our team and for the other team. Numbers and symbols do not go in.
+- [ ] Tap a colour for the other team. The little player next to the colours changes kit.
+- [ ] Play a level. Each of our players has her name under her feet, the keeper has her name and the GK badge, and the other team wears the colour you chose.
+- [ ] The dark strip above the pitch shows both team names.
+- [ ] Turn the phone sideways in a level. Names on the bench hide until you pick a player up. Check that still feels all right.
+- [ ] Give one player a long name (9 letters or more). On the pitch it is cut short with three dots. Check it does not bump into her neighbour.

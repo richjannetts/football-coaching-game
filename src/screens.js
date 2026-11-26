@@ -9,14 +9,8 @@ import { ballIcon, stickerSvg, bonusStickerSvg, titleLogo, titleScene, chapterPi
 import * as narrator from './lib/narrator.js';
 import looks from './data/looks.json';
 
-export const NAME_MAX = 12;
-
-// Keep only a short first name or nickname: letters, apostrophes and
-// hyphens, one word, no more than 12 characters.
-export function cleanName(raw) {
-  const first = String(raw || '').trim().split(/\s+/)[0] || '';
-  return first.replace(/[^\p{L}'-]/gu, '').slice(0, NAME_MAX);
-}
+import { NAME_MAX, TEAM_NAME_MAX, cleanName, cleanTeamName } from './lib/myteam.js';
+export { NAME_MAX, cleanName };
 
 // A quick "not yet" wobble, for a locked level.
 function shake(el) {
@@ -119,8 +113,14 @@ export function startScreen({ profile, onStart }) {
 }
 
 // ---------- Player setup ----------
-const STEP_LINES = { name: 'setup.name', skin: 'setup.skin', hairColour: 'setup.hairColour', hair: 'setup.hair' };
-export function setupScreen({ profile, onDone }) {
+// who: 'you' for her own player, 'friend' for a team-mate. The same screen
+// does both, with its own spoken lines for a friend.
+const SETUP_LINES = {
+  you: { hello: 'setup.hello', name: 'setup.name', skin: 'setup.skin', hairColour: 'setup.hairColour', hair: 'setup.hair', done: 'setup.done' },
+  friend: { hello: 'setup.friendHello', name: 'setup.friendName', skin: 'setup.skin', hairColour: 'setup.hairColour', hair: 'setup.hair', done: 'setup.friendDone' },
+};
+export function setupScreen({ profile, onDone, who = 'you', kit = 'us' }) {
+  const STEP_LINES = SETUP_LINES[who];
   // A new player starts with nothing chosen. Done only works once the name,
   // skin colour, hair colour and hair style are all chosen (Rich's choice
   // after the first test, 26th November 2026).
@@ -128,7 +128,7 @@ export function setupScreen({ profile, onDone }) {
   const shown = () => ({ name: state.name, skin: state.skin || looks.default.skin, hair: state.hair || looks.default.hair, hairColour: state.hairColour || looks.default.hairColour });
   const preview = h('div', { class: 'setup-preview' });
   const drawPreview = () => {
-    preview.replaceChildren(avatarSvg(shown(), { size: 84, idSuffix: 'preview' }));
+    preview.replaceChildren(avatarSvg(shown(), { size: 84, idSuffix: 'preview', kit }));
     doneBtn.classList.toggle('is-waiting', !!missingStep(state));
   };
 
@@ -153,7 +153,7 @@ export function setupScreen({ profile, onDone }) {
   const nameBox = h(
     'div',
     { class: 'name-box grown-up-box' },
-    h('label', { for: 'player-name' }, 'Type your name (a grown-up can help)'),
+    h('label', { for: 'player-name' }, who === 'you' ? 'Type your name (a grown-up can help)' : 'Type this player’s name (a grown-up can help)'),
     nameInput,
     h('span', { id: 'name-help' }, nameNote)
   );
@@ -163,7 +163,7 @@ export function setupScreen({ profile, onDone }) {
     if (namePrompted || !cleanName(nameInput.value)) return;
     namePrompted = true;
     const step = missingStep(state);
-    const line = step ? STEP_LINES[step] : 'setup.done';
+    const line = STEP_LINES[step || 'done'];
     lastPrompt = line;
     narrator.say([line]);
     glow(line);
@@ -173,7 +173,7 @@ export function setupScreen({ profile, onDone }) {
     if (e.key === 'Enter') nameInput.blur();
   });
 
-  let lastPrompt = 'setup.name';
+  let lastPrompt = STEP_LINES.name;
   const row = (key, items, render) =>
     h(
       'div',
@@ -186,7 +186,7 @@ export function setupScreen({ profile, onDone }) {
           drawPreview();
           // Move on to the next thing still to choose.
           const step = missingStep(state);
-          const line = step ? STEP_LINES[step] : 'setup.done';
+          const line = STEP_LINES[step || 'done'];
           if (line !== lastPrompt) {
             lastPrompt = line;
             narrator.say([line]);
@@ -206,7 +206,8 @@ export function setupScreen({ profile, onDone }) {
 
   function glow(lineId) {
     [nameBox, skinRow, hairRow, colourRow, doneBtn].forEach((r) => r.classList.remove('is-glow'));
-    ({ 'setup.name': nameBox, 'setup.skin': skinRow, 'setup.hair': hairRow, 'setup.hairColour': colourRow, 'setup.done': doneBtn })[lineId]?.classList.add('is-glow');
+    const step = Object.keys(STEP_LINES).find((k) => k !== 'hello' && STEP_LINES[k] === lineId);
+    ({ name: nameBox, skin: skinRow, hair: hairRow, hairColour: colourRow, done: doneBtn })[step]?.classList.add('is-glow');
   }
   // Redraw hair buttons with the chosen skin so they match.
   skinRow.addEventListener('click', () => hairRow.querySelectorAll('.choice').forEach((b, i) => b.replaceChildren(avatarHead({ ...shown(), hair: looks.hair[i].id }))));
@@ -238,21 +239,85 @@ export function setupScreen({ profile, onDone }) {
     h('div', { class: 'setup-bottom' }, doneBtn)
   );
   el.begin = () => {
-    narrator.say(['setup.hello', 'setup.name']);
-    glow('setup.name');
+    // A team-mate already has a look, so only the name is asked for.
+    narrator.say([STEP_LINES.hello, STEP_LINES.name]);
+    glow(STEP_LINES.name);
   };
   return el;
 }
 
-function avatarHead(look) {
-  const svg = avatarSvg(look, { size: 56, idSuffix: `h-${look.hair}` });
+function avatarHead(look, size = 56, id = `h-${look.hair}`, kit = 'us') {
+  const svg = avatarSvg(look, { size, idSuffix: id, kit });
   svg.setAttribute('viewBox', '18 2 64 64');
-  svg.setAttribute('height', 56);
+  svg.setAttribute('height', size);
   return svg;
 }
 
+// ---------- My team ----------
+// Every player can be changed, both teams can be named and the other team
+// can be given a kit colour (Rich's choice, 26th November 2026).
+export function teamScreen({ team, kits, onBack, onPlayer, onTeamName, onTheirName, onTheirKit }) {
+  const nameField = (id, label, value, placeholder, onChange) => {
+    const input = h('input', { type: 'text', id, maxlength: TEAM_NAME_MAX, autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', value, placeholder, 'aria-label': label });
+    input.addEventListener('input', () => {
+      const cleaned = cleanTeamName(input.value);
+      if (cleaned !== input.value) input.value = cleaned;
+      onChange(cleaned);
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') input.blur();
+    });
+    return input;
+  };
+  const card = (p, i) =>
+    h(
+      'button',
+      { class: `team-player${p.you ? ' is-you' : ''}`, type: 'button', 'aria-label': `Change ${p.name || 'my player'}`, onclick: () => onPlayer(i) },
+      avatarSvg(p, { size: 50, idSuffix: `team${i}`, kit: p.keeper ? 'keeper' : 'us' }),
+      p.keeper ? h('span', { class: 'gk-badge' }, 'GK') : null,
+      h('span', { class: 'team-player-name' }, p.name || ' ')
+    );
+  const themPreview = h('div', { class: 'them-preview' });
+  const drawThem = () => themPreview.replaceChildren(avatarSvg({ skin: 's5', hair: 'short', hairColour: 'h1' }, { size: 50, idSuffix: 'them', kit: 'them' }));
+  drawThem();
+  const kitRow = h(
+    'div',
+    { class: 'choice-row row-kit', role: 'radiogroup', 'aria-label': 'The other team’s colour' },
+    kits.map((k) => {
+      const b = h('button', { class: 'choice', type: 'button', role: 'radio', 'aria-checked': String(team.theirKit === k.id), 'aria-label': k.label }, h('span', { class: 'swatch', style: { background: k.them.shirt } }));
+      b.addEventListener('click', () => {
+        kitRow.querySelectorAll('.choice').forEach((c) => c.setAttribute('aria-checked', String(c === b)));
+        onTheirKit(k.id);
+        drawThem();
+      });
+      return b;
+    })
+  );
+  const el = h(
+    'section',
+    { class: 'screen team' },
+    h('header', { class: 'menu-top' }, h('button', { class: 'icon-btn back-btn', type: 'button', 'aria-label': 'Back', onclick: onBack }, backIcon()), againButton()),
+    h(
+      'div',
+      { class: 'team-card' },
+      nameField('team-name', 'Our team’s name', team.name, 'Our team', onTeamName),
+      h('div', { class: 'team-players' }, team.squad.map(card))
+    ),
+    h('div', { class: 'team-vs' }, 'v'),
+    h(
+      'div',
+      { class: 'team-card them' },
+      nameField('their-name', 'The other team’s name', team.theirName, 'The other team', onTheirName),
+      h('div', { class: 'them-row' }, themPreview, kitRow)
+    ),
+    h('p', { class: 'small team-note' }, 'Grown-ups: first names or nicknames, and made-up team names, please. They stay on this phone.')
+  );
+  el.begin = () => narrator.say(['team.hello']);
+  return el;
+}
+
 // ---------- Menu ----------
-export function menuScreen({ profile, progress, updateReady, onChapter, onGrownUps, onUpdate, onEditPlayer }) {
+export function menuScreen({ profile, progress, team, updateReady, onChapter, onGrownUps, onUpdate, onEditPlayer, onTeam }) {
   const done1 = !!progress.ch1;
   const done2 = !!progress.ch2;
   const chapterBtn = (n, side, locked, done, glow) =>
@@ -286,6 +351,14 @@ export function menuScreen({ profile, progress, updateReady, onChapter, onGrownU
       h('button', { class: 'avatar-btn', type: 'button', 'aria-label': 'Change my player', onclick: onEditPlayer }, avatarSvg(profile, { size: 96, idSuffix: 'menu' })),
       h('div', { class: 'tally', 'aria-label': `${count} of 4 football stickers` }, stickerSvg(1, done1), bonusStickerSvg(1, bonus1), stickerSvg(2, done2), bonusStickerSvg(2, bonus2))
     ),
+    team
+      ? h(
+          'button',
+          { class: 'team-btn', type: 'button', 'aria-label': `My team: ${team.name}`, onclick: onTeam },
+          h('span', { class: 'team-btn-faces' }, team.squad.map((p, i) => avatarHead(p, 34, `tb${i}`, p.keeper ? 'keeper' : 'us'))),
+          h('span', { class: 'team-btn-name' }, team.name)
+        )
+      : null,
     h('div', { class: 'chapters' }, chapterBtn(1, 'ours', false, done1, !done1), chapterBtn(2, 'theirs', !done1, done2, done1 && !done2))
   );
 }
@@ -349,7 +422,7 @@ export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWo
     h(
       'ul',
       { class: 'plain-list' },
-      h('li', {}, 'The game keeps a first name or nickname, the player’s look, which levels are finished and the two settings below. That is all.'),
+      h('li', {}, 'The game keeps a first name or nickname and a look for each player, the two team names, the other team’s colour, which levels are finished and the two settings below. That is all.'),
       h('li', {}, 'It is stored on this device only. Nothing is sent anywhere. There are no accounts, adverts or tracking.'),
       h('li', {}, 'The game does not use the camera, microphone, location or notifications.'),
       h('li', {}, 'Spoken lines use the phone’s own voice, which runs on the device.')
