@@ -1,11 +1,12 @@
 // The screens outside the chapters: install, first-run note, start,
 // player setup, menu, grown-ups gate and grown-ups area.
 
-import { h } from './lib/svg.js';
+import { h, s, motion } from './lib/svg.js';
+import { buildPath } from './lib/path.js';
 import { avatarSvg } from './lib/avatar.js';
 import { missingStep } from './lib/profile.js';
 import { menuDotsIcon, installIcon } from './lib/icons.js';
-import { ballIcon, stickerSvg, bonusStickerSvg, titleLogo, titleScene, chapterPicture, lockIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
+import { ballIcon, bonusStickerSvg, titleLogo, titleScene, lockIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
 import * as narrator from './lib/narrator.js';
 import looks from './data/looks.json';
 
@@ -316,50 +317,100 @@ export function teamScreen({ team, kits, onBack, onPlayer, onTeamName, onTheirNa
   return el;
 }
 
-// ---------- Menu ----------
-export function menuScreen({ profile, progress, team, updateReady, onChapter, onGrownUps, onUpdate, onEditPlayer, onTeam }) {
-  const done1 = !!progress.ch1;
-  const done2 = !!progress.ch2;
-  const chapterBtn = (n, side, locked, done, glow) =>
-    h(
+// ---------- Menu: the level path ----------
+// A winding trail of levels that scrolls with her finger, so it can hold as
+// many levels as we like. Passing a level moves her player one place up.
+// Levels are grouped into matches, each starting with a flag (Rich's
+// choice, 26th November 2026). movedFrom: the level she has just passed,
+// so her player can be seen walking up from it.
+export function menuScreen({ profile, progress, team, levels, updateReady, movedFrom = null, onChapter, onSoon, onGrownUps, onUpdate, onTeam }) {
+  const path = buildPath(levels, progress);
+  const real = path.nodes.filter((n) => n.kind === 'level');
+  const count = real.filter((n) => n.state === 'done').length + real.filter((n) => n.bonus).length;
+
+  const trail = s(
+    'svg',
+    { viewBox: `0 0 ${path.width} ${path.height}`, width: path.width, height: path.height, class: 'path-trail', 'aria-hidden': 'true' },
+    s('path', { d: path.trail, class: 'trail-lip' }),
+    s('path', { d: path.trail, class: 'trail' }),
+    path.doneTrail ? s('path', { d: path.doneTrail, class: 'trail-done' }) : null,
+    s('path', { d: path.trail, class: 'trail-dots' })
+  );
+  const place = (x, y) => ({ left: `${x}px`, top: `${y}px` });
+  const nodeBtn = (n) => {
+    const locked = n.state === 'locked' || n.state === 'soon';
+    const label = n.kind === 'soon' ? 'More levels soon' : `Level ${n.level}${n.state === 'done' ? ', done' : locked ? ', locked' : ''}`;
+    const b = h(
       'button',
-      { class: `chapter-btn${locked ? ' is-locked' : ''}${glow ? ' is-glow' : ''}`, type: 'button', 'aria-label': `Level ${n}${locked ? ', locked' : ''}`, onclick: (e) => {
-          if (locked) shake(e.currentTarget);
-          onChapter(n, locked);
-        } },
-      chapterPicture(side),
-      h('span', { class: 'chapter-num' }, String(n)),
-      locked ? h('span', { class: 'chapter-lock' }, lockIcon()) : null,
-      done ? h('span', { class: 'chapter-done' }, stickerSvg(n, true)) : null
+      { class: `path-node is-${n.state}`, type: 'button', 'aria-label': label, style: place(n.x - 38, n.y - 38) },
+      n.kind === 'soon' ? lockIcon() : String(n.level),
+      n.bonus ? h('span', { class: 'node-bonus' }, bonusStickerSvg(n.level, true)) : null
     );
-  const bonus1 = !!progress.bonus1;
-  const bonus2 = !!progress.bonus2;
-  const count = [done1, bonus1, done2, bonus2].filter(Boolean).length;
+    b.addEventListener('click', () => {
+      if (locked) shake(b);
+      if (n.kind === 'soon') onSoon?.();
+      else onChapter(n.level, locked);
+    });
+    return b;
+  };
+  // A flag sits above the first level of each match, on the far side.
+  const flag = (n) => h('div', { class: `path-flag${n.kind === 'soon' ? ' is-soon' : ''}`, style: { top: `${n.y - 74}px`, [n.x > path.width / 2 ? 'left' : 'right']: '6px' } }, n.flag);
+
+  // Her player stands beside the level she is on.
+  const beside = (n) => ({ x: n.x > path.width / 2 ? n.x - 108 : n.x + 48, y: n.y - 70 });
+  const here = path.nodes[path.at];
+  const spot = beside(here);
+  const you = h('div', { class: 'path-you', style: place(spot.x, spot.y) }, h('span', { class: 'path-you-shadow' }), avatarSvg(profile, { size: 60, idSuffix: 'menu' }));
+  const fromNode = movedFrom == null ? null : path.nodes.find((n) => n.level === movedFrom);
+  if (fromNode && fromNode !== here) {
+    const was = beside(fromNode);
+    const dx = was.x - spot.x;
+    const dy = was.y - spot.y;
+    you.animate(
+      [
+        { transform: `translate(${dx}px, ${dy}px)`, offset: 0 },
+        { transform: `translate(${dx}px, ${dy}px)`, offset: 0.3 },
+        { transform: `translate(${dx / 2}px, ${dy / 2 - 34}px)`, offset: 0.65 },
+        { transform: 'translate(0, 0)', offset: 1 },
+      ],
+      { duration: motion(1500), easing: 'ease-in-out', fill: 'backwards' }
+    );
+  }
+
+  const map = h(
+    'div',
+    { class: 'path-map', style: { width: `${path.width}px`, height: `${path.height}px` } },
+    trail,
+    path.nodes.filter((n) => n.flag).map(flag),
+    [...path.nodes].reverse().map(nodeBtn),
+    you
+  );
+  const scroller = h('div', { class: 'path-scroll' }, map);
+  // Open with her own level in view, a little below the middle.
+  const showHere = () => {
+    scroller.scrollTop = Math.max(0, here.y - scroller.clientHeight * 0.6);
+  };
+  requestAnimationFrame(() => requestAnimationFrame(showHere));
+
   return h(
     'section',
     { class: 'screen menu' },
+    scroller,
+    h('div', { class: 'path-fade', 'aria-hidden': 'true' }),
     h(
       'header',
-      { class: 'menu-top' },
-      h('button', { class: 'text-btn grown-ups-btn', type: 'button', onclick: onGrownUps }, 'Grown-ups'),
+      { class: 'path-top' },
+      h(
+        'button',
+        { class: 'chip team-btn', type: 'button', 'aria-label': `My team: ${team.name}`, onclick: onTeam },
+        h('span', { class: 'chip-face' }, avatarHead(profile, 44, 'chip')),
+        h('span', { class: 'chip-name' }, profile.name)
+      ),
+      h('div', { class: 'chip chip-count', 'aria-label': `${count} of ${real.length * 2} football stickers` }, ballIcon(true), `${count} / ${real.length * 2}`),
       againButton()
     ),
     updateReady ? h('button', { class: 'update-btn', type: 'button', onclick: onUpdate }, 'Grown-ups: a new version is ready. Tap to update.') : null,
-    h(
-      'div',
-      { class: 'menu-player' },
-      h('button', { class: 'avatar-btn', type: 'button', 'aria-label': 'Change my player', onclick: onEditPlayer }, avatarSvg(profile, { size: 96, idSuffix: 'menu' })),
-      h('div', { class: 'tally', 'aria-label': `${count} of 4 football stickers` }, stickerSvg(1, done1), bonusStickerSvg(1, bonus1), stickerSvg(2, done2), bonusStickerSvg(2, bonus2))
-    ),
-    team
-      ? h(
-          'button',
-          { class: 'team-btn', type: 'button', 'aria-label': `My team: ${team.name}`, onclick: onTeam },
-          h('span', { class: 'team-btn-faces' }, team.squad.map((p, i) => avatarHead(p, 34, `tb${i}`, p.keeper ? 'keeper' : 'us'))),
-          h('span', { class: 'team-btn-name' }, team.name)
-        )
-      : null,
-    h('div', { class: 'chapters' }, chapterBtn(1, 'ours', false, done1, !done1), chapterBtn(2, 'theirs', !done1, done2, done1 && !done2))
+    h('button', { class: 'text-btn grown-ups-btn', type: 'button', onclick: onGrownUps }, 'Grown-ups')
   );
 }
 

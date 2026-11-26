@@ -106,3 +106,13 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - [ ] The dark strip above the pitch shows both team names.
 - [ ] Turn the phone sideways in a level. Names on the bench hide until you pick a player up. Check that still feels all right.
 - [ ] Give one player a long name (9 letters or more). On the pitch it is cut short with three dots. Check it does not bump into her neighbour.
+
+## Level path
+
+- [ ] The menu is a winding path. Level 1 is yellow and glows, and your player stands beside it.
+- [ ] Tap a white level. It wobbles and the voice says to play the glowing level first.
+- [ ] Tap one of the padlocks further up. The voice says more levels are coming soon.
+- [ ] Pass level 1 for the first time, answer the bonus question, then tap the arrow. You go back to the path and your player walks up to level 2. Level 1 turns green and the path behind her turns yellow.
+- [ ] Drag the path up and down with a finger. It scrolls smoothly and does not drag the whole page.
+- [ ] Tap your face at the top left. The team screen opens.
+- [ ] Turn the phone sideways on the path. The buttons stay clear of the edges and the path still scrolls.

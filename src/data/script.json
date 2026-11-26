@@ -57,14 +57,24 @@
       "cue": "The next level to play glows."
     },
     {
+      "id": "menu.moved",
+      "text": "You've moved up the path, {name}! Tap the glowing level to play.",
+      "cue": "Your player walks up the path to the next level, which glows yellow."
+    },
+    {
+      "id": "menu.soon",
+      "text": "More levels are coming soon.",
+      "cue": "The locked circle wobbles."
+    },
+    {
       "id": "menu.locked",
-      "text": "Play level one first. Then level two opens.",
-      "cue": "Level one glows."
+      "text": "Play the glowing level first. Then the next one opens.",
+      "cue": "The level to play next glows yellow."
     },
     {
       "id": "menu.allDone",
-      "text": "You've got both football stickers! You can play the levels again any time.",
-      "cue": "Two football stickers are shown."
+      "text": "You've finished every level so far! You can play them again any time.",
+      "cue": "Every level on the path is green."
     },
     {
       "id": "sfx.whistle",
@@ -378,7 +388,7 @@
     },
     {
       "id": "end.tapNext",
-      "text": "When you're ready, tap the arrow to play the next level.",
+      "text": "When you're ready, tap the arrow to move up the path.",
       "cue": "A hand points at the arrow button and says 'Tap here!'"
     },
     {
