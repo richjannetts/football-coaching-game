@@ -28,7 +28,7 @@ Why: one girl stays back to defend, and a girl either side gives two easy passes
 - Everyone on her spot in our half, at least five yards from the ball.
 - Up stands just behind halfway, in the middle, and closes down as soon as the ball moves.
 - Middles either side, further forward than Up, almost mirroring their players either side of their kicker. (Changed by Rich, 26th November 2026. Before this they were deeper than Up.)
-- Back stands just in front of our penalty box, in the middle (11 yards out in the game). Changed by Rich from a screenshot, 26th November 2026.
+- Back stands on the line of our penalty box, in the middle, at both centre kicks. This leaves space between her and the front player. (Rich, 26th November 2026.)
 - Keeper in goal, as before.
 
 ## Cue words the girls know

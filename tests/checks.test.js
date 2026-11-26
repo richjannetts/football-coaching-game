@@ -130,21 +130,21 @@ test('shape, their kick: the coach shape passes in any order', () => {
 });
 
 test('shape, their kick: front player too deep names the front player hint', () => {
-  const players = [at(2, 2), at(1, 4), at(3, 4), at(2, 2), at(2, 0)];
+  const players = [at(2, 2), at(1, 4), at(3, 4), at(2, 1), at(2, 0)];
   const result = checkShape({ players, shape: team.shapes.theirCentreKick, grid });
   assert.deepEqual(result.problems.map((p) => p.line), ['shape.c2.up']);
 });
 
 test('shape, their kick: wide players behind the front player names the wide players hint', () => {
   // The old shape (wide players deeper than the front player) is no longer ours.
-  const players = [at(2, 3), at(1, 2), at(3, 2), at(2, 2), at(2, 0)];
+  const players = [at(2, 3), at(1, 2), at(3, 2), at(2, 1), at(2, 0)];
   const result = checkShape({ players, shape: team.shapes.theirCentreKick, grid });
   assert.equal(ruleTheirs(players).ok, true);
   assert.deepEqual(result.problems.map((p) => p.line), ['shape.c2.middles']);
 });
 
 test('shape, their kick: two players on one spot area cannot both count', () => {
-  const players = [at(2, 3), at(2, 3), at(3, 4), at(2, 2), at(2, 0)];
+  const players = [at(2, 3), at(2, 3), at(3, 4), at(2, 1), at(2, 0)];
   const result = checkShape({ players, shape: team.shapes.theirCentreKick, grid });
   assert.equal(result.ok, false);
   assert.equal(result.emptySpots.length, 1);
@@ -186,4 +186,12 @@ test('shape with a marked keeper: everyone else can still fill any spot', () => 
 
 test('the squad marks exactly one keeper', () => {
   assert.equal(team.squad.filter((p) => p.keeper).length, 1);
+});
+
+test('shapes: the back player stands on the penalty box line in both levels', () => {
+  const box = ruleSet.rules['pitch.penaltyArea'].value;
+  for (const shape of Object.values(team.shapes)) {
+    const back = shape.spots.find((s) => s.role === 'back');
+    assert.equal(resolveAt(back.at, grid).y, box.depth);
+  }
 });

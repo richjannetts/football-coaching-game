@@ -7,18 +7,23 @@
       "cue": "Your player appears in our blue and yellow kit."
     },
     {
+      "id": "setup.name",
+      "text": "First, type your name in the white box. A grown-up can help.",
+      "cue": "The name box glows."
+    },
+    {
       "id": "setup.skin",
-      "text": "Tap a colour for your player's skin.",
+      "text": "Now tap a colour for your player's skin.",
       "cue": "A row of skin colour circles glows."
     },
     {
       "id": "setup.hair",
-      "text": "Now tap a hair style.",
+      "text": "And tap a hair style.",
       "cue": "A row of hair styles glows."
     },
     {
       "id": "setup.hairColour",
-      "text": "And tap a hair colour.",
+      "text": "Now tap a hair colour.",
       "cue": "A row of hair colour circles glows."
     },
     {
@@ -113,12 +118,7 @@
     },
     {
       "id": "shape.back",
-      "text": "In our team, one player stays back, between our goal and halfway, a bit nearer our goal.",
-      "cue": "The players in the wrong place have a red ring."
-    },
-    {
-      "id": "shape.c2.back",
-      "text": "In our team, our back player stands just in front of our penalty box, in the middle.",
+      "text": "In our team, our back player stands on the line of our penalty box, in the middle.",
       "cue": "The players in the wrong place have a red ring."
     },
     {
