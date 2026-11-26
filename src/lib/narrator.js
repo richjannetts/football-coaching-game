@@ -34,7 +34,10 @@ function pickVoice() {
   // Rich asked for a female voice. Voices do not say whether they are male
   // or female, so we look for the names Apple and others use for female
   // English voices, British first.
-  const female = /serena|kate|stephanie|martha|fiona|moira|karen|samantha|tessa|susan|libby|sonia|hazel|female/i;
+  // On Android, Google's voices have codes instead of names: en-gb-x-gba,
+  // gbc and gbg are the female British ones. (Google's "UK English Female"
+  // on computers is an online voice, so it is skipped above.)
+  const female = /serena|kate|stephanie|martha|fiona|moira|karen|samantha|tessa|susan|libby|sonia|hazel|female|en-gb-x-gb[acg]|en-us-x-(sfg|tpc|iob)/i;
   voice =
     local.find((v) => isGB(v) && female.test(v.name)) ||
     local.find((v) => v.lang && v.lang.startsWith('en') && female.test(v.name)) ||

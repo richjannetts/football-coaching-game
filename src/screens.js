@@ -3,7 +3,9 @@
 
 import { h } from './lib/svg.js';
 import { avatarSvg } from './lib/avatar.js';
-import { ballIcon, stickerSvg, bonusStickerSvg, chapterPicture, lockIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
+import { missingStep } from './lib/profile.js';
+import { menuDotsIcon, installIcon } from './lib/icons.js';
+import { ballIcon, stickerSvg, bonusStickerSvg, titleLogo, titleScene, chapterPicture, lockIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
 import * as narrator from './lib/narrator.js';
 import looks from './data/looks.json';
 
@@ -20,24 +22,58 @@ const againButton = () =>
   h('button', { class: 'icon-btn again', type: 'button', 'aria-label': 'Hear it again', onclick: () => narrator.replay() }, speakerIcon());
 
 // ---------- Install (grown-up) ----------
-export function installScreen({ onSkip }) {
+// The steps differ by phone and browser (Rich asked for iPhone Safari,
+// iPhone Chrome and Android Chrome, 26th November 2026).
+export function installScreen({ platform, canInstall, onInstall, onSkip }) {
+  const step = (iconEl, ...text) => h('li', {}, h('span', { class: 'step-icon' }, iconEl), h('span', {}, ...text));
+  const openStep = (where) => h('li', {}, h('span', { class: 'step-icon icon-app' }, ballIcon(true)), h('span', {}, 'Then open ', h('strong', {}, 'Spots!'), ` from ${where}.`));
+  let steps;
+  let why;
+  if (platform === 'ios-safari') {
+    steps = [
+      step(shareIcon(), 'In Safari, tap the Share button.'),
+      step(plusSquareIcon(), 'Scroll down and tap ', h('strong', {}, 'Add to Home Screen'), ', then ', h('strong', {}, 'Add'), '.'),
+      openStep('your Home Screen'),
+    ];
+  } else if (platform === 'ios-other') {
+    steps = [
+      step(shareIcon(), 'Tap the Share button, at the top right next to the web address.'),
+      step(plusSquareIcon(), 'Scroll down and tap ', h('strong', {}, 'Add to Home Screen'), ', then ', h('strong', {}, 'Add'), '.'),
+      openStep('your Home Screen'),
+    ];
+  } else if (platform === 'android-chrome') {
+    steps = [
+      step(menuDotsIcon(), 'Tap the menu button, the three dots at the top right.'),
+      step(installIcon(), 'Tap ', h('strong', {}, 'Install app'), ' (on some phones it says ', h('strong', {}, 'Add to Home screen'), '), then ', h('strong', {}, 'Install'), '.'),
+      openStep('your Home Screen or app list'),
+    ];
+  } else if (platform === 'android-samsung') {
+    steps = [
+      step(menuDotsIcon(), 'Tap the menu button, the three lines at the bottom right.'),
+      step(installIcon(), 'Tap ', h('strong', {}, 'Add page to'), ', then ', h('strong', {}, 'Home screen'), '.'),
+      openStep('your Home Screen'),
+    ];
+  } else {
+    steps = [
+      step(menuDotsIcon(), 'Open your browser menu.'),
+      step(installIcon(), 'Look for ', h('strong', {}, 'Install app'), ' or ', h('strong', {}, 'Add to Home Screen'), '.'),
+      openStep('your Home Screen'),
+    ];
+  }
+  if (platform.startsWith('ios')) {
+    why = 'Why: iPhone clears saved games from websites after 7 days without use. Games on the Home Screen are kept. Progress made in the browser will not carry over to the Home Screen game.';
+  } else {
+    why = 'Why: installed, the game opens full screen, works without internet and keeps her progress on this phone.';
+  }
   return h(
     'section',
     { class: 'screen grown-up install' },
     h('h1', {}, 'Spots!'),
     h('p', { class: 'lead' }, 'Grown-ups: please add this game to your Home Screen before playing.'),
-    h(
-      'ol',
-      { class: 'install-steps' },
-      h('li', {}, h('span', { class: 'step-icon' }, shareIcon()), h('span', {}, 'In Safari, tap the Share button.')),
-      h('li', {}, h('span', { class: 'step-icon' }, plusSquareIcon()), h('span', {}, 'Scroll down and tap ', h('strong', {}, 'Add to Home Screen'), ', then ', h('strong', {}, 'Add'), '.')),
-      h('li', {}, h('span', { class: 'step-icon icon-app' }, ballIcon(true)), h('span', {}, 'Close Safari and open ', h('strong', {}, 'Spots!'), ' from your Home Screen.'))
-    ),
-    h(
-      'p',
-      { class: 'small' },
-      'Why: Safari clears saved games from websites after 7 days without use. Games on the Home Screen are kept. Progress made here in Safari will not carry over to the Home Screen game.'
-    ),
+    canInstall ? h('button', { class: 'install-btn', type: 'button', onclick: onInstall }, installIcon(), 'Install Spots!') : null,
+    canInstall ? h('p', { class: 'small' }, 'Or do it from the browser menu:') : null,
+    h('ol', { class: 'install-steps' }, ...steps),
+    h('p', { class: 'small' }, why),
     h('button', { class: 'text-btn', type: 'button', onclick: onSkip }, 'Play in the browser anyway (progress may not be kept)')
   );
 }
@@ -62,21 +98,31 @@ export function welcomeScreen({ onAgree }) {
 
 // ---------- Start (one tap so sound can begin) ----------
 export function startScreen({ profile, onStart }) {
+  const scene = h('div', { class: 'title-art' }, titleScene());
+  if (profile) scene.append(h('div', { class: 'title-player' }, avatarSvg(profile, { size: 78, idSuffix: 'start' })));
   return h(
     'section',
     { class: 'screen start' },
-    h('div', { class: 'start-avatar' }, avatarSvg(profile, { size: 120, idSuffix: 'start' })),
-    h('button', { class: 'play-btn', type: 'button', 'aria-label': 'Play', onclick: onStart }, ballIcon(true)),
-    h('p', { class: 'small' }, 'Tap the ball to start. Turn the sound up.')
+    h('div', { class: 'title-block' }, titleLogo(), h('p', { class: 'title-sub' }, 'Football puzzles')),
+    scene,
+    h('button', { class: 'play-btn', type: 'button', 'aria-label': 'Play', onclick: onStart }, ballIcon(true), h('span', { class: 'play-label' }, 'PLAY')),
+    h('p', { class: 'small start-note' }, 'Turn the sound up.')
   );
 }
 
 // ---------- Player setup ----------
+const STEP_LINES = { name: 'setup.name', skin: 'setup.skin', hairColour: 'setup.hairColour', hair: 'setup.hair' };
 export function setupScreen({ profile, onDone }) {
-  const state = { name: profile?.name || '', skin: profile?.skin || looks.default.skin, hair: profile?.hair || looks.default.hair, hairColour: profile?.hairColour || looks.default.hairColour };
+  // A new player starts with nothing chosen. Done only works once the name,
+  // skin colour, hair colour and hair style are all chosen (Rich's choice
+  // after the first test, 26th November 2026).
+  const state = { name: profile?.name || '', skin: profile?.skin || null, hair: profile?.hair || null, hairColour: profile?.hairColour || null };
+  const shown = () => ({ name: state.name, skin: state.skin || looks.default.skin, hair: state.hair || looks.default.hair, hairColour: state.hairColour || looks.default.hairColour });
   const preview = h('div', { class: 'setup-preview' });
-  const drawPreview = () => preview.replaceChildren(avatarSvg(state, { size: 84, idSuffix: 'preview' }));
-  drawPreview();
+  const drawPreview = () => {
+    preview.replaceChildren(avatarSvg(shown(), { size: 84, idSuffix: 'preview' }));
+    doneBtn.classList.toggle('is-waiting', !!missingStep(state));
+  };
 
   const nameNote = h('p', { class: 'small name-note' }, 'First name or nickname only, please. Not a full name.');
   const nameInput = h('input', {
@@ -93,6 +139,7 @@ export function setupScreen({ profile, onDone }) {
     const cleaned = cleanName(nameInput.value);
     nameNote.classList.toggle('is-warning', /\s/.test(nameInput.value.trim()) || nameInput.value.length > NAME_MAX);
     state.name = cleaned;
+    drawPreview();
   });
 
   const nameBox = h(
@@ -107,15 +154,19 @@ export function setupScreen({ profile, onDone }) {
   const nameDone = () => {
     if (namePrompted || !cleanName(nameInput.value)) return;
     namePrompted = true;
-    narrator.say(['setup.skin']);
-    glow('setup.skin');
+    const step = missingStep(state);
+    const line = step ? STEP_LINES[step] : 'setup.done';
+    lastPrompt = line;
+    narrator.say([line]);
+    glow(line);
   };
   nameInput.addEventListener('change', nameDone);
   nameInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') nameInput.blur();
   });
 
-  const row = (key, items, render, next) =>
+  let lastPrompt = 'setup.name';
+  const row = (key, items, render) =>
     h(
       'div',
       { class: `choice-row row-${key}`, role: 'radiogroup' },
@@ -125,31 +176,46 @@ export function setupScreen({ profile, onDone }) {
           state[key] = item.id;
           b.parentElement.querySelectorAll('.choice').forEach((c) => c.setAttribute('aria-checked', String(c === b)));
           drawPreview();
-          if (next) {
-            narrator.say([next]);
-            glow(next);
+          // Move on to the next thing still to choose.
+          const step = missingStep(state);
+          const line = step ? STEP_LINES[step] : 'setup.done';
+          if (line !== lastPrompt) {
+            lastPrompt = line;
+            narrator.say([line]);
           }
+          glow(line);
         });
         return b;
       })
     );
 
   // Order: name, skin colour, hair colour, hair style (Rich's choice).
-  const skinRow = row('skin', looks.skin, (it) => h('span', { class: 'swatch', style: { background: it.colour } }), 'setup.hairColour');
-  const colourRow = row('hairColour', looks.hairColour, (it) => h('span', { class: 'swatch', style: { background: it.colour } }), 'setup.hair');
-  const hairRow = row('hair', looks.hair, (it) => avatarHead({ ...state, hair: it.id }), 'setup.done');
+  const skinRow = row('skin', looks.skin, (it) => h('span', { class: 'swatch', style: { background: it.colour } }));
+  const colourRow = row('hairColour', looks.hairColour, (it) => h('span', { class: 'swatch', style: { background: it.colour } }));
+  const hairRow = row('hair', looks.hair, (it) => avatarHead({ ...shown(), hair: it.id }));
   const doneBtn = h('button', { class: 'ready-btn', type: 'button', 'aria-label': 'Done' }, tickIcon());
+  drawPreview();
 
   function glow(lineId) {
     [nameBox, skinRow, hairRow, colourRow, doneBtn].forEach((r) => r.classList.remove('is-glow'));
     ({ 'setup.name': nameBox, 'setup.skin': skinRow, 'setup.hair': hairRow, 'setup.hairColour': colourRow, 'setup.done': doneBtn })[lineId]?.classList.add('is-glow');
   }
   // Redraw hair buttons with the chosen skin so they match.
-  skinRow.addEventListener('click', () => hairRow.querySelectorAll('.choice').forEach((b, i) => b.replaceChildren(avatarHead({ ...state, hair: looks.hair[i].id }))));
-  colourRow.addEventListener('click', () => hairRow.querySelectorAll('.choice').forEach((b, i) => b.replaceChildren(avatarHead({ ...state, hair: looks.hair[i].id }))));
+  skinRow.addEventListener('click', () => hairRow.querySelectorAll('.choice').forEach((b, i) => b.replaceChildren(avatarHead({ ...shown(), hair: looks.hair[i].id }))));
+  colourRow.addEventListener('click', () => hairRow.querySelectorAll('.choice').forEach((b, i) => b.replaceChildren(avatarHead({ ...shown(), hair: looks.hair[i].id }))));
 
   doneBtn.addEventListener('click', () => {
     state.name = cleanName(nameInput.value);
+    // Something still to choose: say what, and make it glow.
+    const step = missingStep(state);
+    if (step) {
+      const line = STEP_LINES[step];
+      lastPrompt = line;
+      narrator.say([line]);
+      glow(line);
+      if (step === 'name') nameInput.focus();
+      return;
+    }
     onDone({ ...state });
   });
 

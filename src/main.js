@@ -7,6 +7,7 @@ import { chapter1 } from './game/chapter1.js';
 import { chapter2 } from './game/chapter2.js';
 import quiz from './data/quiz.json';
 import { quizFor } from './lib/quiz.js';
+import { detectPlatform } from './lib/platform.js';
 import { installScreen, welcomeScreen, startScreen, setupScreen, menuScreen, gateScreen, grownUpsScreen } from './screens.js';
 
 
@@ -23,11 +24,37 @@ let applyUpdate = () => {};
 
 const isInstalled = () => globalThis.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone === true;
 
+const platform = detectPlatform(navigator.userAgent, navigator.maxTouchPoints || 0);
+
+// Android Chrome offers its own install box. Keep hold of it so the install
+// screen can show a one-tap "Install Spots!" button.
+let installPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  if (app.querySelector('.install')) boot();
+});
+window.addEventListener('appinstalled', () => {
+  installPrompt = null;
+});
+
 function show(el) {
   onMenu = false;
   app.replaceChildren(el);
   window.scrollTo(0, 0);
 }
+
+// ---- Screen size ----
+// Use the real window height, and check again after the phone turns, so the
+// game always fills the screen the right way round.
+function fitHeight() {
+  document.documentElement.style.setProperty('--app-h', `${window.innerHeight}px`);
+  window.scrollTo(0, 0);
+}
+const refit = () => [0, 150, 500].forEach((ms) => setTimeout(fitHeight, ms));
+window.addEventListener('resize', refit);
+window.addEventListener('orientationchange', refit);
+fitHeight();
 
 // ---- Offline support and updates ----
 // The service worker stores every file on first visit. A new version is only
@@ -50,6 +77,16 @@ function boot() {
   if (!isInstalled() && !skippedInstall) {
     show(
       installScreen({
+        platform,
+        canInstall: !!installPrompt,
+        onInstall: async () => {
+          const prompt = installPrompt;
+          if (!prompt) return;
+          prompt.prompt();
+          const { outcome } = await prompt.userChoice;
+          if (outcome === 'accepted') installPrompt = null;
+          boot();
+        },
         onSkip: () => {
           skippedInstall = true;
           boot();
@@ -149,6 +186,7 @@ function goChapter(n) {
 }
 
 async function finishChapter(n, stage) {
+  const firstTime = !progress[`ch${n}`];
   progress = { ...progress, [`ch${n}`]: true };
   store.save('progress', progress);
   const levels = Object.keys(chapters);
@@ -158,6 +196,7 @@ async function finishChapter(n, stage) {
     bonus: levels.map((k) => !!progress[`bonus${k}`]),
     total: levels.length,
     question: quizFor(quiz, n),
+    firstTime,
     onBonus: () => {
       progress = { ...progress, [`bonus${n}`]: true };
       store.save('progress', progress);

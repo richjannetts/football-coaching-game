@@ -330,6 +330,16 @@
       "id": "quiz.c2.reveal",
       "text": "Good try. The rule says we all stay in our own half, about five big grown-up steps from the ball, like this one. You can try for the bonus sticker again next time you play level two.",
       "cue": "The right picture glows. The other two pictures fade."
+    },
+    {
+      "id": "end.tapNext",
+      "text": "When you're ready, tap the arrow to play the next level.",
+      "cue": "A hand points at the arrow button and says 'Tap here!'"
+    },
+    {
+      "id": "end.tapHome",
+      "text": "Tap the house to go back and see all your stickers.",
+      "cue": "A hand points at the house button and says 'Tap here!'"
     }
   ]
 }

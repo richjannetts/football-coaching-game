@@ -150,3 +150,122 @@ export function bonusStickerSvg(level, earned = true) {
   );
   return svg;
 }
+
+// The game's title, with a football for the O.
+export function titleLogo() {
+  const letters = ['S', 'P', 'O', 'T', 'S', '!'];
+  return s(
+    'svg',
+    { viewBox: '0 0 300 96', class: 'title-logo', role: 'img', 'aria-label': 'Spots!' },
+    ...letters.map((ch, i) => {
+      const x = 28 + i * 48;
+      const tilt = [-8, 5, 0, -5, 7, 10][i];
+      const g = s('g', { class: 'title-letter', style: `animation-delay:${i * 0.08}s`, transform: `translate(${x} 62) rotate(${tilt})` });
+      if (ch === 'O') {
+        g.append(
+          s('circle', { r: 27, class: 'title-ball' }),
+          s('path', { d: 'M0 -11 L10.5 -3.5 L6.5 9 L-6.5 9 L-10.5 -3.5 Z', class: 'title-ball-patch' }),
+          s('path', { d: 'M0 -11 V-26 M10.5 -3.5 L25 -8 M6.5 9 L15 21 M-6.5 9 L-15 21 M-10.5 -3.5 L-25 -8', class: 'title-ball-seam' })
+        );
+      } else {
+        g.append(s('text', { x: 0, y: 22, 'text-anchor': 'middle', class: 'title-text-back' }, ch), s('text', { x: 0, y: 18, 'text-anchor': 'middle', class: 'title-text' }, ch));
+      }
+      return g;
+    })
+  );
+}
+
+// A floodlit match-day scene for the title screen: stadium lights, crowd,
+// striped grass, a goal, and a ball flying into the net.
+export function titleScene() {
+  const svg = s('svg', { viewBox: '0 0 320 190', class: 'title-scene', 'aria-hidden': 'true' });
+  const defs = s(
+    'defs',
+    {},
+    s('linearGradient', { id: 'ts-sky', x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, 'stop-color': '#0b1a33' }), s('stop', { offset: 1, 'stop-color': '#24508f' })),
+    s('linearGradient', { id: 'ts-beam', x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, 'stop-color': '#fff7c2', 'stop-opacity': 0.55 }), s('stop', { offset: 1, 'stop-color': '#fff7c2', 'stop-opacity': 0 })),
+    s('clipPath', { id: 'ts-clip' }, s('rect', { x: 0, y: 0, width: 320, height: 190, rx: 22 }))
+  );
+  const g = s('g', { 'clip-path': 'url(#ts-clip)' });
+  g.append(s('rect', { x: 0, y: 0, width: 320, height: 190, fill: 'url(#ts-sky)' }));
+  // Floodlight beams and lights.
+  g.append(
+    s('polygon', { points: '30,22 0,120 120,120', fill: 'url(#ts-beam)', class: 'ts-beam' }),
+    s('polygon', { points: '290,22 200,120 320,120', fill: 'url(#ts-beam)', class: 'ts-beam ts-beam-2' })
+  );
+  for (const x of [30, 290]) {
+    g.append(s('rect', { x: x - 1.5, y: 22, width: 3, height: 60, fill: '#94a3b8' }), s('rect', { x: x - 12, y: 12, width: 24, height: 12, rx: 3, fill: '#fef9c3', class: 'ts-light' }));
+  }
+  // Crowd: rows of little heads in team colours.
+  const crowd = ['#1d4ed8', '#facc15', '#f4f7f2', '#dc2626', '#1d4ed8', '#facc15'];
+  for (let row = 0; row < 3; row++) {
+    for (let i = 0; i < 27; i++) {
+      const x = 8 + i * 11.6 + (row % 2) * 5;
+      g.append(s('circle', { cx: x, cy: 70 + row * 9, r: 3.6, fill: crowd[(i + row * 2) % crowd.length], opacity: 0.85 }));
+    }
+  }
+  g.append(s('rect', { x: 0, y: 94, width: 320, height: 6, fill: '#0f2340' }));
+  // Grass in perspective, with stripes.
+  const stripes = 7;
+  for (let i = 0; i < stripes; i++) {
+    const y1 = 100 + (i * 90) / stripes;
+    const y2 = 100 + ((i + 1) * 90) / stripes;
+    g.append(s('rect', { x: 0, y: y1, width: 320, height: y2 - y1 + 0.5, fill: i % 2 ? '#2f9e4f' : '#36ab57' }));
+  }
+  // Pitch lines.
+  g.append(
+    s('path', { d: 'M40 190 L95 100 M280 190 L225 100 M95 100 H225', class: 'ts-line' }),
+    s('path', { d: 'M118 100 L112 120 H208 L202 100', class: 'ts-line' })
+  );
+  // Goal with a net.
+  const goal = s('g', { class: 'ts-goal' });
+  goal.append(s('rect', { x: 130, y: 76, width: 60, height: 26, fill: 'rgba(255,255,255,0.12)' }));
+  for (let x = 134; x < 190; x += 6) goal.append(s('line', { x1: x, y1: 76, x2: x, y2: 102, class: 'ts-net' }));
+  for (let y = 80; y < 102; y += 5) goal.append(s('line', { x1: 130, y1: y, x2: 190, y2: y, class: 'ts-net' }));
+  goal.append(s('path', { d: 'M130 102 V76 H190 V102', class: 'ts-post' }));
+  g.append(goal);
+  // A ball flying into the top corner, with speed lines.
+  g.append(
+    s('path', { d: 'M70 168 Q120 90 176 86', class: 'ts-trail' }),
+    s(
+      'g',
+      { class: 'ts-ball' },
+      s('circle', { cx: 0, cy: 0, r: 9, fill: '#fff', stroke: '#1f2937', 'stroke-width': 1.5 }),
+      s('path', { d: 'M0 -4 L3.8 -1.2 L2.4 3.2 L-2.4 3.2 L-3.8 -1.2 Z', fill: '#1f2937' })
+    )
+  );
+  // Sparkles.
+  const sparkle = (x, y, r, d) => {
+    const p = [];
+    for (let i = 0; i < 8; i++) {
+      const rr = i % 2 ? r * 0.35 : r;
+      const a = (Math.PI * 2 * i) / 8;
+      p.push(`${(x + rr * Math.cos(a)).toFixed(1)},${(y + rr * Math.sin(a)).toFixed(1)}`);
+    }
+    return s('polygon', { points: p.join(' '), class: 'ts-spark', style: `animation-delay:${d}s` });
+  };
+  g.append(sparkle(204, 66, 8, 0), sparkle(116, 58, 6, 0.6), sparkle(250, 40, 5, 1.1), sparkle(64, 40, 5, 1.5));
+  svg.append(defs, g);
+  return svg;
+}
+
+// A "tap here" pointer: an arrow and a bubble that nudge at a button
+// from its right-hand side, so nothing above it is covered.
+export function tapHere(label = 'Tap here!') {
+  const el = document.createElement('span');
+  el.className = 'tap-here';
+  el.setAttribute('aria-hidden', 'true');
+  const bubble = document.createElement('span');
+  bubble.className = 'tap-here-bubble';
+  bubble.textContent = label;
+  const hand = s('svg', { viewBox: '0 0 40 40', class: 'tap-here-hand' }, s('path', { d: 'M4 20 L20 5 V13 H36 V27 H20 V35 Z', class: 'tap-here-fill' }));
+  el.append(hand, bubble);
+  return el;
+}
+
+// Chrome's menu button on Android: three dots in a column.
+export const menuDotsIcon = () => icon(s('circle', { cx: 24, cy: 11, r: 4, class: 'icon-fill' }), s('circle', { cx: 24, cy: 24, r: 4, class: 'icon-fill' }), s('circle', { cx: 24, cy: 37, r: 4, class: 'icon-fill' }));
+
+// A phone with a download arrow, for "Install app".
+export const installIcon = () =>
+  icon(s('rect', { x: 13, y: 5, width: 22, height: 38, rx: 4, class: 'icon-stroke' }), s('path', { d: 'M24 13 V29 M17 23 L24 30 L31 23', class: 'icon-stroke' }));

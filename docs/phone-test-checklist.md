@@ -45,6 +45,18 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - [ ] The speaker button under the pictures reads the question out again.
 - [ ] The menu shows four sticker spaces: level 1, bonus 1, level 2, bonus 2.
 
+## Android phone (Chrome)
+
+- [ ] Open the game link in Chrome. The install screen shows the Android steps, and maybe an "Install Spots!" button.
+- [ ] Install it. The football icon and "Spots!" appear on the Home Screen or in the app list.
+- [ ] Open it from the icon. It fills the screen with no Chrome bars.
+- [ ] The voice sounds English and, ideally, female. Note the voice if not.
+- [ ] Play both levels, then turn on Airplane Mode and play again.
+
+## Turning the phone
+
+- [ ] In a level, turn the phone sideways, then back upright. The pitch turns back each time.
+
 ## With your daughter
 
 - [ ] Can she place players without help after the first go?
