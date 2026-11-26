@@ -1,0 +1,10 @@
+{
+  "id": "shwgl-2026-27-u8",
+  "extends": "fa-2026-27-5v5",
+  "body": "Sheffield & Hallamshire Women and Girls League",
+  "season": "2026/27",
+  "format": "5v5",
+  "ageGroups": ["U8"],
+  "note": "The league follows the FA handbook for mini-soccer with no kick-off changes. Only pitch size can differ locally. The game draws the largest allowed pitch.",
+  "rules": {}
+}

@@ -1,0 +1,842 @@
+/* ---------- Colours and sizes ---------- */
+:root {
+  --bg: #0f3d23;
+  --bg-2: #14532d;
+  --panel: #ffffff;
+  --ink: #10231a;
+  --ink-soft: #3f5a4a;
+  --on-dark: #f4f7f2;
+  --accent: #facc15;
+  --blue: #1d4ed8;
+  --wrong: #ef4444;
+  --hint: #fde047;
+  --grass-a: #2f9e4f;
+  --grass-b: #36ab57;
+  --edge: max(24px, env(safe-area-inset-left));
+  --edge-top: max(24px, env(safe-area-inset-top));
+  --edge-bottom: max(24px, env(safe-area-inset-bottom));
+  --edge-left: max(24px, env(safe-area-inset-left));
+  --edge-right: max(24px, env(safe-area-inset-right));
+  --radius: 18px;
+  --font: ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--on-dark);
+  font-family: var(--font);
+  -webkit-text-size-adjust: 100%;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+#app {
+  height: 100vh; /* fallback */
+  height: 100dvh;
+  overflow: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.screen {
+  height: 100%;
+  padding: var(--edge-top) var(--edge-right) var(--edge-bottom) var(--edge-left);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+h1 {
+  margin: 4px 0 0;
+  font-size: 2rem;
+}
+h2 {
+  margin: 10px 0 0;
+  font-size: 1.15rem;
+}
+.lead {
+  font-size: 1.2rem;
+  margin: 0;
+}
+.small {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  margin: 0;
+}
+.is-hidden {
+  display: none !important;
+}
+
+/* ---------- Buttons ---------- */
+.icon-btn {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.25);
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+.icon-btn.big {
+  width: 88px;
+  height: 88px;
+}
+.icon {
+  width: 60%;
+  height: 60%;
+}
+.icon-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icon-thick {
+  stroke-width: 6;
+}
+.icon-fill {
+  fill: currentColor;
+}
+.again.is-speaking {
+  border-color: var(--accent);
+}
+.again.is-speaking .icon-stroke {
+  stroke: var(--accent);
+}
+
+.big-btn,
+.danger-btn {
+  min-height: 60px;
+  border-radius: var(--radius);
+  border: none;
+  padding: 12px 22px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  background: var(--accent);
+  color: #1f2937;
+}
+.big-btn.secondary {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--on-dark);
+}
+.danger-btn {
+  background: #b91c1c;
+  color: #fff;
+}
+.text-btn {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  padding: 12px 4px;
+  min-height: 48px;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.ready-btn {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  background: #16a34a;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3);
+}
+.ready-btn .icon {
+  width: 64%;
+  height: 64%;
+}
+
+.is-glow {
+  animation: glow 1.2s ease-in-out infinite;
+}
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.9);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(250, 204, 21, 0);
+  }
+}
+
+/* ---------- Grown-up screens ---------- */
+.grown-up {
+  max-width: 640px;
+  margin: 0 auto;
+}
+.install-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.install-steps li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+  padding: 12px;
+  font-size: 1.1rem;
+}
+.step-icon {
+  width: 52px;
+  height: 52px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  color: #1d4ed8;
+  border-radius: 12px;
+}
+.step-icon .icon {
+  width: 80%;
+  height: 80%;
+}
+.plain-list {
+  margin: 0;
+  padding-left: 1.2em;
+  display: grid;
+  gap: 8px;
+  font-size: 1.05rem;
+}
+.back-btn {
+  align-self: flex-start;
+}
+.confirm {
+  display: grid;
+  gap: 8px;
+  background: rgba(185, 28, 28, 0.2);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.confirm p {
+  margin: 0;
+}
+.version {
+  margin-top: auto;
+}
+
+/* Gate keypad */
+.gate-entry {
+  font-size: 2.4rem;
+  text-align: center;
+  min-height: 3rem;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.4);
+}
+.gate-entry.is-wrong {
+  color: var(--wrong);
+}
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 320px;
+  width: 100%;
+  margin: 0 auto;
+}
+.key {
+  min-height: 60px;
+  border-radius: 14px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  font-size: 1.5rem;
+}
+
+/* ---------- Start ---------- */
+.start {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.play-btn {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  animation: bob 1.6s ease-in-out infinite;
+}
+.play-btn .icon {
+  width: 100%;
+  height: 100%;
+}
+@keyframes bob {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Footballs */
+.football-shape {
+  fill: #fff;
+  stroke: #1f2937;
+  stroke-width: 2.5;
+}
+.football-patch {
+  fill: #1f2937;
+}
+.football-seam {
+  stroke: #1f2937;
+  stroke-width: 2.5;
+  fill: none;
+}
+.football.is-empty .football-shape {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-dasharray: 5 4;
+}
+.football.is-empty .football-patch,
+.football.is-empty .football-seam {
+  display: none;
+}
+
+/* ---------- Setup ---------- */
+.setup-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.setup-preview {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.grown-up-box {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+  padding: 12px;
+  display: grid;
+  gap: 6px;
+}
+.grown-up-box label {
+  font-size: 0.95rem;
+}
+.grown-up-box input {
+  font: inherit;
+  font-size: 1.3rem;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  background: #fff;
+  color: var(--ink);
+}
+.name-note.is-warning {
+  color: var(--accent);
+  opacity: 1;
+  font-weight: 700;
+}
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding: 6px;
+  border-radius: var(--radius);
+}
+.choice {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 4px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.choice[aria-checked='true'] {
+  border-color: var(--accent);
+}
+.swatch {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: block;
+}
+.setup-bottom {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+/* ---------- Menu ---------- */
+.menu-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.menu-player {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+.avatar-btn {
+  background: none;
+  border: none;
+  padding: 0;
+}
+.tally {
+  display: flex;
+  gap: 8px;
+}
+.tally .icon {
+  width: 52px;
+  height: 52px;
+}
+.chapters {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex: 1;
+  align-items: center;
+}
+.chapter-btn {
+  position: relative;
+  width: 150px;
+  height: 190px;
+  border-radius: 24px;
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+}
+.chapter-btn.is-locked {
+  opacity: 0.55;
+}
+.chapter-pic {
+  width: 100%;
+  height: 100%;
+}
+.chapter-num {
+  position: absolute;
+  left: 8px;
+  top: 6px;
+  font-size: 2rem;
+  font-weight: 800;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+}
+.chapter-lock,
+.chapter-done {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 40px;
+  height: 40px;
+}
+.chapter-lock .icon,
+.chapter-done .icon {
+  width: 100%;
+  height: 100%;
+}
+.mini-grass {
+  fill: var(--grass-a);
+}
+.mini-line,
+.mini-ring {
+  stroke: #fff;
+  stroke-width: 1.5;
+  fill: none;
+}
+.mini-ring {
+  stroke-dasharray: 3 2;
+}
+.mini-us {
+  fill: var(--blue);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.mini-them {
+  fill: #ea580c;
+}
+.mini-ball {
+  fill: #fff;
+}
+.update-btn {
+  border: none;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #1f2937;
+  padding: 12px;
+  font-weight: 700;
+}
+
+/* ---------- Chapter ---------- */
+.chapter {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 8px;
+  overflow: hidden;
+}
+.chapter-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.caption {
+  flex: 1;
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.3;
+  font-weight: 700;
+  text-align: center;
+  min-height: 3.9em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.caption.is-new {
+  animation: caption-in 0.35s ease-out;
+}
+@keyframes caption-in {
+  from {
+    opacity: 0.2;
+    transform: translateY(4px);
+  }
+}
+.pitch-wrap {
+  min-height: 0;
+  min-width: 0;
+  position: relative;
+}
+.chapter-bottom {
+  display: flex;
+  justify-content: center;
+  min-height: 96px;
+}
+/* The Home button stays on, so a child can always leave. */
+.chapter.is-busy button:not(.home-btn),
+.chapter.is-busy .pitch {
+  pointer-events: none;
+}
+.chapter.is-busy .again {
+  opacity: 0.4;
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+  .chapter {
+    grid-template-columns: 1fr minmax(180px, 32%);
+    grid-template-rows: auto 1fr;
+    column-gap: 16px;
+  }
+  .chapter-top {
+    grid-column: 2;
+    grid-row: 1;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .caption {
+    order: 3;
+    flex-basis: 100%;
+    font-size: 1.05rem;
+  }
+  .pitch-wrap {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .chapter-bottom {
+    grid-column: 2;
+    grid-row: 2;
+    align-items: center;
+  }
+}
+
+/* The pitch drawing */
+.pitch {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.grass-edge {
+  fill: #23803f;
+}
+.grass-a {
+  fill: var(--grass-a);
+}
+.grass-b {
+  fill: var(--grass-b);
+}
+.line {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+}
+.centre-mark {
+  fill: #fff;
+}
+.goal {
+  fill: rgba(255, 255, 255, 0.35);
+  stroke: #fff;
+  stroke-width: 3;
+}
+.helper-ring {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-dasharray: 10 8;
+  opacity: 0.85;
+}
+.helper-ring.is-glow {
+  stroke: var(--hint);
+  stroke-width: 5;
+  animation: pulse-op 0.8s ease-in-out infinite;
+}
+.why-ring-on .helper-ring {
+  stroke: var(--wrong);
+  stroke-width: 6;
+  fill: rgba(239, 68, 68, 0.25);
+}
+.why-half {
+  fill: rgba(239, 68, 68, 0.35);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.why-half-on .why-half {
+  opacity: 1;
+}
+.why-goal-on .goal-ours,
+.why-ball-on .ball-shape {
+  stroke: var(--hint);
+  stroke-width: 5;
+  animation: pulse-op 0.8s ease-in-out infinite;
+}
+.flash-goal-line .goal-ours {
+  stroke: var(--hint);
+}
+@keyframes pulse-op {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.spot {
+  fill: rgba(255, 255, 255, 0.35);
+}
+.spot-bench {
+  fill: rgba(255, 255, 255, 0.2);
+}
+.has-selection .spot {
+  fill: rgba(255, 255, 255, 0.8);
+}
+.spot.is-taken {
+  opacity: 0;
+}
+.pitch:not(.is-placing) .spot {
+  opacity: 0;
+}
+.hint-spot {
+  fill: rgba(253, 224, 71, 0.25);
+  stroke: var(--hint);
+  stroke-width: 3;
+  stroke-dasharray: 6 5;
+  animation: pulse-op 1s ease-in-out infinite;
+}
+
+.big-arrow {
+  stroke: #fff;
+  stroke-width: 14;
+  stroke-linecap: round;
+  opacity: 0.9;
+}
+
+.target-glow {
+  fill: rgba(253, 224, 71, 0.2);
+  stroke: var(--hint);
+  stroke-width: 4;
+  animation: pulse-op 0.9s ease-in-out infinite;
+}
+.target-icon {
+  fill: var(--hint);
+}
+
+.cross path {
+  stroke: var(--wrong);
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+
+/* Players */
+.token {
+  will-change: transform;
+}
+.token-body {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.token-them .token-body {
+  transform: rotate(180deg);
+}
+.token-hit {
+  fill: transparent;
+}
+.token-halo,
+.token-wrong {
+  fill: none;
+  stroke-width: 5;
+  opacity: 0;
+}
+.token-halo {
+  stroke: var(--hint);
+}
+.token-wrong {
+  stroke: var(--wrong);
+  stroke-dasharray: 7 5;
+}
+.token.is-selected .token-halo {
+  opacity: 1;
+  animation: pulse-op 0.7s ease-in-out infinite;
+}
+.token.is-wrong .token-wrong {
+  opacity: 1;
+}
+.token.is-glow .token-halo {
+  opacity: 1;
+  animation: pulse-op 0.6s ease-in-out infinite;
+}
+.token-shadow {
+  fill: rgba(0, 0, 0, 0.25);
+}
+.token-shirt {
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 1.5;
+}
+.token.is-keeper .token-shirt {
+  fill: var(--keeper-shirt);
+}
+.token.is-you .token-shirt {
+  stroke: #fff;
+  stroke-width: 3;
+}
+.token.is-dragging .token-body {
+  transform: scale(1.2);
+}
+.token.is-bouncing .token-body {
+  animation: hop 0.5s ease-in-out 3;
+}
+.token.is-jumping .token-body {
+  animation: hop 0.4s ease-in-out 3;
+}
+.token-them.is-jumping .token-body {
+  animation: hop-them 0.4s ease-in-out 3;
+}
+@keyframes hop {
+  50% {
+    transform: scale(1.25);
+  }
+}
+@keyframes hop-them {
+  0%,
+  100% {
+    transform: rotate(180deg);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.25);
+  }
+}
+
+.ball-shape {
+  fill: #fff;
+  stroke: #1f2937;
+  stroke-width: 2;
+}
+.ball-patch {
+  fill: #1f2937;
+}
+
+/* Goal banner and end card */
+.goal-banner {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 5rem;
+  font-weight: 900;
+  color: var(--accent);
+  text-shadow: 0 5px 0 var(--blue), 0 0 30px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  animation: pop 0.5s ease-out;
+}
+@keyframes pop {
+  from {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+}
+.end-card {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 40, 22, 0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: var(--edge-top) var(--edge-right) var(--edge-bottom) var(--edge-left);
+}
+.end-ball .icon {
+  width: 140px;
+  height: 140px;
+  animation: pop 0.7s ease-out, bob 1.6s 0.7s ease-in-out infinite;
+}
+.end-tally {
+  display: flex;
+  gap: 10px;
+}
+.end-tally .icon {
+  width: 48px;
+  height: 48px;
+}
+.end-buttons {
+  display: flex;
+  gap: 28px;
+}
+
+/* Fewer moving parts when the phone asks for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.setup {
+  gap: 8px;
+}
+.setup .grown-up-box {
+  padding: 8px 12px;
+}
+.setup .grown-up-box input {
+  padding: 6px 10px;
+}

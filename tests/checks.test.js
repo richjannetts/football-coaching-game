@@ -1,0 +1,149 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { checkRule, checkShape } from '../src/lib/checks.js';
+import { resolveRuleSet } from '../src/lib/rules.js';
+import { resolveAt } from '../src/lib/geometry.js';
+import { readJson } from './helpers.js';
+
+const fa = readJson('src/data/rules/fa-2026-27-5v5.json');
+const league = readJson('src/data/rules/shwgl-2026-27-u8.json');
+const team = readJson('src/data/team.json');
+const ruleSet = resolveRuleSet('shwgl-2026-27-u8', [fa, league]);
+const centre = { x: 15, y: 20 };
+const halfway = 20;
+const grid = team.grid;
+const at = (col, row) => ({ x: grid.cols[col], y: grid.rows[row] });
+
+// The coach's shapes, written out as spots, in the order a child might place them.
+const ourShape = team.shapes.ourCentreKick.spots.map((s) => resolveAt(s.at, grid));
+const theirShape = team.shapes.theirCentreKick.spots.map((s) => resolveAt(s.at, grid));
+
+const ruleOurs = (players) => checkRule({ kind: 'ours', players, ruleSet, centre, halfway });
+const ruleTheirs = (players) => checkRule({ kind: 'theirs', players, ruleSet, centre, halfway });
+
+// ---------- The rule says: our centre kick ----------
+
+test('rule, our kick: the coach shape obeys the rule', () => {
+  assert.equal(ruleOurs(ourShape).ok, true);
+});
+
+test('rule, our kick: any layout in our half with one on the ball is legal', () => {
+  const players = [centre, at(0, 0), at(4, 0), at(0, 3), at(4, 3)];
+  assert.equal(ruleOurs(players).ok, true);
+});
+
+test('rule, our kick: a player in their half breaks the rule', () => {
+  const players = [centre, at(1, 4), at(3, 5), at(2, 1), at(2, 0)];
+  const result = ruleOurs(players);
+  assert.equal(result.ok, false);
+  assert.equal(result.problems[0].type, 'ownHalf');
+  assert.deepEqual(result.problems[0].players, [2]);
+  assert.equal(result.problems[0].line, 'rule.ownHalf');
+});
+
+test('rule, our kick: nobody on the ball breaks the rule', () => {
+  const players = [at(2, 4), at(1, 4), at(3, 4), at(2, 1), at(2, 0)];
+  const result = ruleOurs(players);
+  assert.equal(result.ok, false);
+  assert.deepEqual(result.problems.map((p) => p.type), ['onBall']);
+});
+
+// ---------- The rule says: their centre kick ----------
+
+test('rule, their kick: the coach shape obeys the rule', () => {
+  assert.equal(ruleTheirs(theirShape).ok, true);
+});
+
+test('rule, their kick: a player inside five yards breaks the rule', () => {
+  const players = [at(2, 4), at(1, 2), at(3, 2), at(2, 1), at(2, 0)]; // (15, 17.5) is 2.5 yards away
+  const result = ruleTheirs(players);
+  assert.equal(result.ok, false);
+  assert.deepEqual(result.problems.map((p) => p.type), ['ring']);
+  assert.deepEqual(result.problems[0].players, [0]);
+});
+
+test('rule, their kick: standing on the centre mark breaks both parts', () => {
+  const players = [centre, at(1, 2), at(3, 2), at(2, 1), at(2, 0)];
+  const types = ruleTheirs(players).problems.map((p) => p.type);
+  assert.deepEqual(types, ['ownHalf', 'ring']);
+});
+
+test('rule, their kick: a player in their half breaks the rule', () => {
+  const players = [at(2, 3), at(1, 6), at(3, 2), at(2, 1), at(2, 0)];
+  const result = ruleTheirs(players);
+  assert.equal(result.problems[0].type, 'ownHalf');
+  assert.deepEqual(result.problems[0].players, [1]);
+});
+
+test('rule, their kick: a legal layout that is not our shape still passes the rule', () => {
+  const players = [at(0, 4), at(4, 4), at(0, 0), at(4, 0), at(2, 2)];
+  assert.equal(ruleTheirs(players).ok, true);
+  assert.equal(checkShape({ players, shape: team.shapes.theirCentreKick, grid }).ok, false);
+});
+
+// ---------- Our team does: our centre kick shape ----------
+
+test('shape, our kick: the coach shape passes', () => {
+  const result = checkShape({ players: ourShape, shape: team.shapes.ourCentreKick, grid });
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.emptySpots, []);
+});
+
+test('shape, our kick: any player can fill any spot', () => {
+  const reversed = [...ourShape].reverse();
+  const shuffled = [ourShape[3], ourShape[0], ourShape[4], ourShape[2], ourShape[1]];
+  for (const players of [reversed, shuffled]) {
+    const result = checkShape({ players, shape: team.shapes.ourCentreKick, grid });
+    assert.equal(result.ok, true);
+    // The kicker role is filled by whoever stands on the centre mark.
+    const kicker = result.roles.find((r) => r.role === 'kicker');
+    assert.deepEqual(players[kicker.player], centre);
+  }
+});
+
+test('shape, our kick: no friend on one side names the friends hint', () => {
+  const players = [centre, at(1, 4), at(3, 2), at(2, 1), at(2, 0)];
+  const result = checkShape({ players, shape: team.shapes.ourCentreKick, grid });
+  assert.equal(result.ok, false);
+  assert.deepEqual(result.problems.map((p) => p.line), ['shape.c1.friends']);
+  assert.deepEqual(result.strayPlayers, [2]);
+});
+
+test('shape, our kick: nobody in goal names the keeper hint', () => {
+  const players = [centre, at(1, 4), at(3, 4), at(2, 1), at(2, 2)];
+  const result = checkShape({ players, shape: team.shapes.ourCentreKick, grid });
+  assert.deepEqual(result.problems.map((p) => p.line), ['shape.keeper']);
+});
+
+test('shape, our kick: the same hint is not repeated for two empty spots', () => {
+  const players = [centre, at(0, 0), at(4, 0), at(2, 1), at(2, 0)];
+  const result = checkShape({ players, shape: team.shapes.ourCentreKick, grid });
+  assert.equal(result.emptySpots.length, 2);
+  assert.deepEqual(result.problems.map((p) => p.line), ['shape.c1.friends']);
+});
+
+// ---------- Our team does: their centre kick shape ----------
+
+test('shape, their kick: the coach shape passes in any order', () => {
+  const result = checkShape({ players: [...theirShape].reverse(), shape: team.shapes.theirCentreKick, grid });
+  assert.equal(result.ok, true);
+});
+
+test('shape, their kick: front player too deep names the front player hint', () => {
+  const players = [at(2, 2), at(1, 2), at(3, 2), at(2, 1), at(2, 0)];
+  const result = checkShape({ players, shape: team.shapes.theirCentreKick, grid });
+  assert.deepEqual(result.problems.map((p) => p.line), ['shape.c2.up']);
+});
+
+test('shape, their kick: two players on one spot area cannot both count', () => {
+  const players = [at(2, 3), at(2, 3), at(3, 2), at(2, 1), at(2, 0)];
+  const result = checkShape({ players, shape: team.shapes.theirCentreKick, grid });
+  assert.equal(result.ok, false);
+  assert.equal(result.emptySpots.length, 1);
+});
+
+test('shape is separate from the rule: our shape for their kick passes the rule too', () => {
+  // Data check: if the coach ever moves a spot inside the ring, this fails.
+  assert.equal(ruleTheirs(theirShape).ok, true);
+  assert.equal(ruleOurs(ourShape).ok, true);
+});
