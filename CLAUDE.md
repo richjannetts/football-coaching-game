@@ -21,6 +21,8 @@ Background research is in `docs/research/`. The coaching content is in `docs/coa
 - Input: Pointer Events. Tap a player then tap a spot is the main input. Drag is an extra. No drag library. No HTML5 drag and drop API.
 - Animation: CSS and the Web Animations API. No Lottie, Rive or video. Respect prefers-reduced-motion.
 - Audio: HTMLAudioElement, one MP3 per script line. Device speech as fallback.
+- Game sounds (taps, cheers, goal fanfare): made in code as tiny WAV files (`src/lib/tones.js`), no sound files. Small taps play on their own audio element (`src/lib/sfx.js`) and stay quiet while the voice speaks. Big moments are `sfx.*` lines in the narrator's chain, between spoken lines. A grown-ups switch turns them off; the whistle always plays.
+- Confetti: plain squares moved with the Web Animations API (`src/lib/confetti.js`). None when the phone asks for reduced motion.
 - Storage: localStorage behind one small wrapper module.
 - Hosting: GitHub Pages. Set the Vite `base` to the repository name.
 
