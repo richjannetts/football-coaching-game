@@ -41,4 +41,21 @@ Why: one girl stays back to defend, and a girl either side gives two easy passes
 
 1. Chapter 1: our centre kick. Line up, choose the first pass, watch us score.
 2. Chapter 2: their centre kick. Where do we stand? We defend well, the ball goes out over our goal line, and it is our goal kick.
-3. Chapter 3, not built yet: our goal kick. Later: their goal kick and the retreat line, then kick-ins.
+3. Level 3: our goal kick. They go back over halfway. "Spread wide, find a friend": the keeper passes out wide, we play up the side, and our shot goes just wide.
+4. Level 4: their goal kick. "Back, wait, GO": we wait in our half, then close them down and win it. It goes off the side for our kick-in.
+5. Later, from the agreed storyboard (27th November 2026): our kick-in, their kick-in (1-1 at half-time), half-time page, second-half centre kick, our corner, their corner, a last-minute penalty she scores (2-1), full-time page.
+
+## Our goal kick (level 3, a first guess for Rich to change)
+
+- Keeper takes it from our goal.
+- A friend out wide on each side, level with the top corners of our penalty box (one dot further up also counts).
+- One friend in the middle of our half.
+- Up goes into their half, in the middle.
+- First pass: short, out wide. Never a long kick.
+
+## Their goal kick (level 4, a first guess for Rich to change)
+
+- Everyone in our half until the ball is kicked (the rule).
+- Up just behind halfway, in the middle.
+- Middles either side, a little deeper (or level with Up).
+- Back on the penalty box line, keeper in goal.

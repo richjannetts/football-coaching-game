@@ -45,8 +45,11 @@ test('album: the next prize is the first sticker not yet won', () => {
 });
 
 test('album: finishing every level of a match gives its shiny', () => {
-  const before = album({ ch1: true });
-  const after = album({ ch1: true, ch2: true });
+  // Every level of match 1 but the last, then all of them.
+  const m1 = levels.matches[0].levels;
+  const done = (list) => Object.fromEntries(list.map((n) => [`ch${n}`, true]));
+  const before = album(done(m1.slice(0, -1)));
+  const after = album(done(m1));
   const shiny = newShinies(before, after);
   assert.equal(shiny.length, 1);
   assert.equal(shiny[0].kind, 'shiny');

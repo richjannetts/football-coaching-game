@@ -133,6 +133,16 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - [ ] Tap your face at the top left. The team screen opens.
 - [ ] Turn the phone sideways on the path. The buttons stay clear of the edges and the path still scrolls.
 
+## Goal kicks (levels 3 and 4)
+
+- [ ] The scoreboard shows 1 – 0 in levels 2, 3 and 4. In level 1 it goes from 0 – 0 to 1 – 0 when we score.
+- [ ] Level 3: the other team walks back over the glowing halfway line. Put the keeper in goal, a friend wide on each side, one in the middle and one up in their half, then tap the tick.
+- [ ] Level 3: tap the long-kick arrow. Their keeper catches it, a cross shows, and you get another go. Tap a friend out wide and watch the move up the side.
+- [ ] Level 4: the halfway line glows while you place everyone. Put one player over halfway and tap the tick: the whistle, their half turns red, and the voice explains the rule.
+- [ ] Level 4: with everyone in our half, watch "wait", then "GO", and the ball going off the side.
+- [ ] Finishing level 4 gives the Match 1 shiny sticker. If you already had it from levels 1 and 2, it disappears until level 4 is done.
+- [ ] Both bonus questions show three pictures, and the right one wins a sticker.
+
 ## Sticker album
 
 - [ ] On the path, tap the book button at the bottom right. The album opens on your team's page, and the voice explains it.

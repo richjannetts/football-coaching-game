@@ -6,6 +6,8 @@ import * as sfx from './lib/sfx.js';
 import { createStage, ABORT } from './game/stage.js';
 import { chapter1 } from './game/chapter1.js';
 import { chapter2 } from './game/chapter2.js';
+import { chapter3 } from './game/chapter3.js';
+import { chapter4 } from './game/chapter4.js';
 import quiz from './data/quiz.json';
 import levels from './data/levels.json';
 import stickers from './data/stickers.json';
@@ -18,7 +20,7 @@ import * as teams from './lib/teamState.js';
 
 const app = document.getElementById('app');
 const VERSION = __APP_VERSION__;
-const chapters = { 1: chapter1, 2: chapter2 };
+const chapters = { 1: chapter1, 2: chapter2, 3: chapter3, 4: chapter4 };
 
 let profile = store.load('profile');
 let progress = store.load('progress', {});

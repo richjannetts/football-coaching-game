@@ -933,6 +933,12 @@ h2 {
   stroke-dasharray: 10 8;
   opacity: 0.85;
 }
+.retreat-line {
+  stroke: #fff;
+  stroke-width: 8;
+  stroke-linecap: round;
+  animation: pulse-op 0.8s ease-in-out infinite;
+}
 .helper-ring.is-glow {
   stroke: var(--hint);
   stroke-width: 5;
@@ -1908,6 +1914,26 @@ h2 {
 .scoreboard-v {
   color: var(--accent);
   text-transform: lowercase;
+  white-space: nowrap;
+}
+/* Once a level sets the score, it shows in place of the "v". */
+.scoreboard-v.is-score {
+  padding: 0 4px;
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+}
+.scoreboard-v.is-new {
+  animation: score-pop 0.6s ease-out;
+}
+@keyframes score-pop {
+  40% {
+    transform: scale(1.6);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scoreboard-v.is-new {
+    animation: none;
+  }
 }
 .kit-dot {
   flex: none;

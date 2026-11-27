@@ -37,11 +37,12 @@ export function createStage({ profile, onHome, showWords = false }) {
 
   // Who is playing: both team names with a dot of each kit colour.
   const mine = myTeam(profile);
+  const scoreV = h('span', { class: 'scoreboard-v' }, 'v');
   const scoreboard = h(
     'div',
     { class: 'scoreboard', 'aria-label': `${mine.name} against ${mine.theirName}` },
     h('span', { class: 'scoreboard-side' }, h('span', { class: 'kit-dot', style: { background: mine.kit.us.shirt, borderColor: mine.kit.us.stripe } }), h('span', { class: 'scoreboard-name' }, mine.name)),
-    h('span', { class: 'scoreboard-v' }, 'v'),
+    scoreV,
     h('span', { class: 'scoreboard-side' }, h('span', { class: 'scoreboard-name' }, mine.theirName), h('span', { class: 'kit-dot', style: { background: mine.kit.them.shirt, borderColor: mine.kit.them.stripe } }))
   );
 
@@ -80,7 +81,7 @@ export function createStage({ profile, onHome, showWords = false }) {
     if (!stage.alive) return;
     const add = id.startsWith('hint.') && caption.dataset.keep === '1';
     caption.textContent = add ? `${caption.textContent} ${text}` : text;
-    caption.dataset.keep = id.startsWith('rule.') || id.startsWith('shape.') || id.startsWith('c1.pass') ? '1' : add ? '1' : '0';
+    caption.dataset.keep = id.startsWith('rule.') || id.startsWith('shape.') || /^c\d+\.pass/.test(id) ? '1' : add ? '1' : '0';
     caption.classList.remove('is-new');
     void caption.offsetWidth;
     caption.classList.add('is-new');
@@ -205,6 +206,18 @@ export function createStage({ profile, onHome, showWords = false }) {
     if (!stage.alive) return;
     if (fromEl) burstFrom(fromEl, { colours: CONFETTI, count });
     else burst({ colours: CONFETTI, count });
+  };
+
+  // The score in the middle of the scoreboard. pop: a goal was just scored.
+  stage.setScore = (us, them, pop = false) => {
+    scoreV.textContent = `${us} – ${them}`;
+    scoreV.classList.add('is-score');
+    scoreboard.setAttribute('aria-label', `${mine.name} ${us}, ${mine.theirName} ${them}`);
+    if (pop) {
+      scoreV.classList.remove('is-new');
+      void scoreV.offsetWidth;
+      scoreV.classList.add('is-new');
+    }
   };
 
   stage.goalBanner = (show) => goalBanner.classList.toggle('is-hidden', !show);

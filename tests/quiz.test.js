@@ -15,7 +15,9 @@ const toPlayers = (pic) => pic.us.map(([x, y]) => ({ x, y }));
 test('quiz: there is a bonus question for each level', () => {
   assert.ok(quizFor(quiz, 1));
   assert.ok(quizFor(quiz, 2));
-  assert.equal(quizFor(quiz, 9), null);
+  assert.ok(quizFor(quiz, 3));
+  assert.ok(quizFor(quiz, 4));
+  assert.equal(quizFor(quiz, 99), null);
 });
 
 test('quiz: every spoken line is in the script', () => {
@@ -61,5 +63,31 @@ test('quiz: every picture keeps its players on the pitch', () => {
     for (const o of q.options) {
       for (const [x, y] of [...o.picture.us, ...(o.picture.them || [])]) assert.ok(x >= 0 && x <= 30 && y >= 0 && y <= 40);
     }
+  }
+});
+
+test('quiz, level 3: only the right picture spreads out wide', () => {
+  const q = quizFor(quiz, 3);
+  q.options.forEach((o, i) => {
+    const xs = o.picture.us.map(([x]) => x);
+    const ourHalf = o.picture.us.filter(([, y]) => y < 20).length;
+    const wide = Math.min(...xs) <= 6 && Math.max(...xs) >= 24;
+    assert.equal(wide && ourHalf >= 3, i === q.answer, `option ${i}: ${o.label}`);
+  });
+});
+
+test('quiz, level 4: only the right picture obeys the retreat line', () => {
+  const q = quizFor(quiz, 4);
+  q.options.forEach((o, i) => {
+    const result = checkRule({ kind: 'theirGoalKick', players: toPlayers(o.picture), ruleSet, centre, halfway: 20 });
+    assert.equal(result.ok, i === q.answer, `option ${i}: ${o.label}`);
+  });
+});
+
+test('every level on the path has a bonus question and an end line', () => {
+  const levels = readJson('src/data/levels.json');
+  for (const n of levels.matches.flatMap((m) => m.levels)) {
+    assert.ok(quizFor(quiz, n), `level ${n} has no bonus question`);
+    assert.ok(ids.has(`c${n}.end`), `level ${n} has no end line`);
   }
 });

@@ -13,6 +13,7 @@ export async function chapter2(stage) {
   const [kicker, theirL, theirR] = them;
   pitch.placeBall(pitch.centre);
   pitch.setRing(true);
+  stage.setScore(1, 0);
 
   stage.setBusy(true);
   // The dotted ring was explained in level 1, so it is not repeated here

@@ -18,6 +18,12 @@
       "source": "Drawn because Rich's pitches always have one. Rich set the depth to end on the dot row 7.5 yards out (26th November 2026). Not checked against the FA handbook.",
       "confidence": "unconfirmed",
       "lastChecked": "2026-11-26"
+    },
+    "goalKick.bothTeamsOwnHalf": {
+      "value": true,
+      "source": "Rich's club rule (27th November 2026): at a goal kick both teams must be in their own half. The FA retreat line itself only names the other team.",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-27"
     }
   }
 }
