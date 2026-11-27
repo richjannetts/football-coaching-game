@@ -4,7 +4,7 @@
     {
       "id": "setup.hello",
       "text": "Hello! Let's get you ready for match day.",
-      "cue": "Your player appears in our blue and yellow kit."
+      "cue": "Your player appears in our kit."
     },
     {
       "id": "setup.name",
@@ -38,12 +38,12 @@
     },
     {
       "id": "story.morning",
-      "text": "It's Saturday morning. Hooray, it's match day!",
+      "text": "It's Saturday morning. Hooray, it's game day!",
       "cue": "A sunny football pitch with a goal, and a ball flying into the net."
     },
     {
       "id": "story.coach",
-      "text": "{team} have a big game today. Coach needs one more player, someone who knows where to stand.",
+      "text": "The team have a big game today. Coach needs one more player, someone who knows where to stand.",
       "cue": "Coach and four team-mates stand on the grass, next to an empty space with a question mark."
     },
     {
@@ -138,7 +138,7 @@
     },
     {
       "id": "c1.intro1",
-      "text": "It's match day! We're {team}, in blue and yellow.",
+      "text": "It's match day! We're {team}, in {colours|blue and yellow}.",
       "cue": "Our five players stand at the side of the pitch."
     },
     {
@@ -258,7 +258,7 @@
     },
     {
       "id": "c1.passShort",
-      "text": "A pass across to a friend. Good thinking!",
+      "text": "A pass across to {mate|a friend}. Good thinking!",
       "cue": "The ball rolls to the friend."
     },
     {
@@ -283,17 +283,17 @@
     },
     {
       "id": "c1.passTogether",
-      "text": "Let's do it together. A pass across to a friend.",
+      "text": "Let's do it together. A pass across to {mate|a friend}.",
       "cue": "The ball rolls to a friend."
     },
     {
       "id": "c1.move1",
-      "text": "She takes the ball forward.",
+      "text": "{runner|She} takes the ball forward.",
       "cue": "Our player runs up the pitch with the ball."
     },
     {
       "id": "c1.move2",
-      "text": "Pass across to a friend.",
+      "text": "Pass across to {mate|a friend}.",
       "cue": "The ball goes across to the other friend."
     },
     {
@@ -418,8 +418,8 @@
     },
     {
       "id": "end.sticker",
-      "text": "You've won a sticker for your album!",
-      "cue": "A new sticker pops up next to the medal."
+      "text": "Wow! You've won a new sticker for your sticker album! Tap the book on the path to see it.",
+      "cue": "The new sticker fills the screen with the words New sticker and a picture of the album, then settles next to the medal."
     },
     {
       "id": "end.shiny",
@@ -498,7 +498,7 @@
     },
     {
       "id": "c3.passWide",
-      "text": "A short pass to a friend out wide. Lovely!",
+      "text": "A short pass out wide to {mate|a friend}. Lovely!",
       "cue": "The ball rolls out to a friend on the side."
     },
     {
@@ -513,22 +513,22 @@
     },
     {
       "id": "c3.passTogether",
-      "text": "Let's do it together. A short pass out wide.",
+      "text": "Let's do it together. A short pass out wide to {mate|a friend}.",
       "cue": "The ball rolls out to a friend on the side."
     },
     {
       "id": "c3.move1",
-      "text": "Our friend takes it up the side of the pitch.",
+      "text": "{runner|Our friend} takes it up the side of the pitch.",
       "cue": "Our friend dribbles up the side. Everyone moves up with her."
     },
     {
       "id": "c3.move2",
-      "text": "She passes inside. Pass and move!",
+      "text": "She passes inside to {mate|a friend}. Pass and move!",
       "cue": "The ball goes inside to a friend, who passes it forward."
     },
     {
       "id": "c3.shot",
-      "text": "Our front player shoots...",
+      "text": "{shooter|Our front player} shoots...",
       "cue": "Our front player kicks the ball at their goal."
     },
     {
@@ -723,7 +723,7 @@
     },
     {
       "id": "c5.passGood",
-      "text": "A pass to a friend. Lovely!",
+      "text": "A pass to {mate|a friend}. Lovely!",
       "cue": "The ball rolls to a friend."
     },
     {
@@ -738,12 +738,12 @@
     },
     {
       "id": "c5.passTogether",
-      "text": "Let's do it together. A short pass to a friend.",
+      "text": "Let's do it together. A short pass to {mate|a friend}.",
       "cue": "The ball rolls to the friend nearby."
     },
     {
       "id": "c5.move1",
-      "text": "Pass and move! Our friend takes it towards their goal.",
+      "text": "Pass and move! {runner|Our friend} takes it towards their goal.",
       "cue": "Our friends pass the ball up the pitch."
     },
     {
@@ -763,7 +763,7 @@
     },
     {
       "id": "c5.tackle",
-      "text": "Our back player gets across and makes a great tackle!",
+      "text": "{defender|Our back player} gets across and makes a great tackle!",
       "cue": "Our back player knocks the ball off the side line."
     },
     {

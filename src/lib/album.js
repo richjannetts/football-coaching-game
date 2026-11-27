@@ -23,6 +23,7 @@ export function buildAlbum(data, { squad, teamName, progress = {}, levels }) {
       if (st.kind === 'player') {
         out.name = player.name;
         out.kit = player.keeper ? 'keeper' : 'us';
+        out.pattern = null; // our own kit's shirt style, whatever she chose
       }
       if (st.kind === 'shiny') {
         // A match still being built (complete: false) gives no shiny yet:

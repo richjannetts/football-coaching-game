@@ -20,7 +20,7 @@ Background research is in `docs/research/`. The coaching content is in `docs/coa
 - Pitch: one inline SVG with a fixed viewBox. Convert pointer positions to viewBox units.
 - Input: Pointer Events. Tap a player then tap a spot is the main input. Drag is an extra. No drag library. No HTML5 drag and drop API.
 - Animation: CSS and the Web Animations API. No Lottie, Rive or video. Respect prefers-reduced-motion.
-- Audio: HTMLAudioElement, one MP3 per script line. Device speech as fallback.
+- Audio: HTMLAudioElement, one MP3 per script line. Device speech as fallback. On iPhone, never call `speechSynthesis.cancel()` and then `speak()` straight away: `src/lib/narrator.js` waits a moment after a cancel, lets a button tick finish first, and picks a line up again from its last word if it goes quiet.
 - Game sounds (taps, cheers, goal fanfare): made in code as tiny WAV files (`src/lib/tones.js`), no sound files. Small taps play on their own audio element (`src/lib/sfx.js`) and stay quiet while the voice speaks. Big moments are `sfx.*` lines in the narrator's chain, between spoken lines. A grown-ups switch turns them off; the whistle always plays.
 - Confetti: plain squares moved with the Web Animations API (`src/lib/confetti.js`). None when the phone asks for reduced motion.
 - Storage: localStorage behind one small wrapper module.
@@ -86,6 +86,10 @@ Added at Rich's request, 26th November 2026, so others can play on their own pho
 
 - A new player's first run (Rich's choice, 27th November 2026): a short story (three picture pages), then she makes her player, meets her team-mates, sets up the other team, and one last story page takes her to the path. All of it can be changed later on the "My team" screen.
 
+- Every setup step (story pages, her player, team-mates, the other team) has a back button (Rich, 27th November 2026).
+- The first time she meets each kind of button, a yellow "Tap here!" pointer shows it (`src/lib/firstTap.js`): Play, the story arrow, the setup tick, the team ticks, level 1 on the path and the Ready tick. Once tapped, that pointer never comes back.
+- Passing moves name the real players: script lines use `{mate|a friend}` style words, filled by `stage.callNames`.
+- A right bonus answer gets a full-screen "New sticker!" moment before the sticker settles beside the medal.
 - Every instruction is spoken and shown in pictures. Words on screen are off by default (Rich's choice, 26th November 2026), switch on in the grown-ups area, and come on by themselves if the phone has no voice. Many 6 year olds cannot read fluently. The one exception is the bonus question: its question and answer labels are always shown, big and bold, as well as spoken (Rich's choice, 26th November 2026).
 - A wrong answer gets a friendly whistle, a picture of why, a hint, and another go straight away. Hints step up: nudge, show, do it together.
 - A wrong answer never loses the match or concedes a goal.
@@ -98,7 +102,7 @@ Added at Rich's request, 26th November 2026, so others can play on their own pho
 
 ## Privacy rules
 
-- First name or nickname only, short, with a prompt not to use a full name. This goes for every player. The only other free text is the two team names: letters and spaces only, 16 characters at most, with a prompt to make them up (Rich asked for team names, 26th November 2026).
+- First name or nickname only, short. The name box keeps only one word of letters. Rich removed the "not a full name" sentence and the "stays on this phone" note from the setup screens (27th November 2026); the welcome screen still tells grown-ups the game saves on this device only. This goes for every player. The only other free text is the two team names: letters and spaces only, 16 characters at most, with a prompt to make them up (Rich asked for team names, 26th November 2026).
 - Avatar from preset options. No photos.
 - No camera, microphone, location or notification permissions.
 - No requests to any other website. Fonts, images and audio all sit inside the app. No analytics.
@@ -110,8 +114,8 @@ Added at Rich's request, 26th November 2026, so others can play on their own pho
 Keep content out of the code so it can be swapped later.
 
 - `src/data/rules/`: one file per rule set (body, season, format, age groups). Each rule has a value, source and last-checked date. A local file can extend a parent.
-- `src/data/team.json`: the starting team name and player names (made up), kit colours, the other team's kit choices (shirt styles and colours), and the coach's shapes, as spots on an evenly spaced grid. Each shape spot has an ideal dot (`at`) and a `zone`: a box in yards where anywhere counts, so the child only needs the right area (Rich's choice, 27th November 2026).
-- The child can change every player's name and look, both team names and the other team's kit (shirt style, shirt colours, shorts and socks) on the "My team" screen. Her changes are saved on the phone and laid over `team.json` by `src/lib/myteam.js`. Our own kit colours are not changeable yet.
+- `src/data/team.json`: the starting team name and player names (made up), kit colours, the kit choices for both teams (`kitOptions`, `ourKit`, `theirKit`: shirt styles and colours), and the coach's shapes, as spots on an evenly spaced grid. Each shape spot has an ideal dot (`at`) and a `zone`: a box in yards where anywhere counts, so the child only needs the right area (Rich's choice, 27th November 2026).
+- The child can change every player's name and look, both team names and both teams' kits (shirt style, shirt colours, shorts and socks) on the "My team" screen. Our kit starts as blue and yellow stripes (Rich's choice, 27th November 2026). The two teams can't wear the same shirt colour: the other team's shirt colour is shown crossed out. Each keeper gets the first colour from its list that neither team is wearing. Her changes are saved on the phone and laid over `team.json` by `src/lib/myteam.js`.
 - `src/data/levels.json`: the levels on the path, grouped into matches, and how many locked "more soon" places to draw after the last one.
 - `src/data/stickers.json`: the album pages and every sticker, in the order they are won. Nothing extra is saved for stickers: they follow from her progress.
 - `src/data/script.json`: every spoken line as `{ id, text, cue }`.

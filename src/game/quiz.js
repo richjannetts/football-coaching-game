@@ -7,7 +7,9 @@ import { checkAnswer, askLines } from '../lib/quiz.js';
 import { pitchSize } from './content.js';
 
 // rightLines: extra lines after a right answer, such as "you've won a sticker".
-export function createQuiz({ question, play, say, onShow, onAnswer, thenLines = [], rightLines = [] }) {
+// rightCues: pictures to go with those lines. rightSounds: game sounds just
+// before them (not repeated by "hear it again").
+export function createQuiz({ question, play, say, onShow, onAnswer, thenLines = [], rightLines = [], rightCues = {}, rightSounds = [] }) {
   const words = question.question.split(' ').map((w, i) => h('span', { class: 'quiz-word', style: `animation-delay:${0.15 + i * 0.12}s` }, w));
   const title = h('h2', { class: 'quiz-question' }, h('span', { class: 'quiz-tag' }, 'Bonus question!'), h('span', { class: 'quiz-words' }, ...words));
   let ready = false;
@@ -64,9 +66,9 @@ export function createQuiz({ question, play, say, onShow, onAnswer, thenLines = 
     // Speech starts inside the tap.
     // A right answer gets a happy chime first. "Hear it again" repeats the
     // words only.
-    last = { ids: right ? [question.right, ...rightLines, ...thenLines] : [question.reveal, ...thenLines], cues: {} };
+    last = { ids: right ? [question.right, ...rightLines, ...thenLines] : [question.reveal, ...thenLines], cues: right ? rightCues : {} };
     onAnswer(right);
-    say(right ? ['sfx.chime', ...last.ids] : last.ids, last.cues);
+    say(right ? ['sfx.chime', question.right, ...rightSounds, ...rightLines, ...thenLines] : last.ids, last.cues);
   }
 
   function hearAgain() {

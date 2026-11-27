@@ -1,4 +1,4 @@
-// The team the child has made: names, looks and the other team's kit.
+// The team the child has made: names, looks and both teams' kits.
 // team.json holds the starting team. Anything she changes is saved on this
 // device and laid over the top here. No imports, so it is easy to test.
 
@@ -25,36 +25,63 @@ export function cleanTeamName(raw) {
 
 const pick = (list, id) => (list.some((x) => x.id === id) ? id : null);
 
-// The other team's kit as she chose it: a shirt style and colour ids.
-// Earlier versions saved just one colour id ('red', 'pink' and so on), so
-// that is turned into a full kit here and nothing she chose is lost.
+// The colours she can tap for a kit (not the keeper-only ones).
+export const kitColourChoices = (team) => team.kitOptions.colours.filter((c) => !c.keeperOnly);
+
+// One team's kit as she chose it: a shirt style and colour ids.
+// side: 'us' or 'them'. Earlier versions saved just one colour id for the
+// other team ('red', 'pink' and so on), so that is turned into a full kit
+// here and nothing she chose is lost.
 const OLD_SHORTS = { white: 'black', black: 'black' };
-export function theirKitChoice(team, saved) {
-  const opts = team.theirKit;
-  const base = opts.default;
+export function kitChoice(team, side, saved) {
+  const opts = team.kitOptions;
+  const colours = kitColourChoices(team);
+  const base = (side === 'us' ? team.ourKit : team.theirKit).default;
   let mine = saved;
   if (typeof mine === 'string') mine = { pattern: 'plain', shirt: mine, stripe: mine === 'white' ? 'black' : 'white', shorts: OLD_SHORTS[mine] || 'white', socks: mine };
   if (!mine || typeof mine !== 'object') mine = {};
   return {
     pattern: pick(opts.patterns, mine.pattern) || base.pattern,
-    shirt: pick(opts.colours, mine.shirt) || base.shirt,
-    stripe: pick(opts.colours, mine.stripe) || base.stripe,
-    shorts: pick(opts.colours, mine.shorts) || base.shorts,
-    socks: pick(opts.colours, mine.socks) || base.socks,
+    shirt: pick(colours, mine.shirt) || base.shirt,
+    stripe: pick(colours, mine.stripe) || base.stripe,
+    shorts: pick(colours, mine.shorts) || base.shorts,
+    socks: pick(colours, mine.socks) || base.socks,
   };
 }
+export const theirKitChoice = (team, saved) => kitChoice(team, 'them', saved);
+export const ourKitChoice = (team, saved) => kitChoice(team, 'us', saved);
 
-// Colour ids to the colours used for drawing. Their keeper wears a colour
-// that stands out from the rest of the team.
-export function theirKitColours(team, choice) {
-  const opts = team.theirKit;
-  const c = (id) => opts.colours.find((x) => x.id === id);
-  const dark = c(choice.shirt).dark || (choice.pattern !== 'plain' && c(choice.stripe).dark);
-  const keeper = dark ? opts.keeper.ifDark : opts.keeper.usual;
-  return {
-    them: { pattern: choice.pattern, shirt: c(choice.shirt).colour, stripe: c(choice.stripe).colour, shorts: c(choice.shorts).colour, socks: c(choice.socks).colour },
-    theirKeeper: { shirt: keeper, stripe: keeper, shorts: c(choice.shorts).colour, socks: keeper },
-  };
+// The colours a kit shows from a distance: its shirt, and its second
+// colour when it has a pattern.
+const shirtColours = (k) => (k.pattern === 'plain' ? [k.shirt] : [k.shirt, k.stripe]);
+
+// The two teams never wear the same shirt colour. The screen stops her
+// picking the other team's shirt colour, so this only matters for kits
+// saved some other way: our kit stays, and theirs moves to the first
+// colour that is free.
+export function settleKits(team, ours, theirs) {
+  if (ours.shirt !== theirs.shirt) return { ours, theirs };
+  const free = kitColourChoices(team).find((c) => !shirtColours(ours).includes(c.id));
+  const shirt = free ? free.id : theirs.shirt;
+  const next = { ...theirs, shirt };
+  if (next.pattern !== 'plain' && next.stripe === shirt) next.stripe = shirt === 'white' ? 'black' : 'white';
+  return { ours, theirs: next };
+}
+
+// The first colour in a list that nobody else is wearing.
+const firstFree = (list, used) => list.find((id) => !used.includes(id)) || list[0];
+
+// Colour ids to the colours used for drawing. Each keeper wears a colour
+// that stands out from both teams and from the other keeper.
+export function kitColours(team, ours, theirs) {
+  const c = (id) => team.kitOptions.colours.find((x) => x.id === id);
+  const used = [...shirtColours(ours), ...shirtColours(theirs)];
+  const ourKeeper = firstFree(team.ourKit.keeper, used);
+  const dark = c(theirs.shirt).dark || (theirs.pattern !== 'plain' && c(theirs.stripe).dark);
+  const theirKeeper = firstFree(dark ? team.theirKit.keeperIfDark : team.theirKit.keeper, [...used, ourKeeper]);
+  const outfield = (k) => ({ pattern: k.pattern, shirt: c(k.shirt).colour, stripe: c(k.stripe).colour, shorts: c(k.shorts).colour, socks: c(k.socks).colour });
+  const keeper = (id, k) => ({ shirt: c(id).colour, stripe: c(id).colour, shorts: c(k.shorts).colour, socks: c(id).colour });
+  return { us: outfield(ours), keeper: keeper(ourKeeper, ours), them: outfield(theirs), theirKeeper: keeper(theirKeeper, theirs) };
 }
 
 // team: team.json. looks: looks.json. saved: what is stored on the device
@@ -62,8 +89,7 @@ export function theirKitColours(team, choice) {
 // Returns the team to draw: every player has a name and a full look.
 export function resolveTeam(team, looks, saved, profile) {
   const s = saved && typeof saved === 'object' ? saved : {};
-  const theirKit = theirKitChoice(team, s.theirKit);
-  const theirColours = theirKitColours(team, theirKit);
+  const { ours: ourKit, theirs: theirKit } = settleKits(team, ourKitChoice(team, s.ourKit), theirKitChoice(team, s.theirKit));
   const squad = team.squad.map((base, i) => {
     const mine = base.you ? profile || {} : (Array.isArray(s.players) && s.players[i]) || {};
     return {
@@ -78,10 +104,17 @@ export function resolveTeam(team, looks, saved, profile) {
   return {
     name: cleanTeamName(s.name).trim() || team.teamName,
     theirName: cleanTeamName(s.theirName).trim() || team.opponentName,
+    ourKit,
     theirKit,
-    kit: { ...team.kit, ...theirColours },
+    kit: { ...team.kit, ...kitColours(team, ourKit, theirKit) },
     squad,
   };
+}
+
+// Our kit in words, for the voice: "blue and yellow", or just "green".
+export function kitWords(team, kit) {
+  const label = (id) => (team.kitOptions.colours.find((c) => c.id === id)?.label || '').toLowerCase();
+  return kit.pattern === 'plain' || kit.stripe === kit.shirt ? label(kit.shirt) : `${label(kit.shirt)} and ${label(kit.stripe)}`;
 }
 
 // The saved record with one player changed. Only the fields we know are kept.

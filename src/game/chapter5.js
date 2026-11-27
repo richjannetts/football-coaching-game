@@ -64,6 +64,7 @@ export async function chapter5(stage) {
     stage.check();
     if (wrong >= 3) {
       stage.setBusy(true);
+      stage.callNames({ mate: close.el });
       await Promise.all([stage.play(['sfx.kick', 'c5.passTogether']), passTo(close)]);
       await playOut(close);
       return;
@@ -71,6 +72,7 @@ export async function chapter5(stage) {
     const choices = wrong >= 2 ? targets.filter((t) => t.kind === 'friend') : targets;
     const pick = await stage.pickTarget(choices, (t) => {
       stage.setBusy(true);
+      if (t.kind === 'friend') stage.callNames({ mate: t.role.el });
       if (t.kind === 'friend') return stage.play(['sfx.kick', 'c5.passGood'], { 'c5.passGood': () => passTo(t.role) });
       wrong++;
       const next = wrong >= 3 ? [] : wrong === 2 ? ['c5.passShow'] : ['hint.tryAgain'];
@@ -102,6 +104,7 @@ export async function chapter5(stage) {
 
   async function playOut(first) {
     const other = first === close ? inside : close;
+    stage.callNames({ runner: other.el, defender: back.el });
     await stage.play(['c5.move1', 'c5.shot', 'sfx.kick', 'c5.save', 'c5.break', 'c5.tackle', 'c5.theirKick'], {
       'c5.move1': async () => {
         await Promise.all([pitch.moveTo(taker.el, { x: 5, y: 26 }, 900), pitch.moveTo(other.el, { x: 14, y: 29 }, 900)]);
