@@ -11,6 +11,7 @@ import { ballIcon, bonusStickerSvg, titleLogo, titleScene, lockIcon, bookIcon, h
 import * as narrator from './lib/narrator.js';
 import { pointOnce } from './lib/firstTap.js';
 import looks from './data/looks.json';
+import { footballSvg } from './lib/ball.js';
 
 import { NAME_MAX, TEAM_NAME_MAX, cleanName, cleanTeamName } from './lib/myteam.js';
 export { NAME_MAX, cleanName };
@@ -455,7 +456,7 @@ export function teamScreen({ team, kits, mode = 'both', onBack, onNext, onPlayer
 // Levels are grouped into matches, each starting with a flag (Rich's
 // choice, 26th November 2026). movedFrom: the level she has just passed,
 // so her player can be seen walking up from it.
-export function menuScreen({ profile, progress, team, levels, album, updateReady, movedFrom = null, onChapter, onSoon, onGrownUps, onUpdate, onTeam, onAlbum }) {
+export function menuScreen({ profile, progress, team, levels, album, updateReady, movedFrom = null, onChapter, onSoon, onGrownUps, onUpdate, onTeam, onAlbum, replay = null, onNewMatch = null }) {
   const path = buildPath(levels, progress);
 
   const trail = s(
@@ -541,10 +542,67 @@ export function menuScreen({ profile, progress, team, levels, album, updateReady
       h('button', { class: 'chip chip-count', type: 'button', 'aria-label': `Sticker album: ${album.count} stickers`, onclick: onAlbum }, h('span', { class: 'chip-stk' }, album.pages[0].stickers[0].earned ? stickerCard(album.pages[0].stickers[0]) : emptyCard(album.pages[0].stickers[0])), String(album.count)),
       againButton()
     ),
+    // Playing a match again: who against, and how hard (one to three balls).
+    replay
+      ? h(
+          'div',
+          { class: 'match-chip', 'aria-label': `Playing ${replay.name}, ${replay.label}` },
+          shirtIcon(replay.kit.pattern, replay.kit.shirt, replay.kit.stripe),
+          h('span', { class: 'match-chip-name' }, `v ${replay.name}`),
+          h('span', { class: 'match-chip-balls' }, ballRow(replay.balls, 3))
+        )
+      : null,
+    // Every level finished and no replay going: start a new match. Yellow,
+    // because it is the thing to tap next.
+    onNewMatch ? newMatchButton(onNewMatch) : null,
     updateReady ? h('button', { class: 'update-btn', type: 'button', onclick: onUpdate }, 'Grown-ups: a new version is ready. Tap to update.') : null,
     h('button', { class: 'text-btn grown-ups-btn', type: 'button', onclick: onGrownUps }, 'Grown-ups'),
     h('button', { class: 'icon-btn album-btn', type: 'button', 'aria-label': 'Sticker album', onclick: onAlbum }, bookIcon())
   );
+}
+
+// A row of little footballs: how hard a match is. Empty ones are faded.
+function ballRow(n, of) {
+  return Array.from({ length: of }, (_, i) => h('span', { class: `mini-ball${i < n ? '' : ' is-off'}` }, footballIcon(14)));
+}
+function footballIcon(size = 30) {
+  return s('svg', { viewBox: `${-size / 2 - 1} ${-size / 2 - 1} ${size + 2} ${size + 2}`, class: 'ball-pic', 'aria-hidden': 'true' }, footballSvg(size / 2));
+}
+function newMatchButton(onTap) {
+  const b = h('button', { class: 'new-match-btn is-glow', type: 'button', 'aria-label': 'New match', onclick: onTap }, footballIcon(34), h('span', {}, 'New match'));
+  pointOnce(b, 'newMatch', { above: true });
+  return b;
+}
+
+// ---------- A new match: who we play, and how hard ----------
+// She meets the new made-up team, then taps one, two or three balls.
+// Difficult stays locked until she has finished a match on Medium.
+export function newMatchScreen({ opponent, kit, choices, onPick, onLocked, onBack }) {
+  const buttons = choices.map((c) => {
+    const b = h(
+      'button',
+      { class: `level-choice${c.locked ? ' is-locked' : ''}`, type: 'button', 'aria-label': c.locked ? `${c.label}, locked` : c.label },
+      h('span', { class: 'level-balls' }, Array.from({ length: c.balls }, () => footballIcon(40))),
+      c.locked ? h('span', { class: 'level-lock' }, lockIcon()) : null,
+      h('span', { class: 'level-label' }, c.label)
+    );
+    b.addEventListener('click', () => {
+      if (c.locked) {
+        shake(b);
+        onLocked(c);
+      } else onPick(c);
+    });
+    return b;
+  });
+  const el = h(
+    'section',
+    { class: 'screen new-match' },
+    h('header', { class: 'setup-top' }, h('button', { class: 'icon-btn back-btn', type: 'button', 'aria-label': 'Back', onclick: onBack }, backIcon()), againButton()),
+    h('div', { class: 'versus' }, h('span', { class: 'versus-v' }, 'v'), h('div', { class: 'versus-shirt' }, shirtIcon(kit.pattern, kit.shirt, kit.stripe)), h('h1', { class: 'versus-name' }, opponent.name)),
+    h('div', { class: 'level-choices' }, buttons)
+  );
+  el.begin = () => narrator.say(['match.new', 'match.pick']);
+  return el;
 }
 
 // ---------- Sticker album ----------
@@ -636,7 +694,7 @@ export function gateScreen({ onPass, onBack }) {
 }
 
 // ---------- Grown-ups area ----------
-export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWords, onToggleWords, sounds = true, onToggleSounds }) {
+export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWords, onToggleWords, sounds = true, onToggleSounds, consequences = true, onToggleConsequences, replay = null, onStopReplay }) {
   const confirmBox = h(
     'div',
     { class: 'confirm is-hidden' },
@@ -653,7 +711,7 @@ export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWo
     h(
       'ul',
       { class: 'plain-list' },
-      h('li', {}, 'The game keeps a first name or nickname and a look for each player, the two team names, the other team’s kit, which levels are finished and the two settings below. That is all.'),
+      h('li', {}, 'The game keeps a first name or nickname and a look for each player, the two team names, the other team’s kit, which levels are finished, any match she is playing again and the settings below. That is all.'),
       h('li', {}, 'It is stored on this device only. Nothing is sent anywhere. There are no accounts, adverts or tracking.'),
       h('li', {}, 'The game does not use the camera, microphone, location or notifications.'),
       h('li', {}, 'Spoken lines use the phone’s own voice, which runs on the device.')
@@ -672,6 +730,22 @@ export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWo
       h('input', { type: 'checkbox', checked: sounds, onchange: (e) => onToggleSounds?.(e.target.checked) }),
       h('span', {}, 'Little sounds for taps, cheers and stickers, and a tiny buzz on Android phones. The referee’s whistle and the voice always stay on.')
     ),
+    h('h2', {}, 'Difficult matches'),
+    h(
+      'label',
+      { class: 'toggle' },
+      h('input', { type: 'checkbox', checked: consequences, onchange: (e) => onToggleConsequences?.(e.target.checked) }),
+      h('span', {}, 'On Difficult only, a first mistake at a line-up can let the other team win the ball, or score once in a match. It is told kindly, and she can still win. Switch off to keep Difficult without it. Easy and Medium never do this.')
+    ),
+    replay
+      ? h(
+          'div',
+          { class: 'replay-box' },
+          h('p', {}, `Playing again: against ${replay.name}, on ${replay.label}, ${replay.done} of ${replay.total} levels done.`),
+          h('button', { class: 'big-btn secondary', type: 'button', onclick: onStopReplay }, 'Stop this match'),
+          h('p', { class: 'small' }, 'Her stickers and finished levels stay. She can start a new match from the path.')
+        )
+      : null,
     h('h2', {}, 'Player'),
     h('button', { class: 'big-btn secondary', type: 'button', onclick: onEditPlayer }, 'Change name or look'),
     h('h2', {}, 'Delete'),

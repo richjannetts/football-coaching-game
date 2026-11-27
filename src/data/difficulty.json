@@ -1,0 +1,15 @@
+{
+  "note": "How much help each difficulty gives at a line-up. Counts are wrong tries: 'whyFrom' is the try that first shows a picture of why and says the reason, 'showFrom' the try that makes the empty spots glow, 'togetherFrom' the try where we move one player together. The first wrong try only ever says 'have another look' (Rich, 27th November 2026). 'dots' false means no dots on the pitch: she can put a player anywhere, and the game checks the area she is in. 'consequences' true means a first wrong try can cost the ball, or a goal, on Difficult only. A grown-up can switch that off. 'unlockAfter' names the difficulty she must finish a whole match on first.",
+  "order": ["easy", "medium", "difficult"],
+  "levels": {
+    "easy": { "label": "Easy", "balls": 1, "dots": true, "whyFrom": 2, "showFrom": 3, "togetherFrom": 4, "consequences": false },
+    "medium": { "label": "Medium", "balls": 2, "dots": true, "whyFrom": 2, "showFrom": 4, "togetherFrom": 6, "consequences": false },
+    "difficult": { "label": "Difficult", "balls": 3, "dots": false, "whyFrom": 2, "showFrom": 4, "togetherFrom": 6, "consequences": true, "unlockAfter": "medium" }
+  },
+  "consequences": {
+    "note": "On Difficult, what a first wrong try costs. At our restarts they win the ball. At theirs, their shot is saved by our keeper, except at the levels in 'goalLevels', where they can score: one goal at most in a match. If they do, our corner at level 8 goes in off the post, so she can still win. No consequence at the levels in 'none' (the penalty is the last kick of the match).",
+    "goalLevels": [2, 4, 7],
+    "none": [10],
+    "maxGoals": 1
+  }
+}

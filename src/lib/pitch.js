@@ -11,9 +11,14 @@ import { footballSvg } from './ball.js';
 
 const U = 10; // drawing units per yard
 
-export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }) {
-  const toView = (p) => ({ x: p.x * U, y: (length - p.y) * U });
-  const toYards = (v) => ({ x: v.x / U, y: length - v.y / U });
+// mirror: draw everything the other way round, left to right. A replay
+// uses it to put a kick-in or a corner on the other side of the pitch
+// (Rich, 27th November 2026). Levels, rules and shapes still work in their
+// own positions: only the drawing and the finger positions are flipped.
+export function createPitch({ length, width, goalWidth, ringYards, penaltyArea, mirror = false }) {
+  const fx = (x) => (mirror ? width - x : x);
+  const toView = (p) => ({ x: fx(p.x) * U, y: (length - p.y) * U });
+  const toYards = (v) => ({ x: fx(v.x / U), y: length - v.y / U });
   const halfway = length / 2;
   const centre = { x: width / 2, y: halfway };
 

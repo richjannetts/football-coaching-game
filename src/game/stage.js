@@ -12,8 +12,11 @@ import * as sfx from '../lib/sfx.js';
 import { pointOnce } from '../lib/firstTap.js';
 import { burst, burstFrom } from '../lib/confetti.js';
 import { team, pitchSize, benchSpots, keeperAt } from './content.js';
-import { buildSpots } from '../lib/geometry.js';
+import { buildSpots, freeSpots } from '../lib/geometry.js';
 import { myTeam } from '../lib/teamState.js';
+import { scoreWords, finalWords } from '../lib/difficulty.js';
+import difficulty from '../data/difficulty.json';
+import { playConsequence } from './consequence.js';
 
 export const ABORT = Symbol('left the chapter');
 
@@ -28,8 +31,15 @@ const THEIR_LOOKS = [
 ];
 
 // spots: ids of optional extra spots this level needs (team.json grid.extra).
-export function createStage({ profile, onHome, showWords = false, spots: extraSpots = [] }) {
-  const gridSpots = buildSpots(team.grid, extraSpots);
+// mode: how this level is played (see modeFor in main.js): the difficulty,
+// whether the pitch is the other way round, extra goals so far on
+// Difficult, and which full-time ending. Missing means Easy, as before.
+export const defaultMode = () => ({ level: 0, difficulty: 'easy', mirror: false, goals: { us: 0, them: 0 }, consequences: false, ending: 0, onGoal: () => {} });
+export function createStage({ profile, onHome, showWords = false, spots: extraSpots = [], mode: given = {} }) {
+  const mode = { ...defaultMode(), ...given, goals: { ...defaultMode().goals, ...(given.goals || {}) } };
+  mode.cfg = difficulty.levels[mode.difficulty] || difficulty.levels.easy;
+  // No dots on Difficult: players can go anywhere (an unseen one-yard grid).
+  const gridSpots = mode.cfg.dots ? buildSpots(team.grid, extraSpots) : freeSpots(team.grid, extraSpots, pitchSize);
   const caption = h('p', { class: 'caption', 'aria-live': 'polite' });
   const homeBtn = h('button', { class: 'icon-btn home-btn', type: 'button', 'aria-label': 'Home' }, homeIcon());
   const againBtn = h('button', { class: 'icon-btn again', type: 'button', 'aria-label': 'Hear it again' }, speakerIcon());
@@ -67,12 +77,14 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
   showCaption(showWords);
   narrator.onNoVoice(() => showCaption(true));
 
-  const pitch = createPitch(pitchSize);
+  const pitch = createPitch({ ...pitchSize, mirror: !!mode.mirror });
   pitchWrap.append(pitch.svg);
-  pitch.showSpots([...gridSpots, ...benchSpots]);
+  pitch.showSpots(mode.cfg.dots ? [...gridSpots, ...benchSpots] : benchSpots);
+  pitch.svg.classList.toggle('no-dots', !mode.cfg.dots);
 
   const stage = {
     el,
+    mode,
     pitch,
     alive: true,
     players: [],
@@ -231,7 +243,14 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
   };
 
   // The score in the middle of the scoreboard. pop: a goal was just scored.
-  stage.setScore = (us, them, pop = false) => {
+  // us and them are the story's score. Extra goals on Difficult are added
+  // on top, and the voice says the real score ({score} and {final}).
+  let base = null;
+  stage.setScore = (storyUs, storyThem, pop = false) => {
+    base = [storyUs, storyThem];
+    const us = storyUs + mode.goals.us;
+    const them = storyThem + mode.goals.them;
+    narrator.setVars({ score: scoreWords(us, them), final: finalWords(us, them) });
     scoreV.textContent = `${us} – ${them}`;
     scoreV.classList.add('is-score');
     scoreboard.setAttribute('aria-label', `${mine.name} ${us}, ${mine.theirName} ${them}`);
@@ -241,6 +260,16 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
       scoreV.classList.add('is-new');
     }
   };
+
+  // An extra goal, outside the story's own goals: theirs after a mistake
+  // on Difficult, or ours when the corner at level 8 goes in.
+  stage.addGoal = (side) => {
+    mode.goals[side] += 1;
+    mode.onGoal(side);
+    if (base) stage.setScore(base[0], base[1], true);
+  };
+  // What a wrong try costs on Difficult (see lineup.js).
+  stage.consequence = (type) => playConsequence(stage, type);
 
   stage.goalBanner = (show) => goalBanner.classList.toggle('is-hidden', !show);
   // The net ripples when the ball goes in.

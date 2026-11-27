@@ -47,3 +47,19 @@ export function nearestSpot(point, spots) {
   }
   return best;
 }
+
+// On Difficult there are no dots: she can put a player anywhere (Rich,
+// 27th November 2026). Underneath, players still snap, but to a fine grid
+// one yard apart that she never sees, plus every ordinary spot, so the
+// centre mark and the kick-in spot still work exactly.
+export function freeSpots(grid, include, { width, length, step = 1 }) {
+  const spots = buildSpots(grid, include);
+  const near = (x, y) => spots.some((s) => Math.abs(s.x - x) < step / 2 && Math.abs(s.y - y) < step / 2);
+  const fine = [];
+  for (let y = step / 2; y < length; y += step) {
+    for (let x = step / 2; x < width; x += step) {
+      if (!near(x, y)) fine.push({ id: `f${x}_${y}`, x, y, free: true });
+    }
+  }
+  return [...spots, ...fine];
+}

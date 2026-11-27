@@ -1,0 +1,15 @@
+{
+  "note": "Playing a match again against a new team (Rich, 27th November 2026). The lessons stay in the same order, but each replay changes: a new made-up team with its own kit (colours and patterns only: never a real club, a badge or a country), the side of the pitch for the levels in 'mirrorable', and the full-time ending. Kit colours are ids from team.json kitOptions. A team whose shirt clashes with our kit is skipped.",
+  "opponents": [
+    { "name": "The Comets", "kit": { "pattern": "hoops", "shirt": "green", "stripe": "white", "shorts": "white", "socks": "green" } },
+    { "name": "The Rockets", "kit": { "pattern": "plain", "shirt": "orange", "stripe": "black", "shorts": "black", "socks": "orange" } },
+    { "name": "The Sparks", "kit": { "pattern": "sash", "shirt": "white", "stripe": "purple", "shorts": "purple", "socks": "white" } },
+    { "name": "The Badgers", "kit": { "pattern": "halves", "shirt": "black", "stripe": "white", "shorts": "black", "socks": "white" } },
+    { "name": "The Pebbles", "kit": { "pattern": "plain", "shirt": "pink", "stripe": "white", "shorts": "navy", "socks": "pink" } },
+    { "name": "The Hedgehogs", "kit": { "pattern": "stripes", "shirt": "claret", "stripe": "sky", "shorts": "white", "socks": "claret" } },
+    { "name": "The Thunder", "kit": { "pattern": "plain", "shirt": "red", "stripe": "black", "shorts": "black", "socks": "red" } },
+    { "name": "The Rainbows", "kit": { "pattern": "hoops", "shirt": "sky", "stripe": "white", "shorts": "sky", "socks": "white" } }
+  ],
+  "mirrorable": [3, 4, 5, 6, 8, 9],
+  "endings": 3
+}

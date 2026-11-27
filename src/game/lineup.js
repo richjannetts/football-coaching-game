@@ -1,18 +1,25 @@
 // The line-up puzzle used by every level.
 // The child places all five players, then taps the tick.
 // First the rule is checked ("The rule says"), then our shape ("In our team").
-// A wrong answer gets a friendly whistle, a picture of why, a hint and another
-// go straight away. Hints step up: nudge, then show, then do one together.
+// A wrong answer gets a friendly whistle and another go straight away. The
+// first wrong try only says "have another look" (Rich, 27th November 2026).
+// After that the help steps up: a picture of why, then the glowing spots,
+// then we do one together. How soon each step comes depends on the
+// difficulty (src/data/difficulty.json). On Difficult, a first wrong try
+// can also cost the ball or a goal, told kindly (see consequence.js).
 
 import { checkRule, checkShape } from '../lib/checks.js';
 import { nearestSpot } from '../lib/geometry.js';
 import { ruleSet, team } from './content.js';
 import { wait, motion } from '../lib/svg.js';
+import { helpFor, consequenceFor } from '../lib/difficulty.js';
+import difficulty from '../data/difficulty.json';
 
 // ball: where the restart is taken from, for kick-ins (defaults to the centre mark).
 // area: their penalty box in yards, for the penalty.
 export function runLineup(stage, { kind, shapeKey, promptIds, ball, area }) {
-  const { pitch, placement } = stage;
+  const { pitch, placement, mode } = stage;
+  const cfg = mode.cfg;
   const shape = team.shapes[shapeKey];
   let attempts = 0;
   // Our marked goalkeeper (from team.json), who must be the one in goal.
@@ -82,6 +89,20 @@ export function runLineup(stage, { kind, shapeKey, promptIds, ball, area }) {
 
       attempts++;
       changed = false;
+      const help = helpFor(cfg, attempts);
+      const lose = consequenceFor({ cfg, rules: difficulty.consequences, enabled: mode.consequences, level: mode.level, kind, attempts, goalsAgainst: mode.goals.them });
+
+      // The first wrong try: no reasons and no hints yet, just another look.
+      if (help.nudgeOnly) {
+        lastFeedback = ['hint.lookAgain'];
+        if (lose) {
+          loseThenRetry(lose);
+          return;
+        }
+        stage.say(['sfx.whistle', 'hint.lookAgain']);
+        return;
+      }
+
       // The rule comes first: it is the same for every team.
       const problem = rule.ok ? fit.problems[0] : rule.problems[0];
       problem.players.forEach((i) => stage.players[i].el.classList.add('is-wrong'));
@@ -89,12 +110,12 @@ export function runLineup(stage, { kind, shapeKey, promptIds, ball, area }) {
       pitch.setWhy(problem.type);
 
       const lines = ['sfx.whistle', problem.line];
-      if (attempts >= 2 || hintsOn) {
+      if (help.show || hintsOn) {
         hintsOn = true;
         pitch.showHints(fit.emptySpots);
-        if (attempts === 2) lines.push('hint.show');
+        if (help.showNow) lines.push('hint.show');
       }
-      if (attempts >= 3) {
+      if (help.together) {
         lastFeedback = lines.filter((id) => id !== 'sfx.whistle');
         doOneTogether(fit, rule, lines);
       } else {
@@ -103,6 +124,18 @@ export function runLineup(stage, { kind, shapeKey, promptIds, ball, area }) {
         stage.say(lines);
       }
     };
+
+    // Difficult only: show what the mistake cost, then try again.
+    async function loseThenRetry(type) {
+      try {
+        await stage.consequence(type);
+      } catch {
+        return; // she left the level
+      }
+      if (!stage.alive) return;
+      stage.setBusy(false);
+      start();
+    }
 
     // Move one player into place for the child, then hand back.
     async function doOneTogether(fit, rule, lines) {
