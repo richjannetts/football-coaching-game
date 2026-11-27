@@ -1,11 +1,11 @@
 // The chapter screen: caption, buttons, pitch and the players on it.
 // Chapters use the stage to show things and to wait for taps.
 
-import { h, wait, hold } from '../lib/svg.js';
+import { h, wait, hold, motion } from '../lib/svg.js';
 import { createPitch } from '../lib/pitch.js';
 import { createPlacement } from '../lib/placement.js';
 import { homeIcon, speakerIcon, tickIcon, stickerSvg, nextIcon, tapHere, bookIcon } from '../lib/icons.js';
-import { stickerCard } from '../lib/stickers.js';
+import { stickerCard, emptyCard } from '../lib/stickers.js';
 import { createQuiz } from './quiz.js';
 import * as narrator from '../lib/narrator.js';
 import * as sfx from '../lib/sfx.js';
@@ -318,7 +318,8 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
   // A right answer wins the next album sticker (prize). Finishing a match
   // gives a shiny sticker (shiny). The next button appears once the
   // question is answered.
-  stage.showEnd = ({ level, nextLabel, onNext, question, onBonus, firstTime = false, prize = null, shiny = null }) => {
+  // prizePage: the album page the prize goes on, so it can be seen landing.
+  stage.showEnd = ({ level, nextLabel, onNext, question, onBonus, firstTime = false, prize = null, prizePage = null, shiny = null }) => {
     const award = h('div', { class: 'end-sticker' }, h('div', { class: 'end-rays' }), stickerSvg(level, true));
     if (shiny) award.append(h('div', { class: 'end-prize is-shiny' }, stickerCard(shiny)));
     const nextBtn = onNext
@@ -366,23 +367,48 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
     }
     // A right answer wins a sticker: a big, clear moment that says so
     // (Rich asked, 27th November 2026). The sticker fills the screen with
-    // "New sticker!" and a picture of her album, then settles beside the
-    // medal. It is only pictures: touch carries on as normal underneath.
+    // "New sticker!", then her album page appears and the sticker flies
+    // into its numbered space (Rich asked again after a play-test, the same
+    // day). Then it settles beside the medal. It is only pictures: touch
+    // carries on as normal underneath.
     const stickerWin = async (st) => {
       if (!stage.alive) return;
       endCard.querySelector('.sticker-win')?.remove();
       const big = h('div', { class: 'sticker-win-card' }, stickerCard(st));
+      const page = prizePage ? albumPage(prizePage, st) : null;
       const win = h(
         'div',
         { class: 'sticker-win', 'aria-hidden': 'true' },
         h('div', { class: 'sticker-win-rays' }),
         h('div', { class: 'sticker-win-title' }, 'NEW STICKER!'),
         big,
-        h('div', { class: 'sticker-win-album' }, h('span', { class: 'sticker-win-book' }, bookIcon()), h('span', {}, 'For your album'))
+        h('div', { class: 'sticker-win-album' }, h('span', { class: 'sticker-win-book' }, bookIcon()), h('span', {}, 'For your album')),
+        page ? page.el : null
       );
       endCard.append(win);
       requestAnimationFrame(() => stage.confetti(big, 60));
-      await wait(hold(3600));
+      await wait(hold(page ? 1900 : 3600));
+      if (page && stage.alive) {
+        win.classList.add('is-sticking');
+        await wait(hold(450));
+        const from = big.getBoundingClientRect();
+        const to = page.target.getBoundingClientRect();
+        const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+        const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+        const sc = from.width ? to.width / from.width : 1;
+        const fly = big.animate([{ transform: 'none' }, { transform: `translate(${dx}px, ${dy}px) scale(${sc})` }], {
+          duration: motion(850),
+          easing: 'cubic-bezier(0.5, 0, 0.3, 1)',
+          fill: 'forwards',
+        });
+        await fly.finished.catch(() => {});
+        big.style.visibility = 'hidden';
+        page.target.classList.remove('is-target');
+        page.target.classList.add('got', 'just-got');
+        page.target.replaceChildren(stickerCard(st));
+        requestAnimationFrame(() => stage.confetti(page.target, 30));
+        await wait(hold(1900));
+      }
       win.classList.add('is-leaving');
       await wait(hold(500));
       win.remove();
@@ -398,6 +424,24 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
     requestAnimationFrame(() => stage.confetti(award, 56));
     return { startQuiz: () => (quiz ? quiz.start() : pointLine ? stage.play([pointLine]) : Promise.resolve()) };
   };
+
+  // A small copy of one album page, with the new sticker's space waiting.
+  function albumPage(pg, st) {
+    let target = null;
+    const slots = pg.stickers.map((x, j) => {
+      const mine = x.no === st.no;
+      const slot = h('span', { class: mine ? `slot r${j % 3} is-target` : x.earned ? `slot got r${j % 3}` : 'slot' }, x.earned && !mine ? stickerCard(x) : emptyCard(x));
+      if (mine) target = slot;
+      return slot;
+    });
+    const el = h(
+      'article',
+      { class: 'paper sticker-win-page' },
+      h('div', { class: 'paper-band', style: { background: pg.colour } }, h('span', { class: 'paper-title' }, pg.title), h('span', { class: 'paper-page' }, `page ${pg.index + 1}`)),
+      h('div', { class: 'paper-grid' }, slots)
+    );
+    return target ? { el, target } : null;
+  }
 
   stage.leave = () => {
     if (!stage.alive) return;

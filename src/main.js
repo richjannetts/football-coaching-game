@@ -20,6 +20,7 @@ import stickers from './data/stickers.json';
 import { buildAlbum, newShinies } from './lib/album.js';
 import { quizFor } from './lib/quiz.js';
 import { detectPlatform } from './lib/platform.js';
+import { hasPointed } from './lib/firstTap.js';
 import { installScreen, welcomeScreen, startScreen, storyScreen, setupScreen, menuScreen, teamScreen, albumScreen, gateScreen, grownUpsScreen, newMatchScreen } from './screens.js';
 import * as teams from './lib/teamState.js';
 import difficulty from './data/difficulty.json';
@@ -164,7 +165,12 @@ const storyPages = (part) =>
         { line: 'story.coach', scene: 'coach' },
         { line: 'story.you', scene: 'you' },
       ]
-    : [{ line: 'story.ready', scene: 'ready' }];
+    : [
+        // The sticker book is explained before her first level (Rich, 27th
+        // November 2026), then the team goes to the pitch.
+        { line: 'story.stickers', scene: 'stickers' },
+        { line: 'story.ready', scene: 'ready' },
+      ];
 
 // Every step has a back button that goes one step back (Rich asked, 27th
 // November 2026): story, her player, her team-mates, the other team, and
@@ -178,6 +184,7 @@ function goStory(part = 'start', atEnd = false) {
     team: teams.myTeam(profile),
     profile,
     coach: COACH,
+    album: albumNow(),
     onBack: part === 'start' ? null : () => goTeam(true, 'them'),
     onDone: () => (part === 'start' ? firstSetup() : goMenu(true)),
   });
@@ -255,6 +262,12 @@ function albumNow() {
   return buildAlbum(stickers, { squad: t.squad, teamName: t.name, progress, levels });
 }
 
+// The album page a sticker sits on, with its page number.
+function pageOf(album, st) {
+  const index = album.pages.findIndex((p) => p.id === st.page);
+  return index < 0 ? null : { ...album.pages[index], index };
+}
+
 function goAlbum() {
   const el = albumScreen({ album: albumNow(), onBack: () => goMenu(false) });
   show(el);
@@ -304,9 +317,11 @@ function goMenu(speak) {
   onMenu = true;
   if (cur) narrator.setVars({ them: cur.opponent.name });
   if (!speak) return;
-  if (cur) narrator.say([movedFrom != null ? 'menu.replayMoved' : 'menu.replay']);
-  else if (canStart) narrator.say(['menu.newMatch']);
-  else narrator.say([allDone ? 'menu.allDone' : movedFrom != null ? 'menu.moved' : 'menu.welcome']);
+  // The first time she has a sticker, the voice shows her the book too.
+  const book = albumNow().count > 0 && !hasPointed('album') ? ['menu.album'] : [];
+  if (cur) narrator.say([movedFrom != null ? 'menu.replayMoved' : 'menu.replay', ...book]);
+  else if (canStart) narrator.say(['menu.newMatch', ...book]);
+  else narrator.say([allDone ? 'menu.allDone' : movedFrom != null ? 'menu.moved' : 'menu.welcome', ...book]);
 }
 
 // A new match: meet the new team, then choose how hard.
@@ -424,6 +439,7 @@ async function finishChapter(n, stage) {
     level: n,
     // A right bonus answer wins the next sticker, once for each level.
     prize: progress[`bonus${n}`] ? null : after.next,
+    prizePage: progress[`bonus${n}`] || !after.next ? null : pageOf(after, after.next),
     shiny,
     question: quizFor(quiz, n),
     firstTime,

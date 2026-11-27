@@ -45,12 +45,14 @@ Why: one girl stays back to defend, and a girl either side gives two easy passes
 4. Level 4: their goal kick. "Back, wait, GO": we wait in our half, then close them down and win it. It goes off the side for our kick-in.
 5. Later, from the agreed storyboard (27th November 2026): our kick-in, their kick-in (1-1 at half-time), half-time page, second-half centre kick, our corner, their corner, a last-minute penalty she scores (2-1), full-time page.
 
-## Our goal kick (level 3, a first guess for Rich to change)
+## Our goal kick (level 3)
+
+Changed by Rich, 27th November 2026: our shape matches the one shown for the other team at their goal kick (level 4), and everyone stays in our own half (club rule).
 
 - Keeper takes it from our goal.
-- A friend out wide on each side, level with the top corners of our penalty box (one dot further up also counts).
-- One friend in the middle of our half.
-- Up goes into their half, in the middle.
+- A friend out wide on each side, level with the top corners of our penalty box.
+- One friend inside, a little to one side of the middle of our half.
+- Up on the other side, just behind halfway. Either side counts in the game, and so does the middle.
 - First pass: short, out wide. Never a long kick.
 
 ## Their goal kick (level 4, a first guess for Rich to change)
