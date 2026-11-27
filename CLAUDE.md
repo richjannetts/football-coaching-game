@@ -142,8 +142,8 @@ Keep content out of the code so it can be swapped later.
 
 ## Match 1
 
-The full match is storyboarded in `docs/match-1-storyboard.md` (agreed by Rich, 27th November 2026): ten levels, kick-off to full time. Levels 1 to 6 (the first half) are built. A match still being built has `complete: false` in `levels.json`, so its shiny waits for full time. The scoreboard shows the score once a level sets it (`stage.setScore`).
+The full match is storyboarded in `docs/match-1-storyboard.md` (agreed by Rich, 27th November 2026): ten levels, kick-off to full time. Levels 1 to 7 are built (the first half, then half-time and the second-half kick-off). A match still being built has `complete: false` in `levels.json`, so its shiny waits for full time. The scoreboard shows the score once a level sets it (`stage.setScore`).
 
 ## Not in scope yet
 
-A coach editor, sharing a team code, kick-ins, corners, penalties (waiting for Rich's club rule set), recorded voice, polished artwork.
+A coach editor, sharing a team code, corners and penalties (levels 8 to 10, next), recorded voice, polished artwork.

@@ -890,6 +890,86 @@
       "id": "quiz.c6.reveal",
       "text": "Good try. The rule says we stay five big steps from the ball until it's kicked in, like this one. You can try for the sticker again next time you play level six.",
       "cue": "The right picture glows. The other two pictures fade."
+    },
+    {
+      "id": "c7.intro1",
+      "text": "Half-time! Time for a drink and a quick team talk.",
+      "cue": "Our players gather round and have a drink."
+    },
+    {
+      "id": "c7.intro2",
+      "text": "Coach says: well done for working so hard. Now say one kind thing to a team-mate.",
+      "cue": "Our players jump and give each other a high five."
+    },
+    {
+      "id": "c7.intro3",
+      "text": "It's the second half, and it's one each. {them} kick off.",
+      "cue": "Their kicker glows on the ball."
+    },
+    {
+      "id": "c7.place",
+      "text": "Spots! Where do we stand for their centre kick? You've done this one before.",
+      "cue": "Our players at the side gently bounce."
+    },
+    {
+      "id": "c7.kick",
+      "text": "They kick off and pass it to the side.",
+      "cue": "Their kicker passes to a friend. Our front player closes down."
+    },
+    {
+      "id": "c7.win",
+      "text": "Our friend was ready on that side, so she nips in and wins it!",
+      "cue": "Our friend takes the ball."
+    },
+    {
+      "id": "c7.attack",
+      "text": "We pass it forward together.",
+      "cue": "Our players run up the pitch and pass to our front player."
+    },
+    {
+      "id": "c7.block",
+      "text": "Their defender blocks our shot, and it goes out over their goal line.",
+      "cue": "The ball bounces off their defender and rolls past their goal."
+    },
+    {
+      "id": "c7.corner",
+      "text": "Their player touched it last, so it's a corner for us! That's the next level.",
+      "cue": "The ball goes to the corner of the pitch."
+    },
+    {
+      "id": "c7.end",
+      "text": "Level seven done! On Saturday, listen to Coach at half-time, then go again.",
+      "cue": "A gold football medal with a 7 on it spins in."
+    },
+    {
+      "id": "quiz.c7.ask",
+      "text": "When they take the centre kick, where does our front player wait? Tap the right picture.",
+      "cue": "Three little pitches. Their kicker is on the ball, with the helper ring round it."
+    },
+    {
+      "id": "quiz.c7.a",
+      "text": "Just outside the ring, in the middle?",
+      "cue": "The first picture glows."
+    },
+    {
+      "id": "quiz.c7.b",
+      "text": "Inside the ring, next to the ball?",
+      "cue": "The middle picture glows."
+    },
+    {
+      "id": "quiz.c7.c",
+      "text": "Right back by our goal?",
+      "cue": "The last picture glows."
+    },
+    {
+      "id": "quiz.c7.right",
+      "text": "That's right! In our team, our front player waits just outside the ring, ready to chase. Well done, {name}!",
+      "cue": "The right picture has a green edge."
+    },
+    {
+      "id": "quiz.c7.reveal",
+      "text": "Good try. In our team, our front player waits just outside the ring, in the middle, like this one, ready to chase. You can try for the sticker again next time you play level seven.",
+      "cue": "The right picture glows. The other two pictures fade."
     }
   ]
 }
