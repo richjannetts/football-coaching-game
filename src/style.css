@@ -550,6 +550,7 @@ h2 {
   padding: 5px 4px;
   border-radius: 12px;
   box-shadow: 0 3px 0 var(--navy);
+  white-space: normal;
 }
 .tap-here-hand {
   width: 30px;
@@ -1987,10 +1988,10 @@ h2 {
   min-width: 0;
 }
 
-/* ---------- Menu: the match clock ----------
+/* ---------- Menu: the cup path ----------
+   One trail up through the whole cup, scrolling under the top buttons.
    Finished moments are green, the one to play next is yellow and glows,
-   and the rest are white and locked. The full clock styles are near the
-   end of this file. */
+   and the rest are white and locked. The cup sits at the top. */
 .menu {
   position: relative;
   padding: 0;
@@ -2018,6 +2019,131 @@ h2 {
 .node-bonus .sticker {
   width: 100%;
   height: 100%;
+}
+.path-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+}
+.path-map {
+  position: relative;
+  flex: none;
+  /* A short path sits at the bottom of the screen, like the start of a road. */
+  margin: auto auto 0;
+}
+.path-trail {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.path-trail path {
+  fill: none;
+  stroke-linecap: round;
+}
+.trail-lip {
+  stroke: #2a6fb5;
+  stroke-width: 28;
+  transform: translateY(4px);
+}
+.trail {
+  stroke: #3f8fdc;
+  stroke-width: 20;
+}
+.trail-done {
+  stroke: var(--accent);
+  stroke-width: 20;
+}
+.trail-dots {
+  stroke: #fff;
+  stroke-width: 4;
+  stroke-dasharray: 1 14;
+  opacity: 0.9;
+}
+.path-node {
+  position: absolute;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font: 400 38px/1 var(--font-display);
+  border: 4px solid #fff;
+  background: var(--panel);
+  color: var(--ink-soft);
+  box-shadow: 0 8px 0 var(--lip), 0 16px 18px rgba(10, 26, 60, 0.2);
+}
+.path-node:active {
+  translate: 0 6px;
+  box-shadow: 0 2px 0 var(--lip);
+}
+.path-node .icon {
+  width: 34px;
+  height: 34px;
+  opacity: 0.55;
+}
+.path-node.is-locked,
+.path-node.is-soon {
+  color: #8aa3c4;
+}
+.path-node.is-soon {
+  width: 60px;
+  height: 60px;
+  margin: 8px;
+  opacity: 0.85;
+}
+.path-node.is-done {
+  background: var(--green);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 4px 0 rgba(255, 255, 255, 0.3), 0 8px 0 var(--green-lip), 0 16px 18px rgba(10, 26, 60, 0.25);
+}
+.path-node.is-done:active {
+  box-shadow: 0 2px 0 var(--green-lip);
+}
+.path-node.is-now {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: #fff8cf;
+  box-shadow: inset 0 4px 0 #fff3a6, 0 8px 0 var(--accent-lip), 0 16px 18px rgba(10, 26, 60, 0.25);
+  animation: now-glow 1.6s ease-in-out infinite;
+}
+.path-node.is-now:active {
+  box-shadow: 0 2px 0 var(--accent-lip);
+}
+.path-flag {
+  position: absolute;
+  background: var(--blue);
+  color: #fff;
+  font: 400 15px/1 var(--font-display);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  border-radius: 12px;
+  rotate: -4deg;
+  box-shadow: 0 4px 0 var(--blue-lip);
+  white-space: nowrap;
+}
+.path-flag.is-soon {
+  background: #fff;
+  color: var(--ink-soft);
+  box-shadow: 0 4px 0 var(--lip);
+  rotate: 3deg;
+}
+.path-you {
+  position: absolute;
+  width: 60px;
+  pointer-events: none;
+}
+.path-you .avatar {
+  display: block;
+  position: relative;
+  animation: bob 1.8s ease-in-out infinite;
 }
 .path-you-shadow {
   position: absolute;
@@ -2099,8 +2225,12 @@ button.chip:active {
   right: var(--edge-right);
   top: calc(var(--edge-top) + 76px);
 }
-/* Small phones: the sticker count drops its picture to fit. */
+/* Small phones: the path shrinks a little, and the sticker count drops its
+   picture to fit. */
 @media (max-width: 370px) {
+  .path-map {
+    zoom: 0.86;
+  }
   .chip-count .icon {
     display: none;
   }
@@ -2893,197 +3023,99 @@ button.chip:active {
   z-index: 1;
 }
 
-/* ---------- The match clock and the cup (27th November 2026) ----------
-   The menu is a 40-minute match clock. The cup run sits above it in
-   portrait and beside it in landscape. The clock is a square that fits the
-   space left, and its markers are placed in percent, so it shrinks to fit
-   any phone the right way round. */
-.menu.clock-menu {
+/* ---------- The cup path layout (27th November 2026) ----------
+   Top buttons, then who we are playing, then the path (which scrolls),
+   then the bottom buttons. In landscape the path is a column on the right. */
+.menu.cup-menu {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   padding: var(--edge-top) var(--edge-right) var(--edge-bottom) var(--edge-left);
   overflow: hidden;
 }
-.clock-menu .path-top {
-  position: static;
+.cup-menu .path-top {
+  position: relative;
+  z-index: 2;
   flex: none;
 }
-.clock-side {
+.menu-side {
+  position: relative;
+  z-index: 2;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  justify-content: center;
   flex: none;
 }
-.clock-side .match-chip {
+.menu-side .match-chip {
   max-width: 100%;
 }
-.clock-stage {
+.menu-stage {
+  position: relative;
   flex: 1;
   min-height: 0;
+  margin: 0 calc(-1 * var(--edge-right)) 0 calc(-1 * var(--edge-left));
+}
+.menu-stage .path-scroll {
+  /* The trail fades out at the top and bottom edges as it scrolls. */
+  -webkit-mask-image: linear-gradient(transparent, #000 28px, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(transparent, #000 28px, #000 calc(100% - 28px), transparent);
+}
+.path-cup {
+  position: absolute;
+  width: 88px;
+  height: 88px;
   display: grid;
   place-items: center;
-  container-type: size;
-}
-.clock {
-  position: relative;
-  /* The biggest square that fits, with room for the pointer above. */
-  width: min(100cqw, 100cqh, 440px);
-  aspect-ratio: 1;
-  container-type: inline-size;
-}
-.clock-face {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-.clock-rim {
-  fill: var(--navy);
-}
-.clock-dial {
-  fill: var(--panel);
-}
-.clock-track {
-  fill: none;
-  stroke: #dbe8f6;
-  stroke-width: 3.2;
-}
-.clock-played {
-  fill: none;
-  stroke: var(--green);
-  stroke-width: 3.2;
-  stroke-linecap: round;
-}
-.clock-ht {
-  stroke: var(--navy);
-  stroke-width: 1.4;
-  stroke-linecap: round;
-}
-.clock-ht-label {
-  font: 400 3.3px var(--font-display);
-  letter-spacing: 0.3px;
-  fill: var(--ink-soft);
-  text-anchor: middle;
-}
-.clock-hand {
-  transform-box: view-box;
-  transform-origin: 50px 50px;
-}
-.clock-hand-line {
-  stroke: var(--navy);
-  stroke-width: 2.4;
-  stroke-linecap: round;
-}
-.clock-hand-pin {
-  fill: var(--navy);
-}
-.clock-centre {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  translate: -50% -46%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  pointer-events: none;
-}
-.clock-you {
-  position: relative;
-  width: 17cqw;
-}
-.clock-you .avatar {
-  display: block;
-  position: relative;
-  width: 100%;
-  height: auto;
-  animation: bob 1.8s ease-in-out infinite;
-}
-.clock-minute {
-  font: 400 max(13px, 4.6cqw) / 1 var(--font-display);
-  color: var(--navy);
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 999px;
-  padding: 3px 8px;
-  white-space: nowrap;
-}
-.clock-marker {
-  position: absolute;
-  width: 15cqw;
-  height: 15cqw;
-  min-width: 44px;
-  min-height: 44px;
-  translate: -50% -50%;
   border-radius: 50%;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  font: 400 max(18px, 7.4cqw) / 1 var(--font-display);
-  border: 3px solid #fff;
-  background: var(--panel);
-  color: #8aa3c4;
-  box-shadow: 0 5px 0 var(--lip), 0 8px 10px rgba(10, 26, 60, 0.2);
+  background: #eaf5ff;
+  border: 4px solid #fff;
+  box-shadow: 0 8px 0 var(--lip);
 }
-/* A bigger area to tap than the drawing, for small fingers. */
-.clock-marker::after {
-  content: '';
-  position: absolute;
-  inset: -8px;
-  border-radius: 50%;
+.path-cup .trophy {
+  width: 62px;
+  height: 62px;
 }
-.clock-marker:active {
-  translate: -50% calc(-50% + 4px);
-  box-shadow: 0 1px 0 var(--lip);
+.path-cup.is-won {
+  background: #fff3a6;
+  box-shadow: 0 8px 0 var(--accent-lip), 0 0 24px 6px rgba(255, 220, 90, 0.8);
 }
-.clock-marker.is-done {
-  background: var(--green);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.7);
-  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.3), 0 5px 0 var(--green-lip), 0 8px 10px rgba(10, 26, 60, 0.2);
-}
-.clock-marker.is-now {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: #fff8cf;
-  box-shadow: inset 0 3px 0 #fff3a6, 0 5px 0 var(--accent-lip), 0 8px 10px rgba(10, 26, 60, 0.2);
-  animation: now-glow 1.6s ease-in-out infinite;
-  z-index: 1;
-}
-.clock-marker .node-bonus {
-  right: -10px;
-  bottom: -8px;
-  width: 26px;
-  height: 26px;
-}
-.clock-marker .tap-here {
+.path-node .tap-here {
   z-index: 2;
 }
-.clock-bottom {
+.menu-bottom {
+  position: relative;
+  z-index: 2;
   flex: none;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
 }
-.clock-menu .grown-ups-btn {
+/* Between rounds, the yellow button has a row of its own above the others. */
+.menu-next {
+  order: -1;
+  flex-basis: 100%;
+  display: flex;
+  justify-content: center;
+}
+.cup-menu .grown-ups-btn,
+.cup-menu .album-btn,
+.cup-menu .match-chip {
   position: static;
 }
-.clock-menu .new-match-btn {
+.cup-menu .new-match-btn {
   position: static;
   translate: none;
 }
-.clock-menu .new-match-btn:active {
+.cup-menu .new-match-btn:active {
   translate: 0 5px;
 }
-.clock-menu .new-match-btn .trophy {
+.cup-menu .new-match-btn .trophy {
   width: 40px;
   height: 40px;
 }
-.clock-menu .update-btn {
+.cup-menu .update-btn {
   top: calc(var(--edge-top) + 70px);
   z-index: 3;
 }
@@ -3378,7 +3410,7 @@ button.chip:active {
   .cup-win-big,
   .cup-win-trophy,
   .cup-win-player .avatar,
-  .clock-you .avatar {
+  .path-you .avatar {
     animation: none;
   }
 }
@@ -3403,34 +3435,33 @@ button.chip:active {
   }
 }
 
-/* Landscape on a phone: the cup run and buttons on the left, the clock on
-   the right, so the clock can be as tall as the screen. */
+/* Landscape on a phone: the buttons on the left, the cup path on the
+   right, as tall as the screen. */
 @media (orientation: landscape) and (max-height: 600px) {
-  .menu.clock-menu {
+  .menu.cup-menu {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) 360px;
     grid-template-rows: auto 1fr auto;
     column-gap: 16px;
     row-gap: 8px;
   }
-  .clock-menu .path-top {
+  .cup-menu .path-top {
     grid-column: 1;
     grid-row: 1;
   }
-  .clock-side {
+  .menu-side {
     grid-column: 1;
     grid-row: 2;
-    justify-content: center;
+    align-items: center;
   }
-  .clock-bottom {
+  .menu-bottom {
     grid-column: 1;
     grid-row: 3;
   }
-  .clock-stage {
+  .menu-stage {
     grid-column: 2;
     grid-row: 1 / -1;
-    width: calc(var(--app-h, 100dvh) - var(--edge-top) - var(--edge-bottom));
-    height: 100%;
+    margin: calc(-1 * var(--edge-top)) calc(-1 * var(--edge-right)) calc(-1 * var(--edge-bottom)) 0;
   }
   .cup-win {
     display: grid;
@@ -3471,25 +3502,9 @@ button.chip:active {
     height: 72px;
   }
 }
-.clock-menu .album-btn {
-  position: static;
-}
 .cup-step-balls .mini-ball .ball-pic {
   width: 13px;
   height: 13px;
-}
-/* Between rounds, the yellow button has a row of its own above the others. */
-.clock-bottom {
-  flex-wrap: wrap;
-}
-.clock-next {
-  order: -1;
-  flex-basis: 100%;
-  display: flex;
-  justify-content: center;
-}
-.clock-menu .match-chip {
-  position: static;
 }
 /* The scoreboard never makes the level wider than the screen: long team
    names are cut short instead. */
