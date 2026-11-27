@@ -98,6 +98,11 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
     );
   }
 
+  // The retreat line for goal kicks. In 5v5 it is the halfway line, so this
+  // is a thick glow drawn over it, shown while the rule is explained.
+  const retreat = s('line', { x1: 0, y1: L / 2, x2: W, y2: L / 2, class: 'retreat-line is-hidden' });
+  lines.append(retreat);
+
   const ringLayer = mk('ring');
   const ring = s('circle', { cx: W / 2, cy: L / 2, r: ringYards * U, class: 'helper-ring' });
   ringLayer.append(ring);
@@ -239,6 +244,10 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
     svg.classList.toggle('why-goal-on', kind === 'keeper');
   }
 
+  function setRetreat(visible) {
+    retreat.classList.toggle('is-hidden', !visible);
+  }
+
   function setRing(visible, glow = false) {
     ring.classList.toggle('is-hidden', !visible);
     ring.classList.toggle('is-glow', glow);
@@ -274,6 +283,7 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
     showTargets,
     showCross,
     setWhy,
+    setRetreat,
     setRing,
     layout,
     destroy,

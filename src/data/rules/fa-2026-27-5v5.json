@@ -74,6 +74,18 @@
       "source": "FA Mini-Soccer Handbook 2026/27, 5v5 goal 12 ft by 6 ft",
       "confidence": "confirmed",
       "lastChecked": "2026-11-25"
+    },
+    "goalKick.retreatLine": {
+      "value": "halfway",
+      "source": "FA Mini-Soccer Handbook 2026/27, retreat line (under-7 to under-11): at a goal kick the other team goes back into its own half until the ball is in play. See docs/research/phase1-rules-design-products.md.",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-27"
+    },
+    "goalKick.whenCanCross": {
+      "value": null,
+      "source": "Exactly when the other team may cross the line (as the ball is kicked, or once a player receives it) waits for Rich's club rule set. Told as 'wait until their keeper has passed it', never tested.",
+      "confidence": "unconfirmed",
+      "lastChecked": "2026-11-27"
     }
   }
 }

@@ -12,6 +12,7 @@ export async function chapter1(stage) {
   pitch.placeBall({ x: 15, y: 30 });
   pitch.ball.classList.add('is-hidden');
   pitch.setRing(true);
+  stage.setScore(0, 0);
 
   // Intro explainer. Touch is off while it plays.
   stage.setBusy(true);
@@ -147,6 +148,7 @@ export async function chapter1(stage) {
         Promise.all([pitch.moveBall({ x: flip(19), y: 33.2 }, 700), pitch.moveTo(gk, { x: flip(16.5), y: 38.6 }, 800)]),
       'sfx.kick': () => pitch.moveBall({ x: flip(13.6), y: 40.9 }, 500, 'ease-in'),
       'sfx.goal': () => {
+        stage.setScore(1, 0, true);
         stage.goalBanner(true);
         stage.netShake();
         stage.confetti(null, 70);

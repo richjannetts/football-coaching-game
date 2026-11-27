@@ -440,6 +440,216 @@
       "id": "end.tapHome",
       "text": "Tap the house to go back to the path.",
       "cue": "A hand points at the house button and says 'Tap here!'"
+    },
+    {
+      "id": "rule.retreat",
+      "text": "The rule says: at their goal kick, we all go back into our own half until the ball is kicked.",
+      "cue": "Their half turns red. The player in it has a red ring."
+    },
+    {
+      "id": "shape.c3.keeper",
+      "text": "In our team, our keeper in the orange top takes the goal kick from our goal.",
+      "cue": "Our goal glows."
+    },
+    {
+      "id": "shape.c3.wide",
+      "text": "In our team, a friend goes out wide on each side, near the corners of our penalty box. Spread wide!",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c3.middle",
+      "text": "In our team, one friend stands in the middle of our half, ready for a pass.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c3.up",
+      "text": "In our team, our front player goes up into their half, ready to go.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c4.up",
+      "text": "In our team, our front player waits just behind the halfway line, in the middle, ready to go.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c4.middles",
+      "text": "In our team, a friend waits on each side, in our half, ready to help.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "c3.intro1",
+      "text": "Their shot went wide, so it's our goal kick. Our keeper will take it.",
+      "cue": "Our keeper has the ball in front of our goal."
+    },
+    {
+      "id": "c3.intro2",
+      "text": "The rule says: at our goal kick, {them} go back into their own half until the ball is kicked.",
+      "cue": "Their players walk back over the halfway line, which glows."
+    },
+    {
+      "id": "c3.place",
+      "text": "Spots! Spread wide, find a friend. Put our five players where they go for our goal kick.",
+      "cue": "Our players at the side gently bounce."
+    },
+    {
+      "id": "c3.passAsk",
+      "text": "Where should our keeper pass it? Tap a place.",
+      "cue": "Glowing circles on our friends out wide, and an arrow up the pitch for a long kick."
+    },
+    {
+      "id": "c3.passWide",
+      "text": "A short pass to a friend out wide. Lovely!",
+      "cue": "The ball rolls out to a friend on the side."
+    },
+    {
+      "id": "c3.passLong",
+      "text": "A long kick often goes straight to them. In our team, we pass to a friend out wide.",
+      "cue": "The ball flies up the pitch and their player gets it. A red cross shows it didn't work."
+    },
+    {
+      "id": "c3.passShow",
+      "text": "Look. Our friends out wide are glowing. Tap one.",
+      "cue": "Only our friends out wide glow."
+    },
+    {
+      "id": "c3.passTogether",
+      "text": "Let's do it together. A short pass out wide.",
+      "cue": "The ball rolls out to a friend on the side."
+    },
+    {
+      "id": "c3.move1",
+      "text": "Our friend takes it up the side of the pitch.",
+      "cue": "Our friend dribbles up the side. Everyone moves up with her."
+    },
+    {
+      "id": "c3.move2",
+      "text": "She passes inside. Pass and move!",
+      "cue": "The ball goes inside to a friend, who passes it forward."
+    },
+    {
+      "id": "c3.shot",
+      "text": "Our front player shoots...",
+      "cue": "Our front player kicks the ball at their goal."
+    },
+    {
+      "id": "c3.wide",
+      "text": "Just wide! So close.",
+      "cue": "The ball rolls past their post and off the pitch."
+    },
+    {
+      "id": "c3.theirKick",
+      "text": "It went out over their goal line, so now it's their goal kick. That's the next level.",
+      "cue": "Their keeper picks up the ball."
+    },
+    {
+      "id": "c3.end",
+      "text": "Level three done! Next time we have a goal kick in a real match, remember: spread wide, find a friend.",
+      "cue": "A gold football medal with a 3 on it spins in."
+    },
+    {
+      "id": "c4.intro1",
+      "text": "Now it's their goal kick. Their keeper has the ball.",
+      "cue": "Their keeper has the ball in front of their goal."
+    },
+    {
+      "id": "c4.intro2",
+      "text": "The rule says: at their goal kick, we all go back into our own half until the ball is kicked.",
+      "cue": "The halfway line glows."
+    },
+    {
+      "id": "c4.intro3",
+      "text": "Coach always says: back, wait, GO!",
+      "cue": "Our players do a little jump."
+    },
+    {
+      "id": "c4.place",
+      "text": "Spots! Back! Put our five players where they wait for their goal kick.",
+      "cue": "Our players at the side gently bounce."
+    },
+    {
+      "id": "c4.wait",
+      "text": "Wait...",
+      "cue": "Our players stand still behind the halfway line. Their keeper passes it out wide."
+    },
+    {
+      "id": "c4.go",
+      "text": "GO! The ball has been kicked, so now we can chase it.",
+      "cue": "Our front player and a friend run at the ball."
+    },
+    {
+      "id": "c4.win",
+      "text": "Our friend wins the ball. Great teamwork!",
+      "cue": "Our friend takes the ball off their player."
+    },
+    {
+      "id": "c4.out",
+      "text": "Their player knocks it off the side of the pitch. That's a kick-in for us. We'll learn about kick-ins soon.",
+      "cue": "The ball rolls off the side line."
+    },
+    {
+      "id": "c4.end",
+      "text": "Level four done! When they have a goal kick on Saturday, remember: back, wait, GO!",
+      "cue": "A gold football medal with a 4 on it spins in."
+    },
+    {
+      "id": "quiz.c3.ask",
+      "text": "At our goal kick, where do our players go? Tap the right picture.",
+      "cue": "Three little pitches. Our keeper has the ball in each one."
+    },
+    {
+      "id": "quiz.c3.a",
+      "text": "All close to our keeper?",
+      "cue": "The first picture glows."
+    },
+    {
+      "id": "quiz.c3.b",
+      "text": "All far up in their half?",
+      "cue": "The middle picture glows."
+    },
+    {
+      "id": "quiz.c3.c",
+      "text": "Spread out wide, with friends to pass to?",
+      "cue": "The last picture glows."
+    },
+    {
+      "id": "quiz.c3.right",
+      "text": "That's right! In our team, we spread wide and find a friend. Well done, {name}!",
+      "cue": "The right picture has a green edge."
+    },
+    {
+      "id": "quiz.c3.reveal",
+      "text": "Good try. In our team, we spread out wide so our keeper has friends to pass to, like this one. You can try for the sticker again next time you play level three.",
+      "cue": "The right picture glows. The other two pictures fade."
+    },
+    {
+      "id": "quiz.c4.ask",
+      "text": "When they have a goal kick, where do we wait? Tap the right picture.",
+      "cue": "Three little pitches. Their keeper has the ball in each one."
+    },
+    {
+      "id": "quiz.c4.a",
+      "text": "All of us in our own half?",
+      "cue": "The first picture glows."
+    },
+    {
+      "id": "quiz.c4.b",
+      "text": "One of us right next to their keeper?",
+      "cue": "The middle picture glows."
+    },
+    {
+      "id": "quiz.c4.c",
+      "text": "Some of us in their half?",
+      "cue": "The last picture glows."
+    },
+    {
+      "id": "quiz.c4.right",
+      "text": "That's right! The rule says we all go back into our own half until their goal kick is taken. Well done, {name}!",
+      "cue": "The right picture has a green edge."
+    },
+    {
+      "id": "quiz.c4.reveal",
+      "text": "Good try. The rule says we all go back into our own half until their goal kick is taken, like this one. You can try for the sticker again next time you play level four.",
+      "cue": "The right picture glows. The other two pictures fade."
     }
   ]
 }

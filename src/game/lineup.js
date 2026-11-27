@@ -1,4 +1,4 @@
-// The line-up puzzle used by both chapters.
+// The line-up puzzle used by every level.
 // The child places all five players, then taps the tick.
 // First the rule is checked ("The rule says"), then our shape ("In our team").
 // A wrong answer gets a friendly whistle, a picture of why, a hint and another
@@ -29,8 +29,7 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
     // The opening instruction. Not started from a tap, so it relies on
     // sound having been unlocked by the tap that opened the chapter.
     const opening = {
-      'c1.place': () => stage.bounce(placement.onBench()),
-      'c2.place': () => stage.bounce(placement.onBench()),
+      [promptIds[0]]: () => stage.bounce(placement.onBench()),
       'place.ready': () => {
         stage.glowReady(true);
         setTimeout(() => stage.glowReady(false), 2500);

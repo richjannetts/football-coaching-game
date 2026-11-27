@@ -21,10 +21,12 @@ test('path: passing a level moves her up one place', () => {
 });
 
 test('path: with every level finished she stays on the last one', () => {
-  const p = buildPath(data, { ch1: true, ch2: true });
-  assert.equal(p.at, 1);
+  const all = data.matches.flatMap((m) => m.levels);
+  const progress = Object.fromEntries(all.map((n) => [`ch${n}`, true]));
+  const p = buildPath(data, progress);
+  assert.equal(p.at, all.length - 1);
   assert.ok(p.nodes.filter((n) => n.kind === 'level').every((n) => n.state === 'done'));
-  assert.equal(nextLevel([1, 2], { ch1: true, ch2: true }), null);
+  assert.equal(nextLevel(all, progress), null);
 });
 
 test('path: places for levels still to come are locked and have no level', () => {

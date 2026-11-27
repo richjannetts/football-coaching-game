@@ -85,6 +85,83 @@
           }
         }
       ]
+    },
+    "3": {
+      "teaches": "inOurTeam",
+      "question": "Our goal kick. Where do we go?",
+      "bonus": "quiz.bonus",
+      "ask": "quiz.c3.ask",
+      "right": "quiz.c3.right",
+      "reveal": "quiz.c3.reveal",
+      "answer": 2,
+      "options": [
+        {
+          "label": "Close to our keeper",
+          "line": "quiz.c3.a",
+          "picture": {
+            "us": [[15, 1.5], [12, 4], [18, 4], [15, 7], [15, 10]],
+            "them": [[9, 23], [21, 23], [15, 29], [15, 38.5]],
+            "ball": [15, 2.6]
+          }
+        },
+        {
+          "label": "All far up",
+          "line": "quiz.c3.b",
+          "picture": {
+            "us": [[15, 1.5], [8, 26], [22, 26], [15, 30], [15, 34]],
+            "them": [[9, 23], [21, 23], [15, 29], [15, 38.5]],
+            "ball": [15, 2.6]
+          }
+        },
+        {
+          "label": "Spread wide",
+          "line": "quiz.c3.c",
+          "picture": {
+            "us": [[15, 1.5], [4, 7.5], [26, 7.5], [15, 14], [15, 26]],
+            "them": [[9, 23], [21, 23], [15, 29], [15, 38.5]],
+            "ball": [15, 2.6],
+            "arrow": [[15, 2.6], [5, 7.3]]
+          }
+        }
+      ]
+    },
+    "4": {
+      "teaches": "theRuleSays",
+      "question": "Their goal kick. Where do we wait?",
+      "bonus": "quiz.bonus",
+      "ask": "quiz.c4.ask",
+      "right": "quiz.c4.right",
+      "reveal": "quiz.c4.reveal",
+      "answer": 0,
+      "options": [
+        {
+          "label": "All in our half",
+          "line": "quiz.c4.a",
+          "picture": {
+            "us": [[15, 18.5], [9, 14], [21, 14], [15, 7.5], [15, 1.5]],
+            "them": [[15, 38.5], [5, 32], [25, 32], [12, 26]],
+            "ball": [15, 37.4]
+          }
+        },
+        {
+          "label": "Next to their keeper",
+          "line": "quiz.c4.b",
+          "picture": {
+            "us": [[15, 35], [9, 14], [21, 14], [15, 7.5], [15, 1.5]],
+            "them": [[15, 38.5], [5, 32], [25, 32], [12, 26]],
+            "ball": [15, 37.4]
+          }
+        },
+        {
+          "label": "Some in their half",
+          "line": "quiz.c4.c",
+          "picture": {
+            "us": [[18, 26], [9, 30], [21, 14], [15, 7.5], [15, 1.5]],
+            "them": [[15, 38.5], [5, 32], [25, 32], [12, 26]],
+            "ball": [15, 37.4]
+          }
+        }
+      ]
     }
   }
 }

@@ -188,10 +188,11 @@ test('the squad marks exactly one keeper', () => {
   assert.equal(team.squad.filter((p) => p.keeper).length, 1);
 });
 
-test('shapes: the back player stands on the penalty box line in both levels', () => {
+test('shapes: wherever there is a back player, she stands on the penalty box line', () => {
   const box = ruleSet.rules['pitch.penaltyArea'].value;
   for (const shape of Object.values(team.shapes)) {
     const back = shape.spots.find((s) => s.role === 'back');
+    if (!back) continue; // our goal kick spreads wide instead
     assert.equal(resolveAt(back.at, grid).y, box.depth);
   }
 });
@@ -226,4 +227,74 @@ test('shape, our kick: back player two dots in front does not pass', () => {
   const backIndex = team.shapes.ourCentreKick.spots.findIndex((s) => s.role === 'back');
   players[backIndex] = { x: grid.cols[2], y: grid.rows[3] };
   assert.equal(checkShape({ players, shape: team.shapes.ourCentreKick, grid }).ok, false);
+});
+
+// ---------- Goal kicks (levels 3 and 4) ----------
+// The retreat line: at their goal kick we all go back into our own half.
+
+const shapeOf = (key) => team.shapes[key].spots.map((s) => resolveAt(s.at, grid));
+const keeperIndex = (key) => team.shapes[key].spots.findIndex((s) => s.role === 'keeper');
+
+test('rule, their goal kick: the coach shape is all in our own half', () => {
+  const r = checkRule({ kind: 'theirGoalKick', players: shapeOf('theirGoalKick'), ruleSet, centre, halfway });
+  assert.equal(r.ok, true);
+});
+
+test('rule, their goal kick: anyone on or over halfway breaks the rule', () => {
+  const players = shapeOf('theirGoalKick');
+  players[0] = { x: 15, y: 26 };
+  const r = checkRule({ kind: 'theirGoalKick', players, ruleSet, centre, halfway });
+  assert.equal(r.ok, false);
+  assert.equal(r.problems[0].line, 'rule.retreat');
+  assert.deepEqual(r.problems[0].players, [0]);
+});
+
+test('rule, their goal kick: unlike a centre kick, there is no ring to keep out of', () => {
+  // Standing near the centre mark is fine at a goal kick.
+  const players = shapeOf('theirGoalKick');
+  players[0] = { x: 15, y: 18.5 };
+  assert.equal(checkRule({ kind: 'theirGoalKick', players, ruleSet, centre, halfway }).ok, true);
+});
+
+test('rule, our goal kick: the rule is for the other team, so our layout cannot break it', () => {
+  const players = shapeOf('ourGoalKick');
+  assert.equal(checkRule({ kind: 'ourGoalKick', players, ruleSet, centre, halfway }).ok, true);
+});
+
+test('shape, our goal kick: spread wide with the keeper in goal passes', () => {
+  const players = shapeOf('ourGoalKick');
+  const fit = checkShape({ players, shape: team.shapes.ourGoalKick, grid, keepers: [keeperIndex('ourGoalKick')] });
+  assert.equal(fit.ok, true);
+});
+
+test('shape, our goal kick: the wide players can stand a dot further up', () => {
+  const players = shapeOf('ourGoalKick');
+  players[1] = at(0, 2);
+  players[2] = at(4, 2);
+  assert.equal(checkShape({ players, shape: team.shapes.ourGoalKick, grid }).ok, true);
+});
+
+test('shape, our goal kick: bunched in the middle asks us to spread wide', () => {
+  const players = shapeOf('ourGoalKick');
+  players[1] = at(2, 1);
+  players[2] = at(2, 2);
+  const fit = checkShape({ players, shape: team.shapes.ourGoalKick, grid });
+  assert.equal(fit.ok, false);
+  assert.equal(fit.problems[0].line, 'shape.c3.wide');
+});
+
+test('shape, their goal kick: the coach shape passes, and a front player too deep does not', () => {
+  const players = shapeOf('theirGoalKick');
+  assert.equal(checkShape({ players, shape: team.shapes.theirGoalKick, grid }).ok, true);
+  players[0] = at(2, 2);
+  players[3] = at(2, 3);
+  assert.equal(checkShape({ players, shape: team.shapes.theirGoalKick, grid }).ok, false);
+});
+
+test('goal kicks: the other team starts where the story needs them', () => {
+  // At their goal kick they wait in their own half; their keeper is in goal.
+  const theirs = team.opponents.theirGoalKick;
+  assert.equal(theirs.length, 5);
+  assert.deepEqual(theirs[team.opponentKeeper.theirGoalKick], [15, 38.5]);
+  assert.equal(team.opponents.ourGoalKick.length, 5);
 });

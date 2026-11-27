@@ -9,11 +9,27 @@ import { ruleValue } from './rules.js';
 
 const ON_SPOT = 0.75; // yards. How close counts as "on" the centre mark.
 
-// kind: "ours" (we take the centre kick) or "theirs" (they take it).
+// kind: "ours" (we take the centre kick), "theirs" (they take it),
+// "ourGoalKick" or "theirGoalKick".
 // players: array of { x, y } in yards. halfway: the y of the halfway line.
 // Returns { ok, problems: [{ type, line, players: [index] }] }.
 export function checkRule({ kind, players, ruleSet, centre, halfway }) {
   const problems = [];
+
+  // Goal kicks: the retreat line. At their goal kick we all go back into
+  // our own half until the ball is in play. At ours, the rule is for the
+  // other team, so nothing about our players can break it.
+  if (kind === 'ourGoalKick') return { ok: true, problems };
+  if (kind === 'theirGoalKick') {
+    if (ruleValue(ruleSet, 'goalKick.retreatLine') === 'halfway') {
+      const bad = players
+        .map((p, i) => ({ p, i }))
+        .filter(({ p }) => p.y >= halfway)
+        .map(({ i }) => i);
+      if (bad.length) problems.push({ type: 'ownHalf', line: 'rule.retreat', players: bad });
+    }
+    return { ok: problems.length === 0, problems };
+  }
 
   if (ruleValue(ruleSet, 'kickoff.ownHalf')) {
     // A player on or over the halfway line is not in our half.
