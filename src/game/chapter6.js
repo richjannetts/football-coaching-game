@@ -40,6 +40,7 @@ export async function chapter6(stage) {
     kind: 'theirKickIn',
     shapeKey: 'theirKickIn',
     promptIds: ['c6.place', 'place.how', 'place.ready'],
+    coachIds: ['coach.c6'],
     ball: BALL,
   });
   await solved.spoken;

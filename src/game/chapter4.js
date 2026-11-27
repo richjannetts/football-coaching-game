@@ -36,6 +36,7 @@ export async function chapter4(stage) {
     kind: 'theirGoalKick',
     shapeKey: 'theirGoalKick',
     promptIds: ['c4.place', 'place.how', 'place.ready'],
+    coachIds: ['coach.c4'],
   });
   await solved.spoken;
   stage.setBusy(true);
@@ -49,7 +50,7 @@ export async function chapter4(stage) {
     // Everyone stays behind the line while their keeper passes it out.
     'c4.wait': async () => {
       await wait(motion(500));
-      await pitch.moveBall({ x: 5.6, y: 31.2 }, 1100);
+      await pitch.moveBall({ x: 4.2, y: 31.6 }, 1100);
       await wait(hold(500));
     },
     'c4.go': async () => {

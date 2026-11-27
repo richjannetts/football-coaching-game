@@ -67,6 +67,11 @@
       "cue": "Your player stands with the whole team and Coach, next to a football."
     },
     {
+      "id": "story.stickers",
+      "text": "One more thing! After every level there's a bonus question. Get it right, and you win a sticker for your sticker book. Your first sticker will be you!",
+      "cue": "An open sticker book. Sticker 1 is her own player. The next spaces are empty, with numbers."
+    },
+    {
       "id": "setup.friendHello",
       "text": "Let's get your team-mate ready.",
       "cue": "Your team-mate appears in our kit."
@@ -110,6 +115,11 @@
       "id": "menu.newMatch",
       "text": "You've played the whole match! Tap the new match button to play again, against a new team.",
       "cue": "Every level on the path is green. The new match button glows yellow."
+    },
+    {
+      "id": "menu.album",
+      "text": "Your stickers go in your sticker book. Tap the book to see them!",
+      "cue": "A yellow Tap here pointer shows the book button."
     },
     {
       "id": "menu.replay",
@@ -208,7 +218,7 @@
     },
     {
       "id": "ring.helper",
-      "text": "The dotted ring is a helper. Some pitches have a ring like this and some don't. It shows how far to stay from the ball: about five metres. That's about five big grown-up steps.",
+      "text": "The dotted ring is only a helper. You won't see it on a real pitch. It shows five big steps from the ball. That's about five metres.",
       "cue": "The dotted ring around the ball glows."
     },
     {
@@ -243,7 +253,7 @@
     },
     {
       "id": "rule.ring",
-      "text": "The rule says: stay about five metres away from the ball until it's kicked. That's five big grown-up steps. Keep outside the dotted ring.",
+      "text": "The rule says: stay five big steps away from the ball until it's kicked. The dotted ring shows how far.",
       "cue": "The ring turns red. The player inside it has a red ring."
     },
     {
@@ -268,7 +278,7 @@
     },
     {
       "id": "shape.c2.up",
-      "text": "In our team, our front player waits just outside the ring, in the middle, ready to chase.",
+      "text": "In our team, our front player waits five big steps from the ball, in the middle, ready to chase.",
       "cue": "The players in the wrong place have a red ring."
     },
     {
@@ -302,6 +312,71 @@
       "cue": "The tick button comes back. Nothing else changes."
     },
     {
+      "id": "nudge.halfway",
+      "text": "Not quite. Look at the halfway line. Is everyone on the right side?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
+      "id": "nudge.ball",
+      "text": "Not quite. Look at the ball. Who is going to kick it?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
+      "id": "nudge.steps",
+      "text": "Not quite. Look at the ball, and think about five big steps. Is anyone too close?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
+      "id": "nudge.keeper",
+      "text": "Not quite. Look at our goal. Who looks after it?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
+      "id": "nudge.back",
+      "text": "Not quite. Think about our back player. Where can she help our keeper?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
+      "id": "nudge.stay",
+      "text": "Not quite. If they win the ball and run, who is ready at the back?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
+      "id": "nudge.up",
+      "text": "Not quite. Think about our front player. Where does she wait?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
+      "id": "nudge.middle",
+      "text": "Not quite. Think about the middle of our half. Who can help there?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
+      "id": "nudge.wide",
+      "text": "Not quite. Look at the sides of the pitch. Who can our keeper pass to?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
+      "id": "nudge.side",
+      "text": "Not quite. Think about our kicker. Who can she pass to?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
+      "id": "nudge.friends",
+      "text": "Not quite. Think about our kicker. Which friends are ready for a pass?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
+      "id": "nudge.rebound",
+      "text": "Not quite. Think about our friends. What if the ball bounces back out?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
+      "id": "nudge.defend",
+      "text": "Not quite. Look at their players. Who is between them and our goal?",
+      "cue": "The players to look at give a little hop. No spots glow yet."
+    },
+    {
       "id": "lose.possession",
       "text": "Oh! They nipped in and won the ball. Never mind, that's how we learn.",
       "cue": "Their nearest player takes the ball a few steps towards our goal. Our players stay where they are."
@@ -330,6 +405,56 @@
       "id": "good.lineupEffort",
       "text": "You kept trying, and now everyone is on her spot. Great work!",
       "cue": "Our players do a little jump."
+    },
+    {
+      "id": "coach.c1",
+      "text": "Friends either side, be ready. When the pass comes, step on to it and go.",
+      "cue": "Our players give a little jump, ready to go."
+    },
+    {
+      "id": "coach.c2",
+      "text": "When the ball moves, our front player chases. Everyone else, watch for a pass you can win.",
+      "cue": "Our players give a little jump, ready to go."
+    },
+    {
+      "id": "coach.c3",
+      "text": "Friends out wide, call for the ball, so our keeper can find you.",
+      "cue": "Our players give a little jump, ready to go."
+    },
+    {
+      "id": "coach.c4",
+      "text": "Remember: wait until the ball is kicked. Then GO, and close them down together.",
+      "cue": "Our players give a little jump, ready to go."
+    },
+    {
+      "id": "coach.c5",
+      "text": "Kicker, look for a friend first. Friends, call her name and be ready.",
+      "cue": "Our players give a little jump, ready to go."
+    },
+    {
+      "id": "coach.c6",
+      "text": "Now watch the ball. Try to get to their pass first. If they dribble it in, stay on your feet and tackle.",
+      "cue": "Our players give a little jump, ready to go."
+    },
+    {
+      "id": "coach.c7",
+      "text": "Watch their kicker. If they pass it to the side, be ready to nip in and win it.",
+      "cue": "Our players give a little jump, ready to go."
+    },
+    {
+      "id": "coach.c8",
+      "text": "Look for a short pass. And our friend at the back, stay ready in case they break away.",
+      "cue": "Our players give a little jump, ready to go."
+    },
+    {
+      "id": "coach.c9",
+      "text": "Watch the ball. Stay between their player and our goal, and be first to the ball if it comes near you.",
+      "cue": "Our players give a little jump, ready to go."
+    },
+    {
+      "id": "coach.c10",
+      "text": "Friends on the edge of the box, be ready. Once it's kicked, run in if it bounces out.",
+      "cue": "Our players give a little jump, ready to go."
     },
     {
       "id": "c1.passAsk",
@@ -433,7 +558,7 @@
     },
     {
       "id": "quiz.bonus",
-      "text": "Bonus question! Get it right to win a sticker.",
+      "text": "Bonus question! Get it right to win a sticker for your sticker book.",
       "cue": "The medal gets smaller and three pictures appear."
     },
     {
@@ -458,12 +583,12 @@
     },
     {
       "id": "quiz.c1.right",
-      "text": "That's right! In our team, the first pass goes across to a friend. Well done, {name}!",
+      "text": "That's right! In our team, the first pass goes across to a friend. Then she takes it forward. Well done, {name}!",
       "cue": "The right picture has a green edge."
     },
     {
       "id": "quiz.c1.reveal",
-      "text": "Good try. In our team, the first pass goes across to a friend beside you, like this one. You can try for the sticker again next time you play level one.",
+      "text": "Good try. In our team, the first pass goes across to a friend beside you, like this one. Then she takes it forward. You can try for the sticker again next time you play level one.",
       "cue": "The pass across glows. The other two pictures fade."
     },
     {
@@ -488,18 +613,18 @@
     },
     {
       "id": "quiz.c2.right",
-      "text": "That's right! The rule says we all stay in our own half, about five big grown-up steps from the ball. Well done, {name}!",
+      "text": "That's right! The rule says we all stay in our own half, five big steps from the ball. Then, when they kick it, we chase together to win it back. Well done, {name}!",
       "cue": "The right picture has a green edge."
     },
     {
       "id": "quiz.c2.reveal",
-      "text": "Good try. The rule says we all stay in our own half, about five big grown-up steps from the ball, like this one. You can try for the sticker again next time you play level two.",
+      "text": "Good try. The rule says we all stay in our own half, five big steps from the ball, like this one. Then, when they kick it, we chase together to win it back. You can try for the sticker again next time you play level two.",
       "cue": "The right picture glows. The other two pictures fade."
     },
     {
       "id": "end.sticker",
-      "text": "Wow! You've won a new sticker for your sticker album! Tap the book on the path to see it.",
-      "cue": "The new sticker fills the screen with the words New sticker and a picture of the album, then settles next to the medal."
+      "text": "Wow! You've won a new sticker! Look, it goes straight into your sticker book.",
+      "cue": "The new sticker fills the screen, then flies into its numbered space on the album page."
     },
     {
       "id": "end.shiny",
@@ -538,12 +663,12 @@
     },
     {
       "id": "shape.c3.middle",
-      "text": "In our team, one friend stands in the middle of our half, ready for a pass.",
+      "text": "In our team, one friend stands inside, a little to one side of the middle, ready for a pass.",
       "cue": "The players in the wrong place have a red ring."
     },
     {
       "id": "shape.c3.up",
-      "text": "In our team, our front player waits just behind the halfway line, in the middle, ready to go.",
+      "text": "In our team, our front player waits on the other side, just behind the halfway line, ready to go.",
       "cue": "The players in the wrong place have a red ring."
     },
     {
@@ -693,12 +818,12 @@
     },
     {
       "id": "quiz.c3.right",
-      "text": "That's right! In our team, we spread wide and find a friend. Well done, {name}!",
+      "text": "That's right! In our team, we spread wide and find a friend. Call for the ball, so our keeper can find you. Well done, {name}!",
       "cue": "The right picture has a green edge."
     },
     {
       "id": "quiz.c3.reveal",
-      "text": "Good try. In our team, we spread out wide so our keeper has friends to pass to, like this one. You can try for the sticker again next time you play level three.",
+      "text": "Good try. In our team, we spread out wide so our keeper has friends to pass to, like this one. Call for the ball, so she can find you. You can try for the sticker again next time you play level three.",
       "cue": "The right picture glows. The other two pictures fade."
     },
     {
@@ -723,12 +848,12 @@
     },
     {
       "id": "quiz.c4.right",
-      "text": "That's right! The rule says we all go back into our own half until their goal kick is taken. Well done, {name}!",
+      "text": "That's right! The rule says we all go back into our own half until their goal kick is taken. Then GO, and win it back together. Well done, {name}!",
       "cue": "The right picture has a green edge."
     },
     {
       "id": "quiz.c4.reveal",
-      "text": "Good try. The rule says we all go back into our own half until their goal kick is taken, like this one. You can try for the sticker again next time you play level four.",
+      "text": "Good try. The rule says we all go back into our own half until their goal kick is taken, like this one. Then GO, and win it back together. You can try for the sticker again next time you play level four.",
       "cue": "The right picture glows. The other two pictures fade."
     },
     {
@@ -743,7 +868,7 @@
     },
     {
       "id": "rule.kickInRing",
-      "text": "The rule says: stay about five metres away from the ball until it's kicked in. That's five big grown-up steps. Keep outside the dotted ring.",
+      "text": "The rule says: stay five big steps away from the ball until it's kicked in. The dotted ring shows how far.",
       "cue": "The ring turns red. The player inside it has a red ring."
     },
     {
@@ -753,7 +878,7 @@
     },
     {
       "id": "rule.cornerRing",
-      "text": "The rule says: stay about five metres away from the ball until the corner is kicked. That's five big grown-up steps. Keep outside the dotted ring.",
+      "text": "The rule says: stay five big steps away from the ball until the corner is kicked. The dotted ring shows how far.",
       "cue": "The ring turns red. The player inside it has a red ring."
     },
     {
@@ -928,7 +1053,7 @@
     },
     {
       "id": "c6.intro2",
-      "text": "The rule says: we stay five big steps away from the ball until it's kicked in. The dotted ring helps us see.",
+      "text": "The rule says: we stay five big steps away from the ball until it's kicked in. The dotted ring is only a helper, to show how far.",
       "cue": "The dotted ring round the ball glows."
     },
     {
@@ -943,7 +1068,7 @@
     },
     {
       "id": "c6.defend",
-      "text": "Our friend was standing in the right place, so she steps in and wins it!",
+      "text": "Our friend was ready, so she gets to their pass first and wins it!",
       "cue": "Our friend takes the ball."
     },
     {
@@ -998,12 +1123,12 @@
     },
     {
       "id": "quiz.c5.right",
-      "text": "That's right! In our team, a friend comes close and a friend goes inside, so there are easy passes. Well done, {name}!",
+      "text": "That's right! In our team, a friend comes close and a friend goes inside, so there are easy passes. Pass, then move, ready for the next one. Well done, {name}!",
       "cue": "The right picture has a green edge."
     },
     {
       "id": "quiz.c5.reveal",
-      "text": "Good try. In our team, a friend comes close and a friend goes inside, like this one, so there are easy passes. You can try for the sticker again next time you play level five.",
+      "text": "Good try. In our team, a friend comes close and a friend goes inside, like this one, so there are easy passes. Pass, then move, ready for the next one. You can try for the sticker again next time you play level five.",
       "cue": "The right picture glows. The other two pictures fade."
     },
     {
@@ -1018,22 +1143,22 @@
     },
     {
       "id": "quiz.c6.b",
-      "text": "Two of us inside the ring?",
+      "text": "Two of us too close?",
       "cue": "The middle picture glows."
     },
     {
       "id": "quiz.c6.c",
-      "text": "Everyone outside the ring?",
+      "text": "Everyone five big steps away?",
       "cue": "The last picture glows."
     },
     {
       "id": "quiz.c6.right",
-      "text": "That's right! The rule says we stay five big steps away until it's kicked in. Well done, {name}!",
+      "text": "That's right! The rule says we stay five big steps away until it's kicked in. Then be quick! Try to get to their pass first, or tackle if they dribble it in. Well done, {name}!",
       "cue": "The right picture has a green edge."
     },
     {
       "id": "quiz.c6.reveal",
-      "text": "Good try. The rule says we stay five big steps from the ball until it's kicked in, like this one. You can try for the sticker again next time you play level six.",
+      "text": "Good try. The rule says we stay five big steps from the ball until it's kicked in, like this one. Then be quick! Try to get to their pass first, or tackle if they dribble it in. You can try for the sticker again next time you play level six.",
       "cue": "The right picture glows. The other two pictures fade."
     },
     {
@@ -1178,7 +1303,7 @@
     },
     {
       "id": "c9.intro2",
-      "text": "The rule says: we stay five big steps away from the ball until it's kicked. The dotted ring helps us see.",
+      "text": "The rule says: we stay five big steps away from the ball until it's kicked. The dotted ring is only a helper, to show how far.",
       "cue": "The dotted ring round the ball glows."
     },
     {
@@ -1303,12 +1428,12 @@
     },
     {
       "id": "quiz.c7.a",
-      "text": "Just outside the ring, in the middle?",
+      "text": "Five big steps away, in the middle?",
       "cue": "The first picture glows."
     },
     {
       "id": "quiz.c7.b",
-      "text": "Inside the ring, next to the ball?",
+      "text": "Right next to the ball?",
       "cue": "The middle picture glows."
     },
     {
@@ -1318,12 +1443,12 @@
     },
     {
       "id": "quiz.c7.right",
-      "text": "That's right! In our team, our front player waits just outside the ring, ready to chase. Well done, {name}!",
+      "text": "That's right! In our team, our front player waits five big steps from the ball, in the middle. When the ball moves, she chases. Well done, {name}!",
       "cue": "The right picture has a green edge."
     },
     {
       "id": "quiz.c7.reveal",
-      "text": "Good try. In our team, our front player waits just outside the ring, in the middle, like this one, ready to chase. You can try for the sticker again next time you play level seven.",
+      "text": "Good try. In our team, our front player waits five big steps from the ball, in the middle, like this one. When the ball moves, she chases. You can try for the sticker again next time you play level seven.",
       "cue": "The right picture glows. The other two pictures fade."
     },
     {
@@ -1348,12 +1473,12 @@
     },
     {
       "id": "quiz.c8.right",
-      "text": "That's right! In our team, one friend stays back near halfway, in case they break away. Well done, {name}!",
+      "text": "That's right! In our team, one friend stays back near halfway, in case they break away. Everyone else looks for a short pass. Well done, {name}!",
       "cue": "The right picture has a green edge."
     },
     {
       "id": "quiz.c8.reveal",
-      "text": "Good try. In our team, one friend stays back near halfway, like this one, in case they break away. You can try for the sticker again next time you play level eight.",
+      "text": "Good try. In our team, one friend stays back near halfway, like this one, in case they break away. Everyone else looks for a short pass. You can try for the sticker again next time you play level eight.",
       "cue": "The right picture glows. The other two pictures fade."
     },
     {
@@ -1368,22 +1493,22 @@
     },
     {
       "id": "quiz.c9.b",
-      "text": "One of us inside the ring?",
+      "text": "One of us too close?",
       "cue": "The middle picture glows."
     },
     {
       "id": "quiz.c9.c",
-      "text": "Everyone outside the ring?",
+      "text": "Everyone five big steps away?",
       "cue": "The last picture glows."
     },
     {
       "id": "quiz.c9.right",
-      "text": "That's right! The rule says: stay five big steps away until the corner is kicked. Well done, {name}!",
+      "text": "That's right! The rule says: stay five big steps away until the corner is kicked. Then watch the ball, and try to get to it first. Well done, {name}!",
       "cue": "The right picture has a green edge."
     },
     {
       "id": "quiz.c9.reveal",
-      "text": "Good try. The rule says: stay five big steps away until the corner is kicked, like this one. Everyone is outside the ring. You can try for the sticker again next time you play level nine.",
+      "text": "Good try. The rule says: stay five big steps away until the corner is kicked, like this one. Then watch the ball, and try to get to it first. You can try for the sticker again next time you play level nine.",
       "cue": "The right picture glows. The other two pictures fade."
     },
     {
@@ -1398,7 +1523,7 @@
     },
     {
       "id": "quiz.c10.b",
-      "text": "Outside the box, out of the ring?",
+      "text": "Outside the box, five big steps away?",
       "cue": "The middle picture glows."
     },
     {
@@ -1408,12 +1533,12 @@
     },
     {
       "id": "quiz.c10.right",
-      "text": "That's right! The rule says: wait outside the box, and five big steps from the ball, until it's kicked. Well done, {name}!",
+      "text": "That's right! The rule says: wait outside the box, and five big steps from the ball, until it's kicked. Then be ready to run in if it bounces out. Well done, {name}!",
       "cue": "The right picture has a green edge."
     },
     {
       "id": "quiz.c10.reveal",
-      "text": "Good try. The rule says: wait outside the box, and five big steps from the ball, like this one. You can try for the sticker again next time you play level ten.",
+      "text": "Good try. The rule says: wait outside the box, and five big steps from the ball, like this one. Then be ready to run in if it bounces out. You can try for the sticker again next time you play level ten.",
       "cue": "The right picture glows. The other two pictures fade."
     }
   ]

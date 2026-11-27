@@ -32,6 +32,7 @@ export async function chapter2(stage) {
     kind: 'theirs',
     shapeKey: 'theirCentreKick',
     promptIds: ['c2.place', 'place.how', 'place.ready'],
+    coachIds: ['coach.c2'],
   });
   await solved.spoken;
   stage.setBusy(true);

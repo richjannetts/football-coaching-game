@@ -46,6 +46,7 @@ export async function chapter10(stage) {
     kind: 'ourPenalty',
     shapeKey: 'ourPenalty',
     promptIds: ['c10.place', 'place.how', 'place.ready'],
+    coachIds: ['coach.c10'],
     ball: SPOT,
     area: AREA,
   });

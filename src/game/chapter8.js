@@ -44,6 +44,7 @@ export async function chapter8(stage) {
     kind: 'ourCorner',
     shapeKey: 'ourCorner',
     promptIds: ['c8.place', 'place.how', 'place.ready'],
+    coachIds: ['coach.c8'],
     ball: BALL,
   });
   await solved.spoken;
