@@ -24,7 +24,7 @@ export async function chapter10(stage) {
   pitch.placeBall({ x: 17.3, y: 35.2 }); // where she was tripped at the end of level 9
   pitch.setRingAt(SPOT);
   pitch.setRing(false);
-  stage.setScore(1, 1);
+  stage.startScore();
 
   stage.setBusy(true);
   await stage.play(['c10.intro1', 'c10.intro2', 'c10.intro3'], {
@@ -83,7 +83,7 @@ export async function chapter10(stage) {
           pitch.moveTo(gk, { x: 15 - target.side * 1.8, y: 39.4 }, 500),
         ]),
       'sfx.goal': () => {
-        stage.setScore(2, 1, true);
+        stage.storyGoal('us');
         stage.goalBanner(true);
         stage.netShake();
         stage.confetti(null, 70);

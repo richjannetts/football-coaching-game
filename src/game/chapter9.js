@@ -20,7 +20,7 @@ export async function chapter9(stage) {
   pitch.placeBall(BALL);
   pitch.setRingAt(BALL);
   pitch.setRing(true);
-  stage.setScore(1, 1);
+  stage.startScore();
 
   stage.setBusy(true);
   await stage.play(['c9.intro1', 'c9.intro2'], {

@@ -114,6 +114,7 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea, 
 
   const spotsLayer = mk('spots');
   const hintsLayer = mk('hints');
+  const flashLayer = mk('flash');
   const targetsLayer = mk('targets');
   const arrowLayer = mk('arrow');
   const themLayer = mk('them');
@@ -217,6 +218,20 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea, 
     );
   }
 
+  // Yellow circles that flash for a moment and fade away, to show the
+  // right places without leaving them on (Easy, after a wrong try).
+  let flashTimer = null;
+  function flashSpots(points, ms = 1800) {
+    clearTimeout(flashTimer);
+    flashLayer.replaceChildren(
+      ...points.map((p) => {
+        const v = toView(p);
+        return s('circle', { cx: v.x, cy: v.y, r: 22, class: 'flash-spot' });
+      })
+    );
+    flashTimer = setTimeout(() => flashLayer.replaceChildren(), ms);
+  }
+
   function showArrow(from, to) {
     const a = toView(from);
     const b = toView(to);
@@ -291,6 +306,7 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea, 
     clear,
     showSpots,
     showHints,
+    flashSpots,
     showArrow,
     showTargets,
     showCross,

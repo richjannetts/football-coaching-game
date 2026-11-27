@@ -15,7 +15,7 @@ export async function chapter7(stage) {
   const [kicker, theirL, theirR, theirBack, gk] = them;
   pitch.placeBall(pitch.centre);
   pitch.setRing(true);
-  stage.setScore(1, 1);
+  stage.startScore();
 
   stage.setBusy(true);
   await stage.play(['sfx.whistle', 'c7.intro1', 'c7.intro2', 'c7.intro3'], {
@@ -46,7 +46,7 @@ export async function chapter7(stage) {
   const [midL, midR] = role('middle').sort((a, b) => a.x - b.x).map((r) => r.el);
   const back = role('back')[0].el;
 
-  await stage.play(['sfx.whistle', 'sfx.kick', 'c7.kick', 'c7.win', 'c7.attack', 'sfx.kick', 'c7.block', 'c7.corner'], {
+  await stage.play(['sfx.whistle', 'sfx.kick', 'c7.kick', 'c7.win', 'c7.attack', 'sfx.kick', 'c7.block', ...stage.linked(8, 'c7.corner')], {
     'c7.kick': async () => {
       await pitch.moveBall({ x: 20.4, y: 22 }, 800);
       await Promise.all([pitch.moveTo(theirR, { x: 21.5, y: 19 }, 1200), pitch.moveBall({ x: 21.6, y: 18.4 }, 1200), pitch.moveTo(up, { x: 18.5, y: 17 }, 1100)]);

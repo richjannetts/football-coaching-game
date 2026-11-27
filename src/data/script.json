@@ -88,33 +88,38 @@
     },
     {
       "id": "menu.welcome",
-      "text": "Hi {name}! Tap the glowing level to play.",
-      "cue": "The next level to play glows."
+      "text": "Hi {name}! It's {round|round one} of the cup. Tap the glowing number on the match clock to play.",
+      "cue": "The match clock, with the next moment to play glowing yellow. The cup run sits above it."
     },
     {
       "id": "menu.moved",
-      "text": "You've moved up the path, {name}! Tap the glowing level to play.",
-      "cue": "Your player walks up the path to the next level, which glows yellow."
-    },
-    {
-      "id": "menu.soon",
-      "text": "More levels are coming soon.",
-      "cue": "The locked circle wobbles."
+      "text": "The clock has moved on, {name}! Tap the glowing number to play the next bit of the match.",
+      "cue": "The clock's hand sweeps round to the next moment, which glows yellow."
     },
     {
       "id": "menu.locked",
-      "text": "Play the glowing level first. Then the next one opens.",
-      "cue": "The level to play next glows yellow."
+      "text": "Play the glowing number first. Then the next one opens.",
+      "cue": "The moment to play next glows yellow."
     },
     {
-      "id": "menu.allDone",
-      "text": "You've finished every level so far! You can play them again any time.",
-      "cue": "Every level on the path is green."
+      "id": "menu.lockedRound",
+      "text": "Tap the yellow button first, to start the next match.",
+      "cue": "The yellow button at the bottom glows."
     },
     {
-      "id": "menu.newMatch",
-      "text": "You've played the whole match! Tap the new match button to play again, against a new team.",
-      "cue": "Every level on the path is green. The new match button glows yellow."
+      "id": "menu.nextRound",
+      "text": "You won the match! You're through to {round|the semi-final}. Tap the yellow button to play it.",
+      "cue": "The cup run shows the next round. The yellow Next round button glows."
+    },
+    {
+      "id": "menu.newCup",
+      "text": "You won the cup! Tap the yellow button to play a new cup, against new teams.",
+      "cue": "The gold cup sits at the end of the cup run. The yellow New cup button glows."
+    },
+    {
+      "id": "menu.replay",
+      "text": "Hi {name}! It's {round|the semi-final}, against {them}. Tap the glowing number on the match clock to play.",
+      "cue": "The match clock, with the next moment glowing. The other team's shirt and name are under the cup run."
     },
     {
       "id": "menu.album",
@@ -122,54 +127,59 @@
       "cue": "A yellow Tap here pointer shows the book button."
     },
     {
-      "id": "menu.replay",
-      "text": "Hi {name}! We're playing {them} today. Tap the glowing level to play.",
-      "cue": "The next level to play glows. The other team's name is on the flag."
+      "id": "cup.through",
+      "text": "Well done! You won the match, so you're through to {round|the next round}!",
+      "cue": "The cup run, with the round she won ticked in green."
     },
     {
-      "id": "menu.replayMoved",
-      "text": "You've moved up the path, {name}! Tap the glowing level to play.",
-      "cue": "Your player walks up the path to the next level, which glows yellow."
+      "id": "cup.round1",
+      "text": "It's round one of the cup. Lots of help in this one.",
+      "cue": "Round 1 is marked, with one ball."
     },
     {
-      "id": "match.new",
-      "text": "A new match! This time we're playing {them}.",
+      "id": "cup.semi",
+      "text": "It's the semi-final! It's a bit harder, with a bit less help. Keep trying, and you'll get there.",
+      "cue": "The semi-final is marked, with two balls."
+    },
+    {
+      "id": "cup.final",
+      "text": "It's the final! This is the hardest match. No dots this time: you choose exactly where everyone stands. Keep trying, and you can win the cup!",
+      "cue": "The final is marked, with three balls. The gold cup is next to it."
+    },
+    {
+      "id": "cup.difficultLose",
+      "text": "Watch out: in the final, a mistake can give the other team the ball, or even a goal. You can still win!",
+      "cue": "The three balls glow."
+    },
+    {
+      "id": "cup.vs",
+      "text": "We're playing {them}.",
       "cue": "The other team's shirt and name."
     },
     {
-      "id": "match.pick",
-      "text": "How hard should it be? Tap one ball for easy, two balls for medium, or three balls for difficult.",
-      "cue": "Three big buttons, with one, two and three footballs."
+      "id": "cup.go",
+      "text": "Tap the tick when you're ready.",
+      "cue": "The tick glows yellow."
     },
     {
-      "id": "match.easy",
-      "text": "Easy. Lots of help.",
-      "cue": "The one-ball button is pressed."
+      "id": "cup.letsGo",
+      "text": "Let's go! Tap the glowing number on the match clock.",
+      "cue": "The match clock starts again at kick-off, with the first moment glowing."
     },
     {
-      "id": "match.medium",
-      "text": "Medium. A bit less help.",
-      "cue": "The two-ball button is pressed."
+      "id": "cup.won",
+      "text": "We won the final! {team} have won the cup!",
+      "cue": "The gold cup, with confetti, and the whole team around it."
     },
     {
-      "id": "match.difficult",
-      "text": "Difficult! No dots. You choose exactly where everyone stands.",
-      "cue": "The three-ball button is pressed."
+      "id": "cup.coach",
+      "text": "Coach says: you kept trying in every match, and you got better and better. You're cup winners!",
+      "cue": "The whole team jumps for joy."
     },
     {
-      "id": "match.difficultLose",
-      "text": "Watch out: on difficult, a mistake can give the other team the ball, or even a goal. You can still win!",
-      "cue": "The three-ball button is pressed."
-    },
-    {
-      "id": "match.locked",
-      "text": "Finish a whole match on medium first. Then difficult opens.",
-      "cue": "The three-ball button has a lock and wobbles."
-    },
-    {
-      "id": "match.go",
-      "text": "Let's go! Tap the glowing level.",
-      "cue": "The path, with level one glowing."
+      "id": "cup.again",
+      "text": "Tap the tick to go back to the clock. You can play the cup again, against new teams.",
+      "cue": "The tick glows yellow."
     },
     {
       "id": "sfx.whistle",
@@ -508,7 +518,7 @@
     },
     {
       "id": "c1.end",
-      "text": "Level one done! Well played, {name}!",
+      "text": "Level {levelNo|one} done! Well played, {name}!",
       "cue": "A gold football medal with a 1 on it spins in."
     },
     {
@@ -553,7 +563,7 @@
     },
     {
       "id": "c2.end",
-      "text": "Level two done! Brilliant defending, {name}!",
+      "text": "Level {levelNo|two} done! Brilliant defending, {name}!",
       "cue": "A gold football medal with a 2 on it spins in."
     },
     {
@@ -638,12 +648,12 @@
     },
     {
       "id": "end.tapNext",
-      "text": "When you're ready, tap the arrow to move up the path.",
+      "text": "When you're ready, tap the arrow to go on.",
       "cue": "A hand points at the arrow button and says 'Tap here!'"
     },
     {
       "id": "end.tapHome",
-      "text": "Tap the house to go back to the path.",
+      "text": "Tap the house to go back to the match clock.",
       "cue": "A hand points at the house button and says 'Tap here!'"
     },
     {
@@ -748,7 +758,7 @@
     },
     {
       "id": "c3.end",
-      "text": "Level three done! Next time we have a goal kick in a real match, remember: spread wide, find a friend.",
+      "text": "Level {levelNo|three} done! Next time we have a goal kick in a real match, remember: spread wide, find a friend.",
       "cue": "A gold football medal with a 3 on it spins in."
     },
     {
@@ -788,12 +798,17 @@
     },
     {
       "id": "c4.out",
-      "text": "Their player knocks it off the side of the pitch. That's a kick-in for us. We'll learn about kick-ins soon.",
+      "text": "Their player knocks it off the side of the pitch.",
       "cue": "The ball rolls off the side line."
     },
     {
+      "id": "c4.kickIn",
+      "text": "That's a kick-in for us. That's the next level.",
+      "cue": "The ball sits on the side line."
+    },
+    {
       "id": "c4.end",
-      "text": "Level four done! When they have a goal kick on Saturday, remember: back, wait, GO!",
+      "text": "Level {levelNo|four} done! When they have a goal kick on Saturday, remember: back, wait, GO!",
       "cue": "A gold football medal with a 4 on it spins in."
     },
     {
@@ -1043,7 +1058,7 @@
     },
     {
       "id": "c5.end",
-      "text": "Level five done! On Saturday, when the ball goes off the side, look for a friend first.",
+      "text": "Level {levelNo|five} done! On Saturday, when the ball goes off the side, look for a friend first.",
       "cue": "A gold football medal with a 5 on it spins in."
     },
     {
@@ -1098,7 +1113,7 @@
     },
     {
       "id": "c6.end",
-      "text": "Level six done! You defended really well. On Saturday, if a goal goes in against us, heads up and back to our spots.",
+      "text": "Level {levelNo|six} done! You defended really well. On Saturday, if a goal goes in against us, heads up and back to our spots.",
       "cue": "A gold football medal with a 6 on it spins in."
     },
     {
@@ -1208,7 +1223,7 @@
     },
     {
       "id": "c7.end",
-      "text": "Level seven done! On Saturday, listen to Coach at half-time, then go again.",
+      "text": "Level {levelNo|seven} done! On Saturday, listen to Coach at half-time, then go again.",
       "cue": "A gold football medal with a 7 on it spins in."
     },
     {
@@ -1293,7 +1308,7 @@
     },
     {
       "id": "c8.end",
-      "text": "Level eight done! On Saturday, keep trying, and keep one friend back.",
+      "text": "Level {levelNo|eight} done! On Saturday, keep trying, and keep one friend back.",
       "cue": "A gold football medal with an 8 on it spins in."
     },
     {
@@ -1348,7 +1363,7 @@
     },
     {
       "id": "c9.end",
-      "text": "Level nine done! On Saturday, help our keeper at corners, and be ready to run.",
+      "text": "Level {levelNo|nine} done! On Saturday, help our keeper at corners, and be ready to run.",
       "cue": "A gold football medal with a 9 on it spins in."
     },
     {
@@ -1418,7 +1433,7 @@
     },
     {
       "id": "c10.end",
-      "text": "Level ten done, and that's the whole match! On Saturday, shake hands at the end, whatever the score.",
+      "text": "Level {levelNo|ten} done, and that's the whole match! On Saturday, shake hands at the end, whatever the score.",
       "cue": "A gold football medal with a 10 on it spins in."
     },
     {

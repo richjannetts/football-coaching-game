@@ -15,6 +15,7 @@ import { team, pitchSize, benchSpots, keeperAt } from './content.js';
 import { buildSpots, freeSpots } from '../lib/geometry.js';
 import { myTeam } from '../lib/teamState.js';
 import { scoreWords, finalWords } from '../lib/difficulty.js';
+import { miniClock } from '../lib/icons.js';
 import difficulty from '../data/difficulty.json';
 import { playConsequence } from './consequence.js';
 
@@ -34,9 +35,11 @@ const THEIR_LOOKS = [
 // mode: how this level is played (see modeFor in main.js): the difficulty,
 // whether the pitch is the other way round, extra goals so far on
 // Difficult, and which full-time ending. Missing means Easy, as before.
-export const defaultMode = () => ({ level: 0, difficulty: 'easy', mirror: false, goals: { us: 0, them: 0 }, consequences: false, ending: 0, onGoal: () => {} });
+// before: the score as the level starts. next: the level after this one in
+// this match's order (undefined means any). minute: the match clock.
+export const defaultMode = () => ({ level: 0, difficulty: 'easy', mirror: false, goals: { us: 0, them: 0 }, consequences: false, ending: 0, before: { us: 0, them: 0 }, next: undefined, minute: null, onGoal: () => {} });
 export function createStage({ profile, onHome, showWords = false, spots: extraSpots = [], mode: given = {} }) {
-  const mode = { ...defaultMode(), ...given, goals: { ...defaultMode().goals, ...(given.goals || {}) } };
+  const mode = { ...defaultMode(), ...given, goals: { ...defaultMode().goals, ...(given.goals || {}) }, before: { ...defaultMode().before, ...(given.before || {}) } };
   mode.cfg = difficulty.levels[mode.difficulty] || difficulty.levels.easy;
   // No dots on Difficult: players can go anywhere (an unseen one-yard grid).
   const gridSpots = mode.cfg.dots ? buildSpots(team.grid, extraSpots) : freeSpots(team.grid, extraSpots, pitchSize);
@@ -60,6 +63,9 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
     scoreV,
     h('span', { class: 'scoreboard-side' }, h('span', { class: 'scoreboard-name' }, mine.theirName), h('span', { class: 'kit-dot', style: { background: mine.kit.them.shirt, borderColor: mine.kit.them.stripe } }))
   );
+
+  // The match clock: which minute of the match this moment is.
+  if (mode.minute != null) scoreboard.append(h('span', { class: 'scoreboard-minute', 'aria-label': `${mode.minute} minutes` }, miniClock(mode.minute), `${mode.minute}'`));
 
   const el = h(
     'section',
@@ -260,6 +266,20 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
       scoreV.classList.add('is-new');
     }
   };
+
+  // The score as this level starts, from the story's goals in the levels
+  // played before it in this match's order (see the cup in levels.json).
+  stage.startScore = () => stage.setScore(mode.before.us, mode.before.them);
+  // One of the story's own goals, scored now.
+  stage.storyGoal = (side) => {
+    const [us, them] = base || [mode.before.us, mode.before.them];
+    stage.setScore(us + (side === 'us' ? 1 : 0), them + (side === 'them' ? 1 : 0), true);
+  };
+
+  // The lines at the end of a level that lead into the next one ("so now
+  // it's their goal kick, that's the next level") are only said when that
+  // level really is next in this match's order.
+  stage.linked = (level, ...ids) => (mode.next == null || mode.next === level ? ids : []);
 
   // An extra goal, outside the story's own goals: theirs after a mistake
   // on Difficult, or ours when the corner at level 8 goes in.

@@ -1,8 +1,22 @@
 {
-  "note": "The level path on the menu. Levels are grouped into matches, and each match starts with a flag. To add a level, add its number to a match (or add a new match) and add the level itself in src/main.js. A match still being built has 'complete' set to false, so its shiny sticker waits for full time. 'soon' is how many locked places to draw after the last level, to show more are coming.",
+  "note": "The levels, grouped into matches. 'matches' lists every level a match has, for the sticker album and the Match shiny. A match still being built has 'complete' set to false, so its shiny sticker waits for full time. 'cup' is the cup run on the match clock (Rich's choice, 27th November 2026): the rounds in order, each with its difficulty and its own order of moments, half by half. To add a level, add its number to the match and to every round, and add the level itself in src/main.js.",
   "matches": [
     { "id": "m1", "label": "Match 1", "levels": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "complete": true }
   ],
-  "soon": 3,
-  "soonLabel": "More soon"
+  "cup": {
+    "note": "Each round plays every level of the match once, in its own order, so each match feels different but every rule is still covered. The story needs some moments in fixed places ('fixed', checked by the tests): we kick off first and they restart after our goal (1, 2); they score just before half-time (6); the second half starts with their centre kick (7); the trip at their corner leads to the last-minute penalty (9, 10). 'before' lists levels that must come before another: their extra goals on Difficult (levels 2, 4 and 7) all come before our corner (8), which goes in as a comeback. 'storyGoals' are the story's own goals, so the score at each level follows the order.",
+    "name": "The Cup",
+    "match": "m1",
+    "storyGoals": { "1": "us", "6": "them", "10": "us" },
+    "fixed": [
+      { "start": [1, 2], "end": [6] },
+      { "start": [7], "end": [9, 10] }
+    ],
+    "before": [[2, 8], [4, 8], [7, 8]],
+    "rounds": [
+      { "id": "round1", "label": "Round 1", "spoken": "round one", "difficulty": "easy", "halves": [[1, 2, 3, 4, 5, 6], [7, 8, 9, 10]] },
+      { "id": "semi", "label": "Semi-final", "spoken": "the semi-final", "difficulty": "medium", "halves": [[1, 2, 5, 3, 6], [7, 4, 8, 9, 10]] },
+      { "id": "final", "label": "Final", "spoken": "the final", "difficulty": "difficult", "halves": [[1, 2, 4, 5, 6], [7, 3, 8, 9, 10]] }
+    ]
+  }
 }

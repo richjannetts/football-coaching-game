@@ -19,7 +19,7 @@ export async function chapter6(stage) {
   pitch.placeBall(BALL);
   pitch.setRingAt(BALL);
   pitch.setRing(true);
-  stage.setScore(1, 0);
+  stage.startScore();
 
   stage.setBusy(true);
   await stage.play(['c6.intro1', 'c6.intro2'], {
@@ -85,7 +85,7 @@ export async function chapter6(stage) {
     },
     'sfx.kick': () => Promise.all([pitch.moveBall({ x: 13.4, y: -0.6 }, 700, 'ease-in'), pitch.moveTo(keeper, { x: 13.6, y: 1.3 }, 600)]),
     'c6.theirGoal': async () => {
-      stage.setScore(1, 1, true);
+      stage.storyGoal('them');
       await wait(hold(1200));
     },
     'c6.headsUp': () => stage.jump(stage.players.map((p) => p.el)),

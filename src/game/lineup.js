@@ -102,6 +102,11 @@ export function runLineup(stage, { kind, shapeKey, promptIds, ball, area, coachI
       // The rule comes first: it is the same for every team.
       const problem = rule.ok ? fit.problems[0] : rule.problems[0];
 
+      // On Easy, yellow circles flash for a moment on the places still to
+      // fill, until the glowing spots take over (Rich's choice, 27th
+      // November 2026). Never before her first try.
+      if (cfg.flash && !help.show && !hintsOn && fit.emptySpots.length) pitch.flashSpots(fit.emptySpots);
+
       // The first wrong try: no reasons and no hints yet. A gentle nudge
       // names who or where to think about, and those players hop.
       if (help.nudgeOnly) {

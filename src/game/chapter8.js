@@ -23,7 +23,7 @@ export async function chapter8(stage) {
   pitch.placeBall({ x: 27, y: 41.4 });
   pitch.setRingAt(BALL);
   pitch.setRing(false);
-  stage.setScore(1, 1);
+  stage.startScore();
 
   stage.setBusy(true);
   await stage.play(['c8.intro1', 'c8.intro2', 'c8.intro3'], {
@@ -114,7 +114,7 @@ export async function chapter8(stage) {
     const from = { x: shooter.x < 18 ? 16 : 19.5, y: shooter.y < 33 ? 31 : 34 };
     const comeback = stage.mode.goals.them > stage.mode.goals.us;
     const middleLines = comeback ? ['sfx.goal', 'c8.postIn', 'c8.kickOff'] : ['c8.post', 'c8.break'];
-    await stage.play(['c8.move1', 'sfx.kick', ...middleLines, 'c8.block', 'c8.theirCorner'], {
+    await stage.play(['c8.move1', 'sfx.kick', ...middleLines, 'c8.block', ...stage.linked(9, 'c8.theirCorner')], {
       'c8.move1': async () => {
         await Promise.all([pitch.moveTo(taker.el, { x: 26, y: 37 }, 900), pitch.moveTo(shooter.el, from, 900)]);
         await pitch.moveBall({ x: from.x + 0.4, y: from.y + 0.6 }, 700);
