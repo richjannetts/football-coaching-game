@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readCup, winRound, ladder, scoreBefore, orderProblems, emptyCup } from '../src/lib/cup.js';
+import { readCup, winRound, ladder, scoreBefore, roundProblems, storyScore, goalLevelsFor, roundLevels, emptyCup } from '../src/lib/cup.js';
 import { readJson } from './helpers.js';
 
 const levels = readJson('src/data/levels.json');
@@ -15,32 +15,54 @@ test('cup: three rounds, each harder than the one before', () => {
   for (const r of rounds) assert.ok(difficulty.levels[r.difficulty], `${r.id} has a difficulty`);
 });
 
-test('cup: every round covers every level once, with the story in the right places', () => {
-  for (const r of rounds) assert.deepEqual(orderProblems(r.halves, { allLevels, fixed: cup.fixed, before: cup.before }), [], r.id);
+test('cup: every round is a match that makes sense, and we always win', () => {
+  for (const r of rounds) assert.deepEqual(roundProblems(r, { allLevels, story: cup.story }), [], r.id);
 });
 
-test('cup: each round plays the moments in its own order', () => {
-  const orders = rounds.map((r) => r.halves.flat().join(','));
-  assert.equal(new Set(orders).size, rounds.length);
+test('cup: each match is short, and the skills are spread across the rounds', () => {
+  for (const r of rounds) assert.ok(roundLevels(r).length <= 5, `${r.id} has ${roundLevels(r).length} moments`);
+  // Round 1: kick-offs and goal kicks. Semi-final: kick-ins and corners.
+  assert.deepEqual([...roundLevels(rounds[0])].sort((a, b) => a - b), [1, 2, 3, 4]);
+  assert.deepEqual([...roundLevels(rounds[1])].sort((a, b) => a - b), [5, 6, 8, 9]);
+  // The final ends with the penalty, to win the cup.
+  assert.equal(roundLevels(rounds.at(-1)).at(-1), 10);
+  // Across the cup, every level is played.
+  const played = new Set(rounds.flatMap(roundLevels));
+  assert.deepEqual(allLevels.filter((n) => !played.has(n)), []);
 });
 
-test('cup: the order checker spots a broken order', () => {
-  const opts = { allLevels, fixed: cup.fixed, before: cup.before };
-  assert.ok(orderProblems([[1, 2, 3, 4, 5], [7, 8, 9, 10]], opts).some((p) => p.includes('missing')));
-  assert.ok(orderProblems([[2, 1, 3, 4, 5, 6], [7, 8, 9, 10]], opts).length > 0);
-  assert.ok(orderProblems([[1, 2, 3, 4, 5, 6], [7, 8, 10, 9]], opts).length > 0);
-  // Their Difficult extra goal at level 4 must come before our corner.
-  assert.ok(orderProblems([[1, 2, 3, 5, 6], [7, 8, 4, 9, 10]], opts).some((p) => p.includes('before')));
+test('cup: the round checker spots a broken story', () => {
+  const opts = { allLevels, story: cup.story };
+  // Their restart (2) without our goal just before it.
+  assert.ok(roundProblems({ halves: [[2, 1], [3, 4]], goals: { 1: 'us' } }, opts).length > 0);
+  // The penalty not last.
+  assert.ok(roundProblems({ halves: [[1, 6], [9, 10, 7]], goals: { 1: 'us', 6: 'them', 10: 'us' } }, opts).length > 0);
+  // A draw is not allowed.
+  assert.ok(roundProblems({ halves: [[5, 6], [8, 9]], goals: { 6: 'them', 8: 'us' } }, opts).some((p) => p.includes('win') || p.includes('penalty')));
+  // Level 6 always has their goal.
+  assert.ok(roundProblems({ halves: [[1, 6], [3, 4]], goals: { 1: 'us' } }, opts).some((p) => p.includes('always scores')));
 });
 
-test('cup: the score follows the order of the story goals', () => {
-  const order = rounds[0].halves.flat();
-  assert.deepEqual(scoreBefore(cup.storyGoals, order, 1), { us: 0, them: 0 });
-  assert.deepEqual(scoreBefore(cup.storyGoals, order, 2), { us: 1, them: 0 });
-  assert.deepEqual(scoreBefore(cup.storyGoals, order, 7), { us: 1, them: 1 });
-  assert.deepEqual(scoreBefore(cup.storyGoals, order, 10), { us: 1, them: 1 });
-  // In the semi-final, their goal kick (4) comes after half-time.
-  assert.deepEqual(scoreBefore(cup.storyGoals, rounds[1].halves.flat(), 4), { us: 1, them: 1 });
+test('cup: the score follows each round story', () => {
+  const semi = rounds[1];
+  const order = roundLevels(semi);
+  assert.deepEqual(scoreBefore(semi.goals, order, 5), { us: 0, them: 0 });
+  assert.deepEqual(scoreBefore(semi.goals, order, 8), { us: 0, them: 1 });
+  assert.deepEqual(scoreBefore(semi.goals, order, 9), { us: 1, them: 1 });
+  assert.deepEqual(storyScore(rounds[0]), { us: 1, them: 0 });
+  assert.deepEqual(storyScore(semi), { us: 2, them: 1 });
+  assert.deepEqual(storyScore(rounds[2]), { us: 2, them: 1 });
+});
+
+test('cup: a Difficult mistake only costs a goal when a comeback can follow', () => {
+  const goalLevels = readJson('src/data/difficulty.json').consequences.goalLevels;
+  for (const r of rounds) {
+    const levels = goalLevelsFor(r, goalLevels, cup.comeback);
+    const order = roundLevels(r);
+    for (const n of levels) assert.ok(order.indexOf(n) < order.indexOf(cup.comeback), r.id);
+  }
+  assert.deepEqual(goalLevelsFor({ halves: [[1, 6], [7, 9, 10]] }, goalLevels, 8), []);
+  assert.deepEqual(goalLevelsFor({ halves: [[1, 2], [7, 8]] }, goalLevels, 8), [2, 7]);
 });
 
 test('cup: winning rounds moves her on, and winning the final wins the cup', () => {

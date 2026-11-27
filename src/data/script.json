@@ -133,22 +133,22 @@
     },
     {
       "id": "cup.round1",
-      "text": "It's round one of the cup. Lots of help in this one.",
+      "text": "It's round one of the cup: kick-offs and goal kicks. Lots of help in this one.",
       "cue": "Round 1 is marked, with one ball."
     },
     {
       "id": "cup.semi",
-      "text": "It's the semi-final! It's a bit harder, with a bit less help. Keep trying, and you'll get there.",
+      "text": "It's the semi-final: kick-ins and corners. A bit less help this time. Keep trying, and you'll get there.",
       "cue": "The semi-final is marked, with two balls."
     },
     {
       "id": "cup.final",
-      "text": "It's the final! This is the hardest match. No dots this time: you choose exactly where everyone stands. Keep trying, and you can win the cup!",
+      "text": "It's the final! A bit of everything, and the hardest match. No dots this time: you choose exactly where everyone stands. Win it, and we win the cup!",
       "cue": "The final is marked, with three balls. The gold cup is next to it."
     },
     {
       "id": "cup.difficultLose",
-      "text": "Watch out: in the final, a mistake can give the other team the ball, or even a goal. You can still win!",
+      "text": "Watch out: in the final, a mistake can give the other team the ball. You can still win!",
       "cue": "The three balls glow."
     },
     {
@@ -180,6 +180,21 @@
       "id": "cup.again",
       "text": "Tap the tick to go back to the clock. You can play the cup again, against new teams.",
       "cue": "The tick glows yellow."
+    },
+    {
+      "id": "ht.whistle",
+      "text": "That's the whistle for half-time. {score|It's one-nil}.",
+      "cue": "The referee's whistle. Our players get a drink."
+    },
+    {
+      "id": "ft.whistle",
+      "text": "That's the final whistle. Full time! {final|We won}!",
+      "cue": "Our players jump for joy."
+    },
+    {
+      "id": "ft.handshake",
+      "text": "Both teams shake hands. Well played, everyone!",
+      "cue": "Both teams jump and clap."
     },
     {
       "id": "sfx.whistle",
@@ -638,7 +653,7 @@
     },
     {
       "id": "end.shiny",
-      "text": "And you've finished the match! Here's a shiny sticker.",
+      "text": "And you've now played every moment of the match! Here's a shiny sticker.",
       "cue": "A shiny trophy sticker sits next to the medal."
     },
     {
@@ -1365,6 +1380,16 @@
       "id": "c9.penalty",
       "text": "The referee blows the whistle. It's a penalty to us! That's the next level.",
       "cue": "The ball sits in their penalty box."
+    },
+    {
+      "id": "c9.shoot",
+      "text": "She runs on and shoots...",
+      "cue": "Our front player runs into their box and shoots."
+    },
+    {
+      "id": "c9.goal",
+      "text": "GOAL! {runner|She} scores on the break! {score|We're winning}!",
+      "cue": "The ball hits the back of their net. Confetti."
     },
     {
       "id": "c9.end",

@@ -27,7 +27,7 @@ import difficulty from './data/difficulty.json';
 import replayData from './data/replays.json';
 import { readReplays, startReplay, finishReplayLevel, addGoal, pathProgress } from './lib/replays.js';
 import { buildClock, orderOf, levelAfter, minuteOf } from './lib/clock.js';
-import { readCup, winRound, ladder, scoreBefore } from './lib/cup.js';
+import { readCup, winRound, ladder, scoreBefore, roundLevels, goalLevelsFor } from './lib/cup.js';
 import { burst, burstFrom } from './lib/confetti.js';
 
 
@@ -37,6 +37,9 @@ const VERSION = __APP_VERSION__;
 chapter5.spots = ['kick-in-left'];
 chapter8.spots = ['corner-right'];
 chapter10.spots = ['penalty-spot'];
+// Levels that blow their own half-time or final whistle.
+chapter6.ownHalfTime = true;
+chapter10.ownFullTime = true;
 const chapters = { 1: chapter1, 2: chapter2, 3: chapter3, 4: chapter4, 5: chapter5, 6: chapter6, 7: chapter7, 8: chapter8, 9: chapter9, 10: chapter10 };
 
 let profile = store.load('profile');
@@ -292,16 +295,29 @@ let pendingCupWin = false;
 const MATCH = levels.matches[0];
 const CUP = levels.cup;
 const ROUNDS = CUP.rounds;
-const matchDone = () => MATCH.levels.every((n) => progress[`ch${n}`]);
+// Round 1 of her first cup is saved in progress: is it finished?
+const firstRoundDone = () => roundLevels(ROUNDS[0]).every((n) => progress[`ch${n}`]);
 const levelCfg = (d) => difficulty.levels[d] || difficulty.levels.easy;
-let cup = readCup(store.load('cup'), ROUNDS, matchDone());
+let cup = readCup(store.load('cup'), ROUNDS, firstRoundDone());
 const saveCup = (next) => {
   cup = next;
   store.save('cup', cup);
 };
 
+// A round saved before the rounds got shorter (27th November 2026) may
+// already have every one of its new moments done. Count it as won, so she
+// is never stuck on a finished clock.
+{
+  const cur = replays.current;
+  const r = cur && ROUNDS[Number.isInteger(cur.round) ? cur.round : cup.round];
+  if (r && roundLevels(r).every((n) => cur.done.includes(n))) {
+    saveReplays({ ...replays, current: null });
+    saveCup(winRound(cup, ROUNDS).cup);
+  }
+}
+
 // Her very first time through the match: Round 1 of her first cup.
-const firstRun = () => !replays.current && cup.won === 0 && cup.round === 0 && !matchDone();
+const firstRun = () => !replays.current && cup.won === 0 && cup.round === 0 && !firstRoundDone();
 // Is a round going now, or is she between rounds?
 const playing = () => !!replays.current || firstRun();
 // The round being played, or next to play.
@@ -329,7 +345,7 @@ function goMenu(speak) {
   const cur = replays.current;
   const round = roundNow();
   const live = playing();
-  const clock = buildClock(round.halves, clockProgress());
+  const clock = buildClock(round.halves, clockProgress(), round.minutes);
   // Between rounds every moment waits for the next round to start.
   if (!live) clock.markers.forEach((m) => (m.state = 'locked'));
   const newCup = !live && cup.round === 0 && cup.won > 0;
@@ -435,7 +451,7 @@ function goGrownUps() {
       consequences: !store.load('consequencesOff'),
       onToggleConsequences: (on) => store.save('consequencesOff', !on),
       replay: replays.current
-        ? { name: replays.current.opponent.name, round: roundNow().label, label: levelCfg(replays.current.difficulty).label, done: replays.current.done.length, total: MATCH.levels.length }
+        ? { name: replays.current.opponent.name, round: roundNow().label, label: levelCfg(replays.current.difficulty).label, done: replays.current.done.filter((n) => roundLevels(roundNow()).includes(n)).length, total: roundLevels(roundNow()).length }
         : null,
       onStopReplay: () => {
         saveReplays({ ...replays, current: null });
@@ -461,8 +477,19 @@ function modeFor(n) {
   const cur = replays.current;
   const round = roundNow();
   const order = orderOf(round.halves);
-  const story = { level: n, next: levelAfter(order, n), before: scoreBefore(CUP.storyGoals, order, n), minute: minuteOf(round.halves, n) };
-  if (!cur || !MATCH.levels.includes(n)) return { ...story, difficulty: 'easy' };
+  const goals = round.goals || {};
+  const [firstHalf] = round.halves;
+  const story = {
+    level: n,
+    next: levelAfter(order, n),
+    before: scoreBefore(goals, order, n),
+    minute: minuteOf(round.halves, n, round.minutes),
+    goal: goals[String(n)] || null,
+    halfTimeAfter: round.halves.length > 1 && firstHalf.at(-1) === n,
+    fullTimeAfter: order.at(-1) === n,
+    goalLevels: goalLevelsFor(round, difficulty.consequences.goalLevels, CUP.comeback),
+  };
+  if (!cur) return { ...story, difficulty: 'easy' };
   return {
     ...story,
     difficulty: cur.difficulty,
@@ -483,6 +510,7 @@ function goChapter(n) {
   stage.el.dataset.chapter = n;
   // The chapter's first line is spoken now, inside the tap that opened it.
   chapters[n](stage)
+    .then(() => matchWhistle(n, stage))
     .then(() => finishChapter(n, stage))
     .catch((err) => {
       if (err === ABORT) return;
@@ -490,6 +518,20 @@ function goChapter(n) {
       stage.leave();
       goMenu(false);
     });
+}
+
+// Half-time and full time, for moments that end a half or the match
+// without saying so themselves (levels 6 and 10 have their own).
+async function matchWhistle(n, stage) {
+  const m = stage.mode;
+  const ours = stage.players.map((p) => p.el);
+  if (m.fullTimeAfter && !chapters[n].ownFullTime) {
+    stage.setBusy(true);
+    await stage.play(['sfx.whistle', 'ft.whistle', 'ft.handshake'], { 'ft.whistle': () => stage.jump(ours), 'ft.handshake': () => stage.jump([...ours, ...stage.them]) });
+  } else if (m.halfTimeAfter && !chapters[n].ownHalfTime) {
+    stage.setBusy(true);
+    await stage.play(['sfx.whistle', 'ht.whistle']);
+  }
 }
 
 const NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
@@ -503,8 +545,8 @@ async function finishChapter(n, stage) {
   // when the clock moves on.
   let movesUp = firstTime;
   let roundWon = false;
-  if (replays.current && MATCH.levels.includes(n)) {
-    const r = finishReplayLevel(replays, n, MATCH.levels);
+  if (replays.current) {
+    const r = finishReplayLevel(replays, n, order);
     movesUp = r.firstTime;
     roundWon = r.matchDone;
     saveReplays(r.state);
@@ -512,7 +554,7 @@ async function finishChapter(n, stage) {
   const before = albumNow();
   progress = { ...progress, [`ch${n}`]: true };
   store.save('progress', progress);
-  if (wasFirstRun && matchDone()) roundWon = true;
+  if (wasFirstRun && firstRoundDone()) roundWon = true;
   // Winning a round moves her on in the cup. Winning the final wins it.
   let cupWon = false;
   if (roundWon) {

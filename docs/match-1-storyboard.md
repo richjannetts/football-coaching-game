@@ -21,12 +21,12 @@ Replays and difficulty levels were added on 27th November 2026: see "Replays and
 
 ## The cup (27th November 2026)
 
-The match is now played three times as a cup run: Round 1 (Easy), the semi-final (Medium) and the final (Difficult). The table above is the Round 1 order. The other rounds play the same ten levels in a different order, kept in `src/data/levels.json`:
+The match is played as a cup run of three short matches, each with its own skills, after Rich's daughter found ten levels in one match too many. The rounds are kept in `src/data/levels.json`:
 
-| Round | First half | Second half |
-| --- | --- | --- |
-| Round 1 | 1, 2, 3, 4, 5, 6 | 7, 8, 9, 10 |
-| Semi-final | 1, 2, 5, 3, 6 | 7, 4, 8, 9, 10 |
-| Final | 1, 2, 4, 5, 6 | 7, 3, 8, 9, 10 |
+| Round | Skills | First half | Second half | Score |
+| --- | --- | --- | --- | --- |
+| Round 1 (Easy) | Kick-offs and goal kicks | 1, 2 | 3, 4 | 1-0 |
+| Semi-final (Medium) | Kick-ins and corners | 5, 6 | 8, 9 | 2-1 (our corner, then a goal on the break at 9) |
+| Final (Difficult) | A mix, ending with the penalty | 1, 6 | 7, 9 (32'), 10 | 2-1 |
 
-Fixed in every round: our kick-off and their restart first (1, 2), their goal just before half-time (6), the second-half kick-off (7), and their corner leading to the last-minute penalty (9, 10). The tests check this for every round. On the match clock, the first half's moments run from kick-off to 16 minutes and the second half's from 20 minutes to the last minute.
+Fixed in every round that has them: 2 straight after 1, their goal (6) just before half-time, the second-half kick-off (7), and the trip at their corner (9) leading to the last-minute penalty (10). The tests check this for every round. On the match clock, the first half's moments run from kick-off to 16 minutes and the second half's from 20 minutes to the last minute.
