@@ -17,4 +17,4 @@ Agreed with Rich on 27th November 2026. The visual version is a published page f
 | 10 | Our penalty in the last minute (spot 6 yards out, a guess Rich agreed). She picks a corner and scores | 2-1 | Built |
 | - | Full time: handshakes and Coach praises the effort, told at the end of level 10. Match shiny | 2-1 | Built |
 
-Still to decide with Rich: whether they score before half-time in every mode, the penalty finish, and difficulty levels (easy, medium, difficult) for replays.
+Replays and difficulty levels were added on 27th November 2026: see "Replays and difficulty" in CLAUDE.md. They score before half-time in every mode. On Difficult, if a mistake gives them an extra goal, our corner at level 8 goes in off the post, so the match ends 3-2 to us.

@@ -107,6 +107,61 @@
       "cue": "Every level on the path is green."
     },
     {
+      "id": "menu.newMatch",
+      "text": "You've played the whole match! Tap the new match button to play again, against a new team.",
+      "cue": "Every level on the path is green. The new match button glows yellow."
+    },
+    {
+      "id": "menu.replay",
+      "text": "Hi {name}! We're playing {them} today. Tap the glowing level to play.",
+      "cue": "The next level to play glows. The other team's name is on the flag."
+    },
+    {
+      "id": "menu.replayMoved",
+      "text": "You've moved up the path, {name}! Tap the glowing level to play.",
+      "cue": "Your player walks up the path to the next level, which glows yellow."
+    },
+    {
+      "id": "match.new",
+      "text": "A new match! This time we're playing {them}.",
+      "cue": "The other team's shirt and name."
+    },
+    {
+      "id": "match.pick",
+      "text": "How hard should it be? Tap one ball for easy, two balls for medium, or three balls for difficult.",
+      "cue": "Three big buttons, with one, two and three footballs."
+    },
+    {
+      "id": "match.easy",
+      "text": "Easy. Lots of help.",
+      "cue": "The one-ball button is pressed."
+    },
+    {
+      "id": "match.medium",
+      "text": "Medium. A bit less help.",
+      "cue": "The two-ball button is pressed."
+    },
+    {
+      "id": "match.difficult",
+      "text": "Difficult! No dots. You choose exactly where everyone stands.",
+      "cue": "The three-ball button is pressed."
+    },
+    {
+      "id": "match.difficultLose",
+      "text": "Watch out: on difficult, a mistake can give the other team the ball, or even a goal. You can still win!",
+      "cue": "The three-ball button is pressed."
+    },
+    {
+      "id": "match.locked",
+      "text": "Finish a whole match on medium first. Then difficult opens.",
+      "cue": "The three-ball button has a lock and wobbles."
+    },
+    {
+      "id": "match.go",
+      "text": "Let's go! Tap the glowing level.",
+      "cue": "The path, with level one glowing."
+    },
+    {
       "id": "sfx.whistle",
       "text": "Peep!",
       "cue": "A whistle sound. Not spoken."
@@ -240,6 +295,31 @@
       "id": "hint.yourTurn",
       "text": "Now you try the rest.",
       "cue": "The glowing spots stay on."
+    },
+    {
+      "id": "hint.lookAgain",
+      "text": "Not quite. Have another look, then tap the tick.",
+      "cue": "The tick button comes back. Nothing else changes."
+    },
+    {
+      "id": "lose.possession",
+      "text": "Oh! They nipped in and won the ball. Never mind, that's how we learn.",
+      "cue": "Their nearest player takes the ball a few steps towards our goal. Our players stay where they are."
+    },
+    {
+      "id": "lose.wide",
+      "text": "Oh! They got through and had a shot. Phew, it went just wide!",
+      "cue": "Their player runs at our goal and shoots just past the post."
+    },
+    {
+      "id": "lose.goal",
+      "text": "Oh no, they scored. That's OK. Everyone makes mistakes, and we can still win.",
+      "cue": "Their player runs at our goal and scores. The score changes. No confetti."
+    },
+    {
+      "id": "lose.again",
+      "text": "Heads up, team! Let's get our spots right this time.",
+      "cue": "Their players and the ball go back. Our players are where she left them, and the tick comes back."
     },
     {
       "id": "good.lineup",
@@ -888,7 +968,7 @@
     },
     {
       "id": "c6.halfTime",
-      "text": "That's the whistle for half-time. One each!",
+      "text": "That's the whistle for half-time. {score|It's one each}!",
       "cue": "The players walk off for a drink."
     },
     {
@@ -968,7 +1048,7 @@
     },
     {
       "id": "c7.intro3",
-      "text": "It's the second half, and it's one each. {them} kick off.",
+      "text": "It's the second half. {score|It's one each}. {them} kick off.",
       "cue": "Their kicker glows on the ball."
     },
     {
@@ -1062,6 +1142,16 @@
       "cue": "The ball bounces off the post."
     },
     {
+      "id": "c8.postIn",
+      "text": "It hits the post... and goes in! {score|It's two each}!",
+      "cue": "The ball hits the post and rolls into the net. Confetti. Only on Difficult, when they scored an extra goal."
+    },
+    {
+      "id": "c8.kickOff",
+      "text": "They kick off and race towards our goal.",
+      "cue": "Their player runs into our half with the ball."
+    },
+    {
       "id": "c8.break",
       "text": "Their keeper grabs it and throws it out. They race towards our goal.",
       "cue": "Their player runs with the ball into our half."
@@ -1078,7 +1168,7 @@
     },
     {
       "id": "c8.end",
-      "text": "Level eight done! So close! On Saturday, keep trying, and keep one friend back.",
+      "text": "Level eight done! On Saturday, keep trying, and keep one friend back.",
       "cue": "A gold football medal with an 8 on it spins in."
     },
     {
@@ -1138,7 +1228,7 @@
     },
     {
       "id": "c10.intro1",
-      "text": "It's the last minute, and it's one each!",
+      "text": "It's the last minute. {score|It's one each}!",
       "cue": "The scoreboard glows. One each."
     },
     {
@@ -1163,12 +1253,12 @@
     },
     {
       "id": "c10.goal",
-      "text": "GOAL! {runner|She} scores! We're winning two-one!",
+      "text": "GOAL! {runner|She} scores! {score|We're winning two-one}!",
       "cue": "The ball hits the net. Our players run to hug the scorer."
     },
     {
       "id": "c10.fullTime",
-      "text": "That's the final whistle. Full time! We won two-one!",
+      "text": "That's the final whistle. Full time! {final|We won two-one}!",
       "cue": "Our players jump up and down."
     },
     {
@@ -1180,6 +1270,26 @@
       "id": "c10.coach",
       "text": "Coach says: I am so proud of you. You listened, you helped each other, and you never stopped trying.",
       "cue": "Our players jump and give each other a high five."
+    },
+    {
+      "id": "c10.handshake2",
+      "text": "Both teams clap each other off the pitch. What a game!",
+      "cue": "Both teams line up in the middle and clap."
+    },
+    {
+      "id": "c10.coach2",
+      "text": "Coach says: you never gave up, and you kept talking to each other. Brilliant!",
+      "cue": "Our players do a little jump."
+    },
+    {
+      "id": "c10.handshake3",
+      "text": "Everyone shakes hands, and the families on the side cheer for both teams.",
+      "cue": "Both teams line up in the middle and shake hands."
+    },
+    {
+      "id": "c10.coach3",
+      "text": "Coach says: I loved how you helped each other today. Give your team-mate a high five!",
+      "cue": "Our players do a little jump."
     },
     {
       "id": "c10.end",

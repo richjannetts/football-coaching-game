@@ -6,6 +6,9 @@
 // watch the move. The shot hits the post (the storyboard Rich agreed,
 // 27th November 2026), they break, and our friend who stayed back blocks
 // it out over our goal line: their corner, for level 9.
+// On Difficult, if they scored an extra goal after a mistake, this shot
+// goes in off the post instead, so she can still win the match. Then they
+// kick off and break, and the story carries on the same way.
 
 import { team } from './content.js';
 import { runLineup } from './lineup.js';
@@ -108,7 +111,9 @@ export async function chapter8(stage) {
     const shooter = first === near ? edge : near;
     stage.callNames({ runner: shooter.el, defender: stay.el });
     const from = { x: shooter.x < 18 ? 16 : 19.5, y: shooter.y < 33 ? 31 : 34 };
-    await stage.play(['c8.move1', 'sfx.kick', 'c8.post', 'c8.break', 'c8.block', 'c8.theirCorner'], {
+    const comeback = stage.mode.goals.them > stage.mode.goals.us;
+    const middleLines = comeback ? ['sfx.goal', 'c8.postIn', 'c8.kickOff'] : ['c8.post', 'c8.break'];
+    await stage.play(['c8.move1', 'sfx.kick', ...middleLines, 'c8.block', 'c8.theirCorner'], {
       'c8.move1': async () => {
         await Promise.all([pitch.moveTo(taker.el, { x: 26, y: 37 }, 900), pitch.moveTo(shooter.el, from, 900)]);
         await pitch.moveBall({ x: from.x + 0.4, y: from.y + 0.6 }, 700);
@@ -121,6 +126,31 @@ export async function chapter8(stage) {
         await pitch.moveBall({ x: 15.8, y: 37.6 }, 600, 'ease-out');
         stage.jump([gk]);
         await wait(hold(900));
+      },
+      // In off the post! The score is level again.
+      'sfx.goal': async () => {
+        await pitch.moveBall({ x: 15.6, y: 40.9 }, 400, 'ease-out');
+        stage.addGoal('us');
+        stage.goalBanner(true);
+        stage.netShake();
+        stage.confetti(null, 70);
+        stage.jump(stage.players.map((p) => p.el));
+      },
+      'c8.postIn': async () => {
+        await wait(hold(1800));
+        stage.goalBanner(false);
+      },
+      // They kick off and race into our half.
+      'c8.kickOff': async () => {
+        pitch.placeBall({ x: 15, y: 20 });
+        await Promise.all([pitch.moveTo(far, { x: 14.5, y: 21 }, 900), pitch.moveTo(gk, { x: 15, y: 39 }, 900)]);
+        await Promise.all([
+          pitch.moveTo(far, { x: 7, y: 14 }, 1600),
+          pitch.moveBall({ x: 7.4, y: 13.4 }, 1600),
+          pitch.moveTo(stay.el, { x: 8, y: 11 }, 1600),
+          pitch.moveTo(marker, { x: 18, y: 24 }, 1600),
+          pitch.moveTo(keeper.el, { x: 13.6, y: 1.6 }, 1000),
+        ]);
       },
       // Their keeper throws it out and their player races into our half.
       'c8.break': async () => {

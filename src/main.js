@@ -20,8 +20,11 @@ import stickers from './data/stickers.json';
 import { buildAlbum, newShinies } from './lib/album.js';
 import { quizFor } from './lib/quiz.js';
 import { detectPlatform } from './lib/platform.js';
-import { installScreen, welcomeScreen, startScreen, storyScreen, setupScreen, menuScreen, teamScreen, albumScreen, gateScreen, grownUpsScreen } from './screens.js';
+import { installScreen, welcomeScreen, startScreen, storyScreen, setupScreen, menuScreen, teamScreen, albumScreen, gateScreen, grownUpsScreen, newMatchScreen } from './screens.js';
 import * as teams from './lib/teamState.js';
+import difficulty from './data/difficulty.json';
+import replayData from './data/replays.json';
+import { readReplays, startReplay, finishReplayLevel, addGoal, isUnlocked, pathProgress } from './lib/replays.js';
 
 
 const app = document.getElementById('app');
@@ -34,6 +37,12 @@ const chapters = { 1: chapter1, 2: chapter2, 3: chapter3, 4: chapter4, 5: chapte
 
 let profile = store.load('profile');
 let progress = store.load('progress', {});
+// Playing a match again against a new team (see src/lib/replays.js).
+let replays = readReplays(store.load('replays'));
+const saveReplays = (next) => {
+  replays = next;
+  store.save('replays', replays);
+};
 let updateReady = false;
 let onMenu = false;
 let skippedInstall = false;
@@ -57,6 +66,11 @@ window.addEventListener('appinstalled', () => {
 
 function show(el) {
   onMenu = false;
+  // A replay's other team is only laid over the top while a level plays.
+  if (!el.classList.contains('chapter')) {
+    teams.setMatch(null);
+    tellNames();
+  }
   app.replaceChildren(el);
   window.scrollTo(0, 0);
 }
@@ -250,15 +264,22 @@ function goAlbum() {
 // justPassed: the level she has only now finished for the first time, so
 // the path can show her player walking up from it.
 let justPassed = null;
+const MATCH = levels.matches[0];
+const matchDone = () => MATCH.levels.every((n) => progress[`ch${n}`]);
+const levelCfg = (d) => difficulty.levels[d] || difficulty.levels.easy;
 function goMenu(speak) {
   const movedFrom = justPassed;
   justPassed = null;
+  const cur = replays.current;
   const allLevels = levels.matches.flatMap((m) => m.levels);
   const allDone = allLevels.every((n) => progress[`ch${n}`]);
+  // A new match can start once the whole match has been played, and
+  // there is no replay already going.
+  const canStart = matchDone() && !cur;
   show(
     menuScreen({
       profile,
-      progress,
+      progress: pathProgress(replays, progress),
       levels,
       album: albumNow(),
       onAlbum: goAlbum,
@@ -267,6 +288,8 @@ function goMenu(speak) {
       team: teams.myTeam(profile),
       onTeam: () => goTeam(true),
       updateReady,
+      replay: cur ? { name: cur.opponent.name, kit: teams.previewKit(cur.opponent.kit), balls: levelCfg(cur.difficulty).balls, label: levelCfg(cur.difficulty).label } : null,
+      onNewMatch: canStart ? goNewMatch : null,
       onChapter: (n, locked) => {
         if (locked) {
           narrator.say(['menu.locked']);
@@ -279,7 +302,37 @@ function goMenu(speak) {
     })
   );
   onMenu = true;
-  if (speak) narrator.say([allDone ? 'menu.allDone' : movedFrom != null ? 'menu.moved' : 'menu.welcome']);
+  if (cur) narrator.setVars({ them: cur.opponent.name });
+  if (!speak) return;
+  if (cur) narrator.say([movedFrom != null ? 'menu.replayMoved' : 'menu.replay']);
+  else if (canStart) narrator.say(['menu.newMatch']);
+  else narrator.say([allDone ? 'menu.allDone' : movedFrom != null ? 'menu.moved' : 'menu.welcome']);
+}
+
+// A new match: meet the new team, then choose how hard.
+function goNewMatch() {
+  const ourKit = teams.myTeam(profile).ourKit;
+  const plan = (d) => startReplay(replays, { match: MATCH.id, difficulty: d, opponents: replayData.opponents, ourKit, mirrorable: replayData.mirrorable, endings: replayData.endings });
+  const opponent = plan('easy').current.opponent;
+  const choices = difficulty.order.map((id) => ({ id, ...levelCfg(id), locked: !isUnlocked(replays, id, difficulty.levels) }));
+  const el = newMatchScreen({
+    opponent,
+    kit: teams.previewKit(opponent.kit),
+    choices,
+    onBack: () => goMenu(false),
+    onLocked: () => narrator.say(['match.locked']),
+    onPick: (c) => {
+      saveReplays(plan(c.id));
+      goMenu(false);
+      const warn = c.id === 'difficult' && c.consequences && !store.load('consequencesOff') ? ['match.difficultLose'] : [];
+      // Inside the tap, so the voice can start.
+      narrator.setVars({ them: opponent.name });
+      narrator.say([`match.${c.id}`, ...warn, 'match.go']);
+    },
+  });
+  show(el);
+  narrator.setVars({ them: opponent.name });
+  el.begin();
 }
 
 function goGrownUps() {
@@ -295,6 +348,15 @@ function goGrownUps() {
         sfx.setEnabled(on);
         store.save('soundsOff', !on);
       },
+      consequences: !store.load('consequencesOff'),
+      onToggleConsequences: (on) => store.save('consequencesOff', !on),
+      replay: replays.current
+        ? { name: replays.current.opponent.name, label: levelCfg(replays.current.difficulty).label, done: replays.current.done.length, total: MATCH.levels.length }
+        : null,
+      onStopReplay: () => {
+        saveReplays({ ...replays, current: null });
+        goGrownUps();
+      },
       onDelete: () => {
         narrator.stop();
         store.deleteEverything();
@@ -307,8 +369,27 @@ function goGrownUps() {
   );
 }
 
+// How a level is played. The first time through Match 1 is Easy. A replay
+// brings its own difficulty, side of the pitch, extra goals and ending.
+function modeFor(n) {
+  const cur = replays.current;
+  if (!cur || !MATCH.levels.includes(n)) return { level: n, difficulty: 'easy' };
+  return {
+    level: n,
+    difficulty: cur.difficulty,
+    mirror: cur.mirror.includes(n),
+    goals: { ...cur.goals },
+    consequences: !store.load('consequencesOff'),
+    ending: cur.ending,
+    onGoal: (side) => saveReplays(addGoal(replays, side)),
+  };
+}
+
 function goChapter(n) {
-  const stage = createStage({ profile, onHome: () => goMenu(true), showWords: !!store.load('showWords'), spots: chapters[n].spots || [] });
+  const cur = replays.current;
+  teams.setMatch(cur ? cur.opponent : null);
+  if (cur) narrator.setVars({ them: cur.opponent.name });
+  const stage = createStage({ profile, onHome: () => goMenu(true), showWords: !!store.load('showWords'), spots: chapters[n].spots || [], mode: modeFor(n) });
   show(stage.el);
   stage.el.dataset.chapter = n;
   // The chapter's first line is spoken now, inside the tap that opened it.
@@ -324,7 +405,15 @@ function goChapter(n) {
 
 async function finishChapter(n, stage) {
   const firstTime = !progress[`ch${n}`];
-  if (firstTime && chapters[n + 1]) justPassed = n;
+  // In a replay, "first time" means the first time in this replay: that is
+  // when her player walks up the path.
+  let movesUp = firstTime;
+  if (replays.current && MATCH.levels.includes(n)) {
+    const r = finishReplayLevel(replays, n, MATCH.levels);
+    movesUp = r.firstTime;
+    saveReplays(r.state);
+  }
+  if (movesUp && chapters[n + 1]) justPassed = n;
   const before = albumNow();
   progress = { ...progress, [`ch${n}`]: true };
   store.save('progress', progress);
@@ -344,7 +433,7 @@ async function finishChapter(n, stage) {
     },
     // The first time, the arrow goes back to the path so she sees her player
     // move up. Playing a level again goes straight on to the next one.
-    onNext: chapters[n + 1] ? () => (firstTime ? goMenu(true) : goChapter(n + 1)) : null,
+    onNext: chapters[n + 1] ? () => (movesUp ? goMenu(true) : goChapter(n + 1)) : null,
   });
   stage.setBusy(false);
   stage.showReady(false);

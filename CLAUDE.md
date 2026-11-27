@@ -91,8 +91,8 @@ Added at Rich's request, 26th November 2026, so others can play on their own pho
 - Passing moves name the real players: script lines use `{mate|a friend}` style words, filled by `stage.callNames`.
 - A right bonus answer gets a full-screen "New sticker!" moment before the sticker settles beside the medal.
 - Every instruction is spoken and shown in pictures. Words on screen are off by default (Rich's choice, 26th November 2026), switch on in the grown-ups area, and come on by themselves if the phone has no voice. Many 6 year olds cannot read fluently. The one exception is the bonus question: its question and answer labels are always shown, big and bold, as well as spoken (Rich's choice, 26th November 2026).
-- A wrong answer gets a friendly whistle, a picture of why, a hint, and another go straight away. Hints step up: nudge, show, do it together.
-- A wrong answer never loses the match or concedes a goal.
+- A wrong answer gets a friendly whistle and another go straight away. The first wrong try only says "have another look", with no reasons or hints (Rich, 27th November 2026). Then help steps up: a picture of why, the glowing spots, then do one together. How soon each step comes is set per difficulty in `src/data/difficulty.json`.
+- A wrong answer never loses the match. On Easy and Medium it never concedes anything. On Difficult only, a first wrong try at a line-up can let them win the ball, or have a shot that goes wide, or score once in a match (only at levels 2, 4 and 7), told kindly. If they score, our corner at level 8 goes in off the post, so she can always still win. A grown-ups switch turns this off (`src/game/consequence.js`).
 - Praise effort, not cleverness.
 - No timer pressure, no streaks, no daily rewards. Stickers collected are a record of progress. Passing a level moves her up the path. The first sticker she wins is her own player (sticker 1, Rich's choice, 27th November 2026), and finishing every level of a match gives a shiny sticker.
 - Each level ends with one bonus question on what it taught, with three picture answers. Right wins the next sticker in the album, once for each level. Wrong is never called wrong: the right picture glows and the voice explains it. She can try again next time she plays the level.
@@ -118,6 +118,8 @@ Keep content out of the code so it can be swapped later.
 - The child can change every player's name and look, both team names and both teams' kits (shirt style, shirt colours, shorts and socks) on the "My team" screen. Our kit starts as blue and yellow stripes (Rich's choice, 27th November 2026). The two teams can't wear the same shirt colour: the other team's shirt colour is shown crossed out. Each keeper gets the first colour from its list that neither team is wearing. Her changes are saved on the phone and laid over `team.json` by `src/lib/myteam.js`.
 - `src/data/levels.json`: the levels on the path, grouped into matches, and how many locked "more soon" places to draw after the last one.
 - `src/data/stickers.json`: the album pages and every sticker, in the order they are won. Nothing extra is saved for stickers: they follow from her progress.
+- `src/data/difficulty.json`: Easy, Medium and Difficult. How soon each kind of help comes, whether the dots show, and the Difficult consequences. Difficult unlocks after a whole match on Medium.
+- `src/data/replays.json`: playing a match again. The made-up teams she plays (names and kits only, same privacy rules as the album), the levels that can switch sides, and how many full-time endings there are.
 - `src/data/script.json`: every spoken line as `{ id, text, cue }`.
 - `src/data/quiz.json`: the bonus question for each level: words on screen, the three pictures, which one is right, and the script lines it speaks.
 - `public/voices/<pack>/<id>.mp3`: one file per line. `public/voices/packs.json` names the active pack.
@@ -156,6 +158,18 @@ Keep content out of the code so it can be swapped later.
 
 The full match is storyboarded in `docs/match-1-storyboard.md` (agreed by Rich, 27th November 2026): ten levels, kick-off to full time. All ten levels are built, ending with the penalty, full time and the Match 1 shiny. A match still being built has `complete: false` in `levels.json`, so its shiny waits for full time. The scoreboard shows the score once a level sets it (`stage.setScore`).
 
+## Replays and difficulty
+
+Built 27th November 2026, from Rich's agreed rules.
+
+- Once Match 1 is finished, a yellow "New match" button sits on the path. She meets a new made-up team, then taps one, two or three balls: Easy, Medium or Difficult. The first time through Match 1 is always Easy.
+- A replay keeps the lessons in the same order. Its progress is saved separately (`src/lib/replays.js`, store key `replays`), so her own progress, stickers and team never change. The path shows the replay's progress while one is going, and a chip under the top buttons shows who she is playing and how hard.
+- Each replay: a new team and kit, some of levels 3 to 6, 8 and 9 drawn the other way round (the pitch flips its drawing and finger positions in `src/lib/pitch.js`, so levels and rules need no changes), and the next of three full-time endings.
+- Difficult has no dots. Players snap to an unseen one-yard grid (`freeSpots` in `src/lib/geometry.js`), and every shape spot's zone decides if she is right.
+- The score in spoken lines comes from `{score}` and `{final}`, so extra goals on Difficult are said correctly.
+- Stickers stay first-time-only for bonus answers, whatever the difficulty.
+- A grown-up can stop a replay in the grown-ups area. Her levels and stickers stay.
+
 ## Not in scope yet
 
-A coach editor, sharing a team code, replays against new opponents and difficulty levels (next), recorded voice, polished artwork.
+A coach editor, sharing a team code, recorded voice, polished artwork.

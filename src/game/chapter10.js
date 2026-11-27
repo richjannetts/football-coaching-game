@@ -5,7 +5,8 @@
 // spot distance for 5v5, so the spot is a guess Rich agreed (6 yards,
 // 27th November 2026). It is drawn for her, never tested. In our team:
 // two friends on the edge of the box, ready for a rebound, and one friend
-// back near halfway. She chooses which corner to shoot at, and we score: 2-1. Then
+// back near halfway. She chooses which corner to shoot at, and we score: 2-1
+// (3-2 on Difficult if there was an extra goal each). Then
 // the final whistle, handshakes, and Coach praises the effort.
 
 import { team, ruleSet, pitchSize } from './content.js';
@@ -103,13 +104,18 @@ export async function chapter10(stage) {
   // praises how hard everyone worked, not who scored.
   async function fullTime() {
     const ours = stage.players.map((p) => p.el);
-    await stage.play(['sfx.whistle', 'c10.fullTime', 'c10.handshake', 'c10.coach'], {
+    // Each replay has its own ending (src/data/replays.json): what happens
+    // after the whistle, and what Coach says. The pictures are the same.
+    const end = ['', '2', '3'][stage.mode.ending % 3];
+    const shake = `c10.handshake${end}`;
+    const coach = `c10.coach${end}`;
+    await stage.play(['sfx.whistle', 'c10.fullTime', shake, coach], {
       'c10.fullTime': async () => {
         pitch.setRing(false);
         stage.jump(ours);
         await wait(hold(1200));
       },
-      'c10.handshake': async () => {
+      [shake]: async () => {
         await Promise.all([
           ...ours.map((el, i) => pitch.moveTo(el, { x: 7 + i * 4, y: 17.4 }, 1600)),
           ...them.map((el, i) => pitch.moveTo(el, { x: 9 + i * 4, y: 22.6 }, 1600)),
@@ -118,7 +124,7 @@ export async function chapter10(stage) {
         stage.jump([...ours, ...them]);
         await wait(hold(1400));
       },
-      'c10.coach': async () => {
+      [coach]: async () => {
         stage.jump(ours);
         await wait(hold(1600));
       },
