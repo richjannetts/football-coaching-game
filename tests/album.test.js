@@ -45,11 +45,12 @@ test('album: the next prize is the first sticker not yet won', () => {
 });
 
 test('album: finishing every level of a match gives its shiny', () => {
-  // Every level of match 1 but the last, then all of them.
-  const m1 = levels.matches[0].levels;
+  // Every level of a finished match but the last, then all of them.
+  const finished = { ...levels, matches: [{ id: 'm1', label: 'Match 1', levels: [1, 2, 3] }] };
+  const albumOf = (progress) => buildAlbum(data, { squad: mine.squad, teamName: mine.name, progress, levels: finished });
   const done = (list) => Object.fromEntries(list.map((n) => [`ch${n}`, true]));
-  const before = album(done(m1.slice(0, -1)));
-  const after = album(done(m1));
+  const before = albumOf(done([1, 2]));
+  const after = albumOf(done([1, 2, 3]));
   const shiny = newShinies(before, after);
   assert.equal(shiny.length, 1);
   assert.equal(shiny[0].kind, 'shiny');
@@ -92,4 +93,10 @@ test('album: with more bonus answers than stickers, nothing breaks', () => {
   const a = buildAlbum(data, { squad: mine.squad, teamName: mine.name, progress, levels: lots });
   assert.equal(a.count, a.total);
   assert.equal(a.next, null);
+});
+
+test('album: a match still being built gives no shiny, even with every level so far done', () => {
+  const building = { ...levels, matches: [{ id: 'm1', label: 'Match 1', levels: [1, 2], complete: false }] };
+  const a = buildAlbum(data, { squad: mine.squad, teamName: mine.name, progress: { ch1: true, ch2: true }, levels: building });
+  assert.equal(all(a).filter((x) => x.kind === 'shiny' && x.earned).length, 0);
 });

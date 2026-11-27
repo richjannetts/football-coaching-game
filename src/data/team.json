@@ -1,7 +1,7 @@
 {
   "teamName": "The Stripes",
   "opponentName": "The Rovers",
-  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A shape spot can list \"also\": other grid spots that count as filling it (the back player may stand on the penalty box line or one dot in front, Rich's choice, 27th November 2026). A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal. Squad names are made-up starting names; the child can change them on her phone. theirKit holds the kit choices for the other team; kit.them is only used if that is missing. An extra grid spot marked optional (the kick-in spot on the side line) only shows in the levels that ask for it.",
+  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A shape spot names its ideal grid spot (\"at\") and a \"zone\": a box in yards where anywhere counts (Rich asked for the right area to be enough, 27th November 2026). The back player's zone runs from the penalty box line to one dot in front, as Rich chose. A spot without a zone uses \"tolerance\" in yards. The grid dots are evenly spaced, 6 yards across and 3.5 yards up the pitch. A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal. Squad names are made-up starting names; the child can change them on her phone. theirKit holds the kit choices for the other team; kit.them is only used if that is missing. An extra grid spot marked optional (the kick-in spot on the side line) only shows in the levels that ask for it.",
   "kit": {
     "us": {
       "shirt": "#1d4ed8",
@@ -112,20 +112,24 @@
   },
   "grid": {
     "cols": [
-      4,
+      3,
       9,
       15,
       21,
-      26
+      27
     ],
     "rows": [
       1.5,
+      4,
       7.5,
       11,
-      14,
-      18.5,
-      26,
-      33
+      14.5,
+      18,
+      22,
+      25.5,
+      29,
+      32.5,
+      36
     ],
     "extra": [
       {
@@ -189,30 +193,54 @@
           "role": "side",
           "at": [
             1,
-            4
+            5
           ],
+          "zone": {
+            "x": [
+              3,
+              11
+            ],
+            "y": [
+              14.5,
+              19.9
+            ]
+          },
           "hint": "shape.c1.friends"
         },
         {
           "role": "side",
           "at": [
             3,
-            4
+            5
           ],
+          "zone": {
+            "x": [
+              19,
+              27
+            ],
+            "y": [
+              14.5,
+              19.9
+            ]
+          },
           "hint": "shape.c1.friends"
         },
         {
           "role": "back",
           "at": [
             2,
-            1
+            2
           ],
-          "also": [
-            [
-              2,
-              2
+          "zone": {
+            "x": [
+              9,
+              21
+            ],
+            "y": [
+              7.5,
+              11
             ]
-          ],
+          },
           "hint": "shape.back"
         },
         {
@@ -221,6 +249,16 @@
             2,
             0
           ],
+          "zone": {
+            "x": [
+              13,
+              17
+            ],
+            "y": [
+              0,
+              2
+            ]
+          },
           "hint": "shape.keeper"
         }
       ]
@@ -233,38 +271,72 @@
           "role": "up",
           "at": [
             2,
-            3
+            4
           ],
+          "zone": {
+            "x": [
+              9,
+              21
+            ],
+            "y": [
+              12.5,
+              15
+            ]
+          },
           "hint": "shape.c2.up"
         },
         {
           "role": "middle",
           "at": [
             1,
-            4
+            5
           ],
+          "zone": {
+            "x": [
+              3,
+              11
+            ],
+            "y": [
+              14.5,
+              19.9
+            ]
+          },
           "hint": "shape.c2.middles"
         },
         {
           "role": "middle",
           "at": [
             3,
-            4
+            5
           ],
+          "zone": {
+            "x": [
+              19,
+              27
+            ],
+            "y": [
+              14.5,
+              19.9
+            ]
+          },
           "hint": "shape.c2.middles"
         },
         {
           "role": "back",
           "at": [
             2,
-            1
+            2
           ],
-          "also": [
-            [
-              2,
-              2
+          "zone": {
+            "x": [
+              9,
+              21
+            ],
+            "y": [
+              7.5,
+              11
             ]
-          ],
+          },
           "hint": "shape.back"
         },
         {
@@ -273,6 +345,16 @@
             2,
             0
           ],
+          "zone": {
+            "x": [
+              13,
+              17
+            ],
+            "y": [
+              0,
+              2
+            ]
+          },
           "hint": "shape.keeper"
         }
       ]
@@ -287,66 +369,88 @@
             2,
             0
           ],
+          "zone": {
+            "x": [
+              13,
+              17
+            ],
+            "y": [
+              0,
+              2
+            ]
+          },
           "hint": "shape.c3.keeper"
         },
         {
           "role": "wide",
           "at": [
             0,
-            1
+            2
           ],
-          "also": [
-            [
+          "zone": {
+            "x": [
               0,
-              2
+              7
+            ],
+            "y": [
+              4,
+              11
             ]
-          ],
+          },
           "hint": "shape.c3.wide"
         },
         {
           "role": "wide",
           "at": [
             4,
-            1
+            2
           ],
-          "also": [
-            [
+          "zone": {
+            "x": [
+              23,
+              30
+            ],
+            "y": [
               4,
-              2
+              11
             ]
-          ],
+          },
           "hint": "shape.c3.wide"
         },
         {
           "role": "middle",
           "at": [
             2,
-            3
+            4
           ],
-          "also": [
-            [
-              2,
-              2
+          "zone": {
+            "x": [
+              9,
+              21
+            ],
+            "y": [
+              11,
+              15
             ]
-          ],
+          },
           "hint": "shape.c3.middle"
         },
         {
           "role": "up",
           "at": [
             2,
-            4
+            5
           ],
-          "also": [
-            [
-              1,
-              4
+          "zone": {
+            "x": [
+              9,
+              21
             ],
-            [
-              3,
-              4
+            "y": [
+              15.5,
+              19.9
             ]
-          ],
+          },
           "hint": "shape.c3.up"
         }
       ]
@@ -359,66 +463,72 @@
           "role": "up",
           "at": [
             2,
-            4
+            5
           ],
+          "zone": {
+            "x": [
+              9,
+              21
+            ],
+            "y": [
+              15.5,
+              19.9
+            ]
+          },
           "hint": "shape.c4.up"
         },
         {
           "role": "middle",
           "at": [
             1,
-            3
+            4
           ],
-          "also": [
-            [
-              1,
-              4
-            ],
-            [
+          "zone": {
+            "x": [
               0,
-              3
+              11
             ],
-            [
-              0,
-              4
+            "y": [
+              11,
+              19.9
             ]
-          ],
+          },
           "hint": "shape.c4.middles"
         },
         {
           "role": "middle",
           "at": [
             3,
-            3
+            4
           ],
-          "also": [
-            [
-              3,
-              4
+          "zone": {
+            "x": [
+              19,
+              30
             ],
-            [
-              4,
-              3
-            ],
-            [
-              4,
-              4
+            "y": [
+              11,
+              19.9
             ]
-          ],
+          },
           "hint": "shape.c4.middles"
         },
         {
           "role": "back",
           "at": [
             2,
-            1
+            2
           ],
-          "also": [
-            [
-              2,
-              2
+          "zone": {
+            "x": [
+              9,
+              21
+            ],
+            "y": [
+              7.5,
+              11
             ]
-          ],
+          },
           "hint": "shape.back"
         },
         {
@@ -427,6 +537,16 @@
             2,
             0
           ],
+          "zone": {
+            "x": [
+              13,
+              17
+            ],
+            "y": [
+              0,
+              2
+            ]
+          },
           "hint": "shape.keeper"
         }
       ]
@@ -444,54 +564,54 @@
           "role": "close",
           "at": [
             1,
-            4
+            5
           ],
-          "also": [
-            [
+          "zone": {
+            "x": [
               0,
-              4
+              11
+            ],
+            "y": [
+              14.5,
+              30
             ]
-          ],
+          },
           "hint": "shape.c5.close"
         },
         {
           "role": "inside",
           "at": [
             2,
-            5
+            7
           ],
-          "also": [
-            [
-              2,
-              4
+          "zone": {
+            "x": [
+              12,
+              24
             ],
-            [
-              1,
-              5
-            ],
-            [
-              3,
-              5
+            "y": [
+              18,
+              30
             ]
-          ],
+          },
           "hint": "shape.c5.inside"
         },
         {
           "role": "back",
           "at": [
             2,
-            1
+            2
           ],
-          "also": [
-            [
-              2,
-              2
+          "zone": {
+            "x": [
+              9,
+              21
             ],
-            [
-              2,
-              3
+            "y": [
+              7.5,
+              11
             ]
-          ],
+          },
           "hint": "shape.back"
         },
         {
@@ -500,6 +620,16 @@
             2,
             0
           ],
+          "zone": {
+            "x": [
+              13,
+              17
+            ],
+            "y": [
+              0,
+              2
+            ]
+          },
           "hint": "shape.keeper"
         }
       ]
@@ -512,50 +642,72 @@
           "role": "line",
           "at": [
             3,
-            1
+            2
           ],
+          "zone": {
+            "x": [
+              17,
+              27
+            ],
+            "y": [
+              4,
+              11
+            ]
+          },
           "hint": "shape.c6.line"
         },
         {
           "role": "up",
           "at": [
             3,
-            4
+            5
           ],
-          "also": [
-            [
-              3,
-              3
+          "zone": {
+            "x": [
+              17,
+              27
+            ],
+            "y": [
+              14.5,
+              21
             ]
-          ],
+          },
           "hint": "shape.c6.up"
         },
         {
           "role": "inside",
           "at": [
             2,
-            3
+            4
           ],
-          "also": [
-            [
-              1,
-              3
+          "zone": {
+            "x": [
+              9,
+              19
+            ],
+            "y": [
+              11,
+              18
             ]
-          ],
+          },
           "hint": "shape.c6.inside"
         },
         {
           "role": "back",
           "at": [
             2,
-            1
+            2
           ],
-          "also": [
-            [
-              2,
-              2
+          "zone": {
+            "x": [
+              9,
+              21
+            ],
+            "y": [
+              7.5,
+              11
             ]
-          ],
+          },
           "hint": "shape.back"
         },
         {
@@ -564,6 +716,16 @@
             2,
             0
           ],
+          "zone": {
+            "x": [
+              13,
+              17
+            ],
+            "y": [
+              0,
+              2
+            ]
+          },
           "hint": "shape.keeper"
         }
       ]

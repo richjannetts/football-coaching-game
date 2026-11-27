@@ -25,7 +25,10 @@ export function buildAlbum(data, { squad, teamName, progress = {}, levels }) {
         out.kit = player.keeper ? 'keeper' : 'us';
       }
       if (st.kind === 'shiny') {
-        out.earned = levels.matches[st.match].levels.every((n) => progress[`ch${n}`]);
+        // A match still being built (complete: false) gives no shiny yet:
+        // its last level so far is not full time.
+        const m = levels.matches[st.match];
+        out.earned = m.complete !== false && m.levels.every((n) => progress[`ch${n}`]);
       } else {
         out.earned = wonSoFar < wins;
         wonSoFar += 1;

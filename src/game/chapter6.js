@@ -8,7 +8,7 @@
 
 import { team } from './content.js';
 import { runLineup } from './lineup.js';
-import { wait, motion, hold } from '../lib/svg.js';
+import { wait, hold } from '../lib/svg.js';
 
 const BALL = { x: 29.6, y: 14 }; // on the right side line, in our half
 
@@ -59,13 +59,30 @@ export async function chapter6(stage) {
       stage.jump([inside]);
       await wait(hold(900));
     },
+    // We clear it, but their player up the pitch wins it back.
     'c6.clear': async () => {
       pitch.setRing(false);
-      await Promise.all([pitch.moveBall({ x: 11, y: 27 }, 1200, 'ease-out'), pitch.moveTo(up, { x: 18, y: 23 }, 1200), pitch.moveTo(back, { x: 15, y: 11 }, 1200)]);
+      await Promise.all([
+        pitch.moveBall({ x: 13, y: 25 }, 1200, 'ease-out'),
+        pitch.moveTo(upLine, { x: 13.5, y: 25.8 }, 1200),
+        pitch.moveTo(up, { x: 17, y: 22 }, 1200),
+        pitch.moveTo(back, { x: 15, y: 10 }, 1200),
+      ]);
     },
-    // Their player picks it up far out and shoots.
-    'c6.shot': () => Promise.all([pitch.moveTo(upLine, { x: 12, y: 26 }, 1000), pitch.moveTo(downLine, { x: 22, y: 14 }, 1200), wait(motion(1000))]),
-    'sfx.kick': () => Promise.all([pitch.moveBall({ x: 13.4, y: -0.6 }, 900, 'ease-in'), pitch.moveTo(keeper, { x: 13.6, y: 1.3 }, 700)]),
+    // They play it forward into our half, and their friend runs on to it
+    // near our penalty box before she shoots.
+    'c6.shot': async () => {
+      await Promise.all([pitch.moveTo(insider, { x: 19.5, y: 15 }, 1000), pitch.moveTo(inside, { x: 17, y: 13 }, 1000), pitch.moveBall({ x: 19.6, y: 15.6 }, 1000)]);
+      await Promise.all([
+        pitch.moveTo(insider, { x: 18, y: 10.6 }, 1100),
+        pitch.moveBall({ x: 17.8, y: 10 }, 1100),
+        pitch.moveTo(inside, { x: 16.6, y: 9.4 }, 1100),
+        pitch.moveTo(back, { x: 14.8, y: 8 }, 900),
+        pitch.moveTo(downLine, { x: 21, y: 8 }, 1100),
+        pitch.moveTo(upLine, { x: 15, y: 19 }, 1100),
+      ]);
+    },
+    'sfx.kick': () => Promise.all([pitch.moveBall({ x: 13.4, y: -0.6 }, 700, 'ease-in'), pitch.moveTo(keeper, { x: 13.6, y: 1.3 }, 600)]),
     'c6.theirGoal': async () => {
       stage.setScore(1, 1, true);
       await wait(hold(1200));
