@@ -24,7 +24,7 @@ export async function chapter3(stage) {
   const them = stage.addThem(team.opponents.ourGoalKick, team.opponentKeeper.ourGoalKick);
   pitch.placeBall(BALL);
   pitch.setRing(false);
-  stage.setScore(1, 0);
+  stage.startScore();
 
   // Intro explainer. Touch is off while it plays.
   stage.setBusy(true);
@@ -125,7 +125,7 @@ export async function chapter3(stage) {
     const [gk, , , centre, deep] = them;
     const near = right ? them[2] : them[1];
     stage.callNames({ runner: friend.el, mate: middle.el, shooter: up.el });
-    await stage.play(['c3.move1', 'c3.move2', 'c3.shot', 'sfx.kick', 'c3.wide', 'c3.theirKick'], {
+    await stage.play(['c3.move1', 'c3.move2', 'c3.shot', 'sfx.kick', 'c3.wide', ...stage.linked(4, 'c3.theirKick')], {
       'c3.move1': () =>
         Promise.all([
           pitch.moveTo(friend.el, { x: flip(4.5), y: 17.5 }, 2000),

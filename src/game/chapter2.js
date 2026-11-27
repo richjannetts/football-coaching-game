@@ -13,7 +13,7 @@ export async function chapter2(stage) {
   const [kicker, theirL, theirR] = them;
   pitch.placeBall(pitch.centre);
   pitch.setRing(true);
-  stage.setScore(1, 0);
+  stage.startScore();
 
   stage.setBusy(true);
   // The dotted ring was explained in level 1, so it is not repeated here
@@ -43,7 +43,7 @@ export async function chapter2(stage) {
   const back = role('back')[0].el;
   const keeper = role('keeper')[0].el;
 
-  await stage.play(['sfx.whistle', 'sfx.kick', 'c2.kick', 'c2.close', 'c2.defend', 'c2.out', 'c2.goalKick'], {
+  await stage.play(['sfx.whistle', 'sfx.kick', 'c2.kick', 'c2.close', 'c2.defend', 'c2.out', ...stage.linked(3, 'c2.goalKick')], {
     'c2.kick': () =>
       Promise.all([pitch.moveBall({ x: 9.4, y: 22 }, 800), pitch.moveTo(theirR, { x: 23, y: 18 }, 2200), pitch.moveTo(kicker, { x: 14, y: 22 }, 1500)]),
     'c2.close': async () => {

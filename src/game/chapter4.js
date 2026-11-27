@@ -14,7 +14,7 @@ export async function chapter4(stage) {
   const [gk, wideL] = them;
   pitch.placeBall({ x: 15, y: 37.4 });
   pitch.setRing(false);
-  stage.setScore(1, 0);
+  stage.startScore();
 
   stage.setBusy(true);
   await stage.play(['c4.intro1', 'c4.intro2', 'c4.intro3'], {
@@ -46,7 +46,7 @@ export async function chapter4(stage) {
   const [midL, midR] = role('middle').sort((a, b) => a.x - b.x).map((r) => r.el);
   const back = role('back')[0].el;
 
-  await stage.play(['sfx.whistle', 'c4.wait', 'c4.go', 'c4.win', 'c4.out'], {
+  await stage.play(['sfx.whistle', 'c4.wait', 'c4.go', 'c4.win', 'c4.out', ...stage.linked(5, 'c4.kickIn')], {
     // Everyone stays behind the line while their keeper passes it out.
     'c4.wait': async () => {
       await wait(motion(500));

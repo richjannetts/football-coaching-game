@@ -19,7 +19,7 @@ export async function chapter5(stage) {
   pitch.placeBall({ x: -1.6, y: 24.5 });
   pitch.setRingAt(BALL);
   pitch.setRing(false);
-  stage.setScore(1, 0);
+  stage.startScore();
 
   stage.setBusy(true);
   await stage.play(['c5.intro1', 'c5.intro2', 'c5.intro3'], {
@@ -106,7 +106,7 @@ export async function chapter5(stage) {
   async function playOut(first) {
     const other = first === close ? inside : close;
     stage.callNames({ runner: other.el, defender: back.el });
-    await stage.play(['c5.move1', 'c5.shot', 'sfx.kick', 'c5.save', 'c5.break', 'c5.tackle', 'c5.theirKick'], {
+    await stage.play(['c5.move1', 'c5.shot', 'sfx.kick', 'c5.save', 'c5.break', 'c5.tackle', ...stage.linked(6, 'c5.theirKick')], {
       'c5.move1': async () => {
         await Promise.all([pitch.moveTo(taker.el, { x: 5, y: 26 }, 900), pitch.moveTo(other.el, { x: 14, y: 29 }, 900)]);
         await pitch.moveBall({ x: 14.4, y: 29.6 }, 700);

@@ -21,11 +21,14 @@ import { buildAlbum, newShinies } from './lib/album.js';
 import { quizFor } from './lib/quiz.js';
 import { detectPlatform } from './lib/platform.js';
 import { hasPointed } from './lib/firstTap.js';
-import { installScreen, welcomeScreen, startScreen, storyScreen, setupScreen, menuScreen, teamScreen, albumScreen, gateScreen, grownUpsScreen, newMatchScreen } from './screens.js';
+import { installScreen, welcomeScreen, startScreen, storyScreen, setupScreen, menuScreen, teamScreen, albumScreen, gateScreen, grownUpsScreen, cupScreen, cupWinScreen } from './screens.js';
 import * as teams from './lib/teamState.js';
 import difficulty from './data/difficulty.json';
 import replayData from './data/replays.json';
-import { readReplays, startReplay, finishReplayLevel, addGoal, isUnlocked, pathProgress } from './lib/replays.js';
+import { readReplays, startReplay, finishReplayLevel, addGoal, pathProgress } from './lib/replays.js';
+import { buildClock, orderOf, levelAfter, minuteOf } from './lib/clock.js';
+import { readCup, winRound, ladder, scoreBefore } from './lib/cup.js';
+import { burst, burstFrom } from './lib/confetti.js';
 
 
 const app = document.getElementById('app');
@@ -274,38 +277,80 @@ function goAlbum() {
   el.begin();
 }
 
+// ---- The cup and the match clock ----
+// The matches make a cup: Round 1, the semi-final and the final, each a bit
+// harder than the one before (Rich's choice, 27th November 2026). Round 1
+// of her first cup is her first time through the match, saved in
+// progress. Every other round is played like a replay (src/lib/replays.js),
+// so her own progress, stickers and team never change.
 // justPassed: the level she has only now finished for the first time, so
-// the path can show her player walking up from it.
+// the clock can show its hand moving on.
 let justPassed = null;
+// Set when she wins the final, so the celebration is never missed, even if
+// she taps the house instead of the arrow.
+let pendingCupWin = false;
 const MATCH = levels.matches[0];
+const CUP = levels.cup;
+const ROUNDS = CUP.rounds;
 const matchDone = () => MATCH.levels.every((n) => progress[`ch${n}`]);
 const levelCfg = (d) => difficulty.levels[d] || difficulty.levels.easy;
+let cup = readCup(store.load('cup'), ROUNDS, matchDone());
+const saveCup = (next) => {
+  cup = next;
+  store.save('cup', cup);
+};
+
+// Her very first time through the match: Round 1 of her first cup.
+const firstRun = () => !replays.current && cup.won === 0 && cup.round === 0 && !matchDone();
+// Is a round going now, or is she between rounds?
+const playing = () => !!replays.current || firstRun();
+// The round being played, or next to play.
+function roundNow() {
+  const cur = replays.current;
+  const index = cur && Number.isInteger(cur.round) ? cur.round : cup.round;
+  return { ...(ROUNDS[index] || ROUNDS[0]), index };
+}
+// Which moments the clock shows as finished.
+function clockProgress() {
+  if (replays.current) return pathProgress(replays, progress);
+  if (firstRun()) return progress;
+  return pathProgress({ current: { done: [] } }, progress);
+}
+const tellRound = (round) => narrator.setVars({ round: round.spoken });
+
 function goMenu(speak) {
+  if (pendingCupWin) {
+    pendingCupWin = false;
+    goCupWin();
+    return;
+  }
   const movedFrom = justPassed;
   justPassed = null;
   const cur = replays.current;
-  const allLevels = levels.matches.flatMap((m) => m.levels);
-  const allDone = allLevels.every((n) => progress[`ch${n}`]);
-  // A new match can start once the whole match has been played, and
-  // there is no replay already going.
-  const canStart = matchDone() && !cur;
+  const round = roundNow();
+  const live = playing();
+  const clock = buildClock(round.halves, clockProgress());
+  // Between rounds every moment waits for the next round to start.
+  if (!live) clock.markers.forEach((m) => (m.state = 'locked'));
+  const newCup = !live && cup.round === 0 && cup.won > 0;
   show(
     menuScreen({
       profile,
-      progress: pathProgress(replays, progress),
-      levels,
-      album: albumNow(),
-      onAlbum: goAlbum,
-      movedFrom,
-      onSoon: () => narrator.say(['menu.soon']),
       team: teams.myTeam(profile),
-      onTeam: () => goTeam(true),
+      album: albumNow(),
       updateReady,
-      replay: cur ? { name: cur.opponent.name, kit: teams.previewKit(cur.opponent.kit), balls: levelCfg(cur.difficulty).balls, label: levelCfg(cur.difficulty).label } : null,
-      onNewMatch: canStart ? goNewMatch : null,
+      clock,
+      round,
+      cup: ladder(ROUNDS, { round: round.index }),
+      cupsWon: cup.won,
+      opponent: cur ? { name: cur.opponent.name, kit: teams.previewKit(cur.opponent.kit), balls: levelCfg(cur.difficulty).balls, label: levelCfg(cur.difficulty).label } : null,
+      movedFrom: live ? movedFrom : null,
+      nextButton: live ? null : { kind: newCup ? 'cup' : 'round', onTap: () => goCup(false) },
+      onAlbum: goAlbum,
+      onTeam: () => goTeam(true),
       onChapter: (n, locked) => {
         if (locked) {
-          narrator.say(['menu.locked']);
+          narrator.say([live ? 'menu.locked' : 'menu.lockedRound']);
           return;
         }
         goChapter(n);
@@ -316,37 +361,61 @@ function goMenu(speak) {
   );
   onMenu = true;
   if (cur) narrator.setVars({ them: cur.opponent.name });
+  tellRound(round);
   if (!speak) return;
   // The first time she has a sticker, the voice shows her the book too.
   const book = albumNow().count > 0 && !hasPointed('album') ? ['menu.album'] : [];
-  if (cur) narrator.say([movedFrom != null ? 'menu.replayMoved' : 'menu.replay', ...book]);
-  else if (canStart) narrator.say(['menu.newMatch', ...book]);
-  else narrator.say([allDone ? 'menu.allDone' : movedFrom != null ? 'menu.moved' : 'menu.welcome', ...book]);
+  if (!live) narrator.say([newCup ? 'menu.newCup' : 'menu.nextRound', ...book]);
+  else if (movedFrom != null) narrator.say(['menu.moved', ...book]);
+  else narrator.say([cur ? 'menu.replay' : 'menu.welcome', ...book]);
 }
 
-// A new match: meet the new team, then choose how hard.
-function goNewMatch() {
+// The next round of the cup: who we play, and how hard it will be.
+// justWon: she has only now won the round before.
+function goCup(justWon) {
+  const round = { ...ROUNDS[cup.round], index: cup.round };
   const ourKit = teams.myTeam(profile).ourKit;
-  const plan = (d) => startReplay(replays, { match: MATCH.id, difficulty: d, opponents: replayData.opponents, ourKit, mirrorable: replayData.mirrorable, endings: replayData.endings });
-  const opponent = plan('easy').current.opponent;
-  const choices = difficulty.order.map((id) => ({ id, ...levelCfg(id), locked: !isUnlocked(replays, id, difficulty.levels) }));
-  const el = newMatchScreen({
+  const plan = startReplay(replays, { match: MATCH.id, difficulty: round.difficulty, opponents: replayData.opponents, ourKit, mirrorable: replayData.mirrorable, endings: replayData.endings });
+  plan.current.round = round.index;
+  const opponent = plan.current.opponent;
+  const cfg = levelCfg(round.difficulty);
+  const warn = cfg.consequences && !store.load('consequencesOff') ? ['cup.difficultLose'] : [];
+  const lines = [...(justWon ? ['sfx.cheer', 'cup.through'] : []), `cup.${round.id}`, ...warn, 'cup.vs', 'cup.go'];
+  const el = cupScreen({
+    cup: ladder(ROUNDS, cup),
+    cupsWon: cup.won,
+    round,
     opponent,
     kit: teams.previewKit(opponent.kit),
-    choices,
+    lines,
     onBack: () => goMenu(false),
-    onLocked: () => narrator.say(['match.locked']),
-    onPick: (c) => {
-      saveReplays(plan(c.id));
+    onPlay: () => {
+      saveReplays(plan);
       goMenu(false);
-      const warn = c.id === 'difficult' && c.consequences && !store.load('consequencesOff') ? ['match.difficultLose'] : [];
       // Inside the tap, so the voice can start.
-      narrator.setVars({ them: opponent.name });
-      narrator.say([`match.${c.id}`, ...warn, 'match.go']);
+      narrator.say(['cup.letsGo']);
     },
   });
   show(el);
   narrator.setVars({ them: opponent.name });
+  tellRound(round);
+  el.begin();
+}
+
+// She won the final: she has won the cup!
+function goCupWin() {
+  const el = cupWinScreen({
+    team: teams.myTeam(profile),
+    profile,
+    lines: ['sfx.goal', 'cup.won', 'sfx.cheer', 'cup.coach', 'cup.again'],
+    celebrate: (fromEl) => {
+      const t = teams.myTeam(profile);
+      const colours = [t.kit.us.shirt, t.kit.us.stripe, '#ffffff', '#facc15', '#f59e0b'];
+      [0, 900, 2000, 3400].forEach((ms) => setTimeout(() => el.isConnected && (ms ? burst({ colours, count: 70 }) : burstFrom(fromEl, { colours, count: 90 })), ms));
+    },
+    onDone: () => goMenu(true),
+  });
+  show(el);
   el.begin();
 }
 
@@ -366,7 +435,7 @@ function goGrownUps() {
       consequences: !store.load('consequencesOff'),
       onToggleConsequences: (on) => store.save('consequencesOff', !on),
       replay: replays.current
-        ? { name: replays.current.opponent.name, label: levelCfg(replays.current.difficulty).label, done: replays.current.done.length, total: MATCH.levels.length }
+        ? { name: replays.current.opponent.name, round: roundNow().label, label: levelCfg(replays.current.difficulty).label, done: replays.current.done.length, total: MATCH.levels.length }
         : null,
       onStopReplay: () => {
         saveReplays({ ...replays, current: null });
@@ -384,13 +453,18 @@ function goGrownUps() {
   );
 }
 
-// How a level is played. The first time through Match 1 is Easy. A replay
-// brings its own difficulty, side of the pitch, extra goals and ending.
+// How a level is played. Round 1 of her first cup is Easy. Every other
+// round brings its own difficulty, side of the pitch, extra goals and
+// ending. Each round has its own order, so the score as a level starts,
+// the minute on the clock and the level after it all come from the round.
 function modeFor(n) {
   const cur = replays.current;
-  if (!cur || !MATCH.levels.includes(n)) return { level: n, difficulty: 'easy' };
+  const round = roundNow();
+  const order = orderOf(round.halves);
+  const story = { level: n, next: levelAfter(order, n), before: scoreBefore(CUP.storyGoals, order, n), minute: minuteOf(round.halves, n) };
+  if (!cur || !MATCH.levels.includes(n)) return { ...story, difficulty: 'easy' };
   return {
-    level: n,
+    ...story,
     difficulty: cur.difficulty,
     mirror: cur.mirror.includes(n),
     goals: { ...cur.goals },
@@ -418,23 +492,43 @@ function goChapter(n) {
     });
 }
 
+const NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+
 async function finishChapter(n, stage) {
   const firstTime = !progress[`ch${n}`];
-  // In a replay, "first time" means the first time in this replay: that is
-  // when her player walks up the path.
+  const round = roundNow();
+  const order = orderOf(round.halves);
+  const wasFirstRun = firstRun();
+  // In a replay, "first time" means the first time in this round: that is
+  // when the clock moves on.
   let movesUp = firstTime;
+  let roundWon = false;
   if (replays.current && MATCH.levels.includes(n)) {
     const r = finishReplayLevel(replays, n, MATCH.levels);
     movesUp = r.firstTime;
+    roundWon = r.matchDone;
     saveReplays(r.state);
   }
-  if (movesUp && chapters[n + 1]) justPassed = n;
   const before = albumNow();
   progress = { ...progress, [`ch${n}`]: true };
   store.save('progress', progress);
+  if (wasFirstRun && matchDone()) roundWon = true;
+  // Winning a round moves her on in the cup. Winning the final wins it.
+  let cupWon = false;
+  if (roundWon) {
+    const w = winRound(cup, ROUNDS);
+    saveCup(w.cup);
+    cupWon = w.cupWon;
+    pendingCupWin = cupWon;
+  }
+  const next = levelAfter(order, n);
+  if (movesUp && next != null && !roundWon) justPassed = n;
   const after = albumNow();
   // Finishing the last level of a match gives its shiny sticker.
   const shiny = newShinies(before, after)[0] || null;
+  // "Level three done!" says the level's place in this round's order.
+  const place = order.indexOf(n) + 1;
+  narrator.setVars({ levelNo: NUMBER_WORDS[place] || String(place) });
   const end = stage.showEnd({
     level: n,
     // A right bonus answer wins the next sticker, once for each level.
@@ -447,9 +541,14 @@ async function finishChapter(n, stage) {
       progress = { ...progress, [`bonus${n}`]: true };
       store.save('progress', progress);
     },
-    // The first time, the arrow goes back to the path so she sees her player
-    // move up. Playing a level again goes straight on to the next one.
-    onNext: chapters[n + 1] ? () => (movesUp ? goMenu(true) : goChapter(n + 1)) : null,
+    // The first time, the arrow goes back to the clock so she sees it move
+    // on. Playing a level again goes straight on to the next one. At full
+    // time of a round, the arrow goes on in the cup.
+    onNext: roundWon
+      ? () => (cupWon ? goMenu(true) : goCup(true))
+      : next != null
+        ? () => (movesUp ? goMenu(true) : goChapter(next))
+        : null,
   });
   stage.setBusy(false);
   stage.showReady(false);
@@ -458,4 +557,3 @@ async function finishChapter(n, stage) {
 }
 
 boot();
-

@@ -287,3 +287,29 @@ export const shortsIcon = (colour = '#fff') =>
   s('svg', { viewBox: '0 0 48 48', class: 'kit-part-icon', 'aria-hidden': 'true' }, s('path', { d: 'M8 10 H40 L44 40 H28 L24 24 L20 40 H4 Z', fill: colour, stroke: '#12305c', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }));
 export const sockIcon = (colour = '#fff') =>
   s('svg', { viewBox: '0 0 48 48', class: 'kit-part-icon', 'aria-hidden': 'true' }, s('path', { d: 'M16 4 H30 V28 L40 34 Q44 38 40 42 Q36 46 28 44 L14 38 Q10 36 12 32 L16 26 Z', fill: colour, stroke: '#12305c', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }));
+
+// A little stopwatch, for the minute on the scoreboard.
+export function miniClock() {
+  return s(
+    'svg',
+    { viewBox: '0 0 24 24', class: 'mini-clock', 'aria-hidden': 'true' },
+    s('circle', { cx: 12, cy: 13.5, r: 8.5, class: 'mini-clock-face' }),
+    s('rect', { x: 10, y: 1.5, width: 4, height: 3, rx: 1, class: 'mini-clock-top' }),
+    s('path', { d: 'M12 13.5 V8.5 M12 13.5 L15.5 15.5', class: 'mini-clock-hand' })
+  );
+}
+
+// The cup: a gold trophy with two handles and a star. won: false draws it
+// pale, still to be won.
+export function trophyIcon(won = true) {
+  return s(
+    'svg',
+    { viewBox: '0 0 64 64', class: `trophy${won ? ' is-won' : ''}`, 'aria-hidden': 'true' },
+    s('path', { d: 'M16 12 H8 Q6 26 20 30 M48 12 H56 Q58 26 44 30', class: 'trophy-handle' }),
+    s('path', { d: 'M15 8 H49 V20 Q49 38 32 40 Q15 38 15 20 Z', class: 'trophy-bowl' }),
+    s('path', { d: 'M20 12 V20 Q20 30 27 34', class: 'trophy-shine' }),
+    s('path', { d: 'M28 40 H36 L37 48 H27 Z', class: 'trophy-stem' }),
+    s('rect', { x: 19, y: 48, width: 26, height: 9, rx: 2.5, class: 'trophy-base' }),
+    s('path', { d: 'M32 14 L34.4 19.2 L40 19.7 L35.8 23.4 L37.1 29 L32 26 L26.9 29 L28.2 23.4 L24 19.7 L29.6 19.2 Z', class: 'trophy-star' })
+  );
+}

@@ -186,10 +186,9 @@ test('every new spoken line the game asks for is in the script', () => {
   files.push(new URL('main.js', dir), new URL('screens.js', dir));
   const used = new Set();
   for (const f of files) {
-    for (const m of readFileSync(f, 'utf8').matchAll(/'((?:hint|lose|match|menu|c8|c10)\.[A-Za-z0-9]+)'/g)) used.add(m[1]);
+    for (const m of readFileSync(f, 'utf8').matchAll(/'((?:hint|lose|cup|menu|c4|c8|c10)\.[A-Za-z0-9]+)'/g)) used.add(m[1]);
   }
-  for (const id of ['hint.lookAgain', 'lose.possession', 'lose.wide', 'lose.goal', 'lose.again', 'menu.newMatch', 'menu.replay', 'match.new', 'match.pick', 'match.locked', 'match.go', 'c8.postIn', 'c8.kickOff']) used.add(id);
-  for (const d of difficulty.order) used.add(`match.${d}`);
+  for (const id of ['hint.lookAgain', 'lose.possession', 'lose.wide', 'lose.goal', 'lose.again', 'menu.nextRound', 'menu.newCup', 'menu.replay', 'cup.through', 'cup.difficultLose', 'c4.kickIn', 'c8.postIn', 'c8.kickOff']) used.add(id);
   for (const e of ['', '2', '3']) used.add(`c10.handshake${e}`).add(`c10.coach${e}`);
   for (const id of used) assert.ok(ids.has(id), `missing line ${id}`);
 });

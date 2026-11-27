@@ -2,12 +2,12 @@
 // player setup, menu, grown-ups gate and grown-ups area.
 
 import { h, s, motion } from './lib/svg.js';
-import { buildPath } from './lib/path.js';
+import { RING, angleFor } from './lib/clock.js';
 import { stickerCard, emptyCard } from './lib/stickers.js';
 import { avatarSvg } from './lib/avatar.js';
 import { missingStep } from './lib/profile.js';
-import { menuDotsIcon, installIcon, shirtIcon, shortsIcon, sockIcon } from './lib/icons.js';
-import { ballIcon, bonusStickerSvg, titleLogo, titleScene, lockIcon, bookIcon, homeIcon, nextIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
+import { menuDotsIcon, installIcon, shirtIcon, shortsIcon, sockIcon, trophyIcon } from './lib/icons.js';
+import { ballIcon, bonusStickerSvg, titleLogo, titleScene, bookIcon, homeIcon, nextIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
 import * as narrator from './lib/narrator.js';
 import { pointOnce } from './lib/firstTap.js';
 import looks from './data/looks.json';
@@ -470,120 +470,139 @@ export function teamScreen({ team, kits, mode = 'both', onBack, onNext, onPlayer
   return el;
 }
 
-// ---------- Menu: the level path ----------
-// A winding trail of levels that scrolls with her finger, so it can hold as
-// many levels as we like. Passing a level moves her player one place up.
-// Levels are grouped into matches, each starting with a flag (Rich's
-// choice, 26th November 2026). movedFrom: the level she has just passed,
-// so her player can be seen walking up from it.
-export function menuScreen({ profile, progress, team, levels, album, updateReady, movedFrom = null, onChapter, onSoon, onGrownUps, onUpdate, onTeam, onAlbum, replay = null, onNewMatch = null }) {
-  const path = buildPath(levels, progress);
-
-  const trail = s(
+// ---------- Menu: the match clock ----------
+// A match is 40 minutes, and each level is a moment in it (Rich's choice,
+// 27th November 2026). The moments sit round a clock face, from kick-off
+// at the top, through half-time at the bottom, to full time. Finished
+// moments are green, the one to play next is yellow and glows, the rest
+// are white and locked. The hand points at the moment to play next, and
+// moves on when she passes one. Above the clock, the cup: which round she
+// is in, and the rounds still to come.
+// clock: from buildClock(). round: the round being played. cup: the rounds
+// from ladder(). opponent: who we are playing, if a round has started.
+// nextButton: { kind: 'round' | 'cup', onTap } between rounds.
+export function menuScreen({ profile, team, album, updateReady, clock, round, cup, cupsWon = 0, opponent = null, movedFrom = null, nextButton = null, onChapter, onGrownUps, onUpdate, onTeam, onAlbum }) {
+  const pct = (v) => `${v.toFixed(2)}%`;
+  const face = s(
     'svg',
-    { viewBox: `0 0 ${path.width} ${path.height}`, width: path.width, height: path.height, class: 'path-trail', 'aria-hidden': 'true' },
-    s('path', { d: path.trail, class: 'trail-lip' }),
-    s('path', { d: path.trail, class: 'trail' }),
-    path.doneTrail ? s('path', { d: path.doneTrail, class: 'trail-done' }) : null,
-    s('path', { d: path.trail, class: 'trail-dots' })
+    { viewBox: '0 0 100 100', class: 'clock-face', 'aria-hidden': 'true' },
+    s('circle', { cx: 50, cy: 50, r: 48, class: 'clock-rim' }),
+    s('circle', { cx: 50, cy: 50, r: 45.5, class: 'clock-dial' }),
+    s('circle', { cx: 50, cy: 50, r: RING, class: 'clock-track' }),
+    clock.played ? s('path', { d: clock.played, class: 'clock-played' }) : null,
+    // Half-time, at the bottom.
+    s('line', { x1: 50, y1: 50 + RING - 5, x2: 50, y2: 50 + RING + 5, class: 'clock-ht' }),
+    s('text', { x: 50, y: 50 + RING - 8.5, class: 'clock-ht-label' }, 'HALF-TIME'),
+    // Kick-off and full time, at the top.
+    s('line', { x1: 50, y1: 50 - RING - 5, x2: 50, y2: 50 - RING + 5, class: 'clock-ht' })
   );
-  const place = (x, y) => ({ left: `${x}px`, top: `${y}px` });
-  const nodeBtn = (n) => {
-    const locked = n.state === 'locked' || n.state === 'soon';
-    const label = n.kind === 'soon' ? 'More levels soon' : `Level ${n.level}${n.state === 'done' ? ', done' : locked ? ', locked' : ''}`;
+  // The hand, drawn pointing straight up and turned to its minute.
+  const hand = s('g', { class: 'clock-hand' }, s('line', { x1: 50, y1: 52, x2: 50, y2: 50 - RING + 9, class: 'clock-hand-line' }), s('circle', { cx: 50, cy: 50, r: 3, class: 'clock-hand-pin' }));
+  hand.style.transform = `rotate(${clock.handAngle}deg)`;
+  face.append(hand);
+
+  const markerBtn = (m) => {
+    const locked = m.state === 'locked';
     const b = h(
       'button',
-      { class: `path-node is-${n.state}`, type: 'button', 'aria-label': label, style: place(n.x - 38, n.y - 38) },
-      n.kind === 'soon' ? lockIcon() : String(n.level),
-      n.bonus ? h('span', { class: 'node-bonus' }, bonusStickerSvg(n.level, true)) : null
+      {
+        class: `clock-marker is-${m.state}`,
+        type: 'button',
+        'aria-label': `Level ${m.number}, ${m.shown} minutes${m.state === 'done' ? ', done' : locked ? ', locked' : ''}`,
+        style: { left: pct(m.x), top: pct(m.y) },
+      },
+      h('span', { class: 'clock-marker-no' }, String(m.number)),
+      m.bonus ? h('span', { class: 'node-bonus' }, bonusStickerSvg(m.level, true)) : null
     );
-    // The very first time on the path, point at level 1.
-    if (n.state === 'now' && n.level === 1) pointOnce(b, 'path', { above: true });
+    // The very first time on the clock, point at the first moment.
+    if (m.state === 'now' && m.number === 1) pointOnce(b, 'path', { above: true });
     b.addEventListener('click', () => {
       if (locked) shake(b);
-      if (n.kind === 'soon') onSoon?.();
-      else onChapter(n.level, locked);
+      onChapter(m.level, locked);
     });
     return b;
   };
-  // A flag sits above the first level of each match, on the far side.
-  const flag = (n) => h('div', { class: `path-flag${n.kind === 'soon' ? ' is-soon' : ''}`, style: { top: `${n.y - 74}px`, [n.x > path.width / 2 ? 'left' : 'right']: '6px' } }, n.flag);
 
-  // Her player stands beside the level she is on.
-  const beside = (n) => ({ x: n.x > path.width / 2 ? n.x - 108 : n.x + 48, y: n.y - 70 });
-  const here = path.nodes[path.at];
-  const spot = beside(here);
-  const you = h('div', { class: 'path-you', style: place(spot.x, spot.y) }, h('span', { class: 'path-you-shadow' }), avatarSvg(profile, { size: 60, idSuffix: 'menu' }));
-  const fromNode = movedFrom == null ? null : path.nodes.find((n) => n.level === movedFrom);
-  if (fromNode && fromNode !== here) {
-    const was = beside(fromNode);
-    const dx = was.x - spot.x;
-    const dy = was.y - spot.y;
-    you.animate(
-      [
-        { transform: `translate(${dx}px, ${dy}px)`, offset: 0 },
-        { transform: `translate(${dx}px, ${dy}px)`, offset: 0.3 },
-        { transform: `translate(${dx / 2}px, ${dy / 2 - 34}px)`, offset: 0.65 },
-        { transform: 'translate(0, 0)', offset: 1 },
-      ],
-      { duration: motion(1500), easing: 'ease-in-out', fill: 'backwards' }
-    );
+  // In the middle: her player, and the minute of the moment to play next.
+  const now = clock.markers[clock.at];
+  const minute = clock.allDone ? 'FULL TIME' : `${now.shown} mins`;
+  const you = h('div', { class: 'clock-you' }, h('span', { class: 'path-you-shadow' }), avatarSvg(profile, { size: 60, idSuffix: 'menu' }));
+  const centre = h('div', { class: 'clock-centre' }, you, h('span', { class: 'clock-minute' }, minute));
+
+  // She has just passed a moment: the hand sweeps on to the next one, and
+  // her player gives a happy hop.
+  const from = movedFrom == null ? null : clock.markers.find((m) => m.level === movedFrom);
+  if (from && from !== now) {
+    hand.animate([{ transform: `rotate(${angleFor(from.minute)}deg)` }, { transform: `rotate(${angleFor(from.minute)}deg)`, offset: 0.25 }, { transform: `rotate(${clock.handAngle}deg)` }], { duration: motion(1500), easing: 'ease-in-out', fill: 'backwards' });
+    you.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(0)', offset: 0.5 }, { transform: 'translateY(-26px)', offset: 0.75 }, { transform: 'translateY(0)' }], { duration: motion(1500), easing: 'ease-out' });
   }
 
-  const map = h(
-    'div',
-    { class: 'path-map', style: { width: `${path.width}px`, height: `${path.height}px` } },
-    trail,
-    path.nodes.filter((n) => n.flag).map(flag),
-    [...path.nodes].reverse().map(nodeBtn),
-    you
-  );
-  const scroller = h('div', { class: 'path-scroll' }, map);
+  const clockEl = h('div', { class: 'clock' }, face, centre, clock.markers.map(markerBtn));
+
   // Once she has a sticker, point at her sticker book the first time
   // (Rich asked for a bigger deal to be made of it, 27th November 2026).
   const bookBtn = h('button', { class: 'icon-btn album-btn', type: 'button', 'aria-label': 'Sticker album', onclick: onAlbum }, bookIcon());
   if (album.count > 0) pointOnce(bookBtn, 'album', { above: true });
-  // Open with her own level in view, a little below the middle.
-  const showHere = () => {
-    scroller.scrollTop = Math.max(0, here.y - scroller.clientHeight * 0.6);
-  };
-  requestAnimationFrame(() => requestAnimationFrame(showHere));
+
+  const top = h(
+    'header',
+    { class: 'path-top clock-top' },
+    h(
+      'button',
+      { class: 'chip team-btn', type: 'button', 'aria-label': `My team: ${team.name}`, onclick: onTeam },
+      h('span', { class: 'chip-face' }, avatarHead(profile, 44, 'chip')),
+      h('span', { class: 'chip-name' }, profile.name)
+    ),
+    h('button', { class: 'chip chip-count', type: 'button', 'aria-label': `Sticker album: ${album.count} stickers`, onclick: onAlbum }, h('span', { class: 'chip-stk' }, album.pages[0].stickers[0].earned ? stickerCard(album.pages[0].stickers[0]) : emptyCard(album.pages[0].stickers[0])), String(album.count)),
+    againButton()
+  );
+
+  // Who we are playing, and how hard (one to three balls).
+  const versus = opponent
+    ? h(
+        'div',
+        { class: 'match-chip', 'aria-label': `Playing ${opponent.name}, ${opponent.label}` },
+        shirtIcon(opponent.kit.pattern, opponent.kit.shirt, opponent.kit.stripe),
+        h('span', { class: 'match-chip-name' }, `v ${opponent.name}`),
+        h('span', { class: 'match-chip-balls' }, ballRow(opponent.balls, 3))
+      )
+    : null;
 
   return h(
     'section',
-    { class: 'screen menu' },
-    scroller,
-    h('div', { class: 'path-fade', 'aria-hidden': 'true' }),
+    { class: 'screen menu clock-menu' },
+    top,
+    h('div', { class: 'clock-side' }, cupLadder(cup, cupsWon, round), versus),
+    h('div', { class: 'clock-stage' }, clockEl),
     h(
-      'header',
-      { class: 'path-top' },
-      h(
-        'button',
-        { class: 'chip team-btn', type: 'button', 'aria-label': `My team: ${team.name}`, onclick: onTeam },
-        h('span', { class: 'chip-face' }, avatarHead(profile, 44, 'chip')),
-        h('span', { class: 'chip-name' }, profile.name)
-      ),
-      h('button', { class: 'chip chip-count', type: 'button', 'aria-label': `Sticker album: ${album.count} stickers`, onclick: onAlbum }, h('span', { class: 'chip-stk' }, album.pages[0].stickers[0].earned ? stickerCard(album.pages[0].stickers[0]) : emptyCard(album.pages[0].stickers[0])), String(album.count)),
-      againButton()
+      'footer',
+      { class: 'clock-bottom' },
+      h('button', { class: 'text-btn grown-ups-btn', type: 'button', onclick: onGrownUps }, 'Grown-ups'),
+      // Between rounds: on to the next round, or a new cup. Yellow,
+      // because it is the thing to tap next.
+      nextButton ? h('div', { class: 'clock-next' }, newMatchButton(nextButton)) : null,
+      bookBtn
     ),
-    // Playing a match again: who against, and how hard (one to three balls).
-    replay
-      ? h(
-          'div',
-          { class: 'match-chip', 'aria-label': `Playing ${replay.name}, ${replay.label}` },
-          shirtIcon(replay.kit.pattern, replay.kit.shirt, replay.kit.stripe),
-          h('span', { class: 'match-chip-name' }, `v ${replay.name}`),
-          h('span', { class: 'match-chip-balls' }, ballRow(replay.balls, 3))
-        )
-      : null,
-    // Every level finished and no replay going: start a new match. Yellow,
-    // because it is the thing to tap next.
-    onNewMatch ? newMatchButton(onNewMatch) : null,
-    updateReady ? h('button', { class: 'update-btn', type: 'button', onclick: onUpdate }, 'Grown-ups: a new version is ready. Tap to update.') : null,
-    h('button', { class: 'text-btn grown-ups-btn', type: 'button', onclick: onGrownUps }, 'Grown-ups'),
-    bookBtn
+    updateReady ? h('button', { class: 'update-btn', type: 'button', onclick: onUpdate }, 'Grown-ups: a new version is ready. Tap to update.') : null
   );
 }
+
+// The cup run: Round 1, then the semi-final, then the final, then the cup.
+// Won rounds are green with a tick, the round she is in is blue, and the
+// rounds to come are white. The cup is gold once won.
+function cupLadder(rounds, cupsWon = 0, current = null, big = false) {
+  const steps = rounds.map((r) =>
+    h(
+      'li',
+      { class: `cup-step is-${r.state}${current && r.id === current.id ? ' is-current' : ''}` },
+      h('span', { class: 'cup-step-dot' }, r.state === 'won' ? tickIcon() : h('span', { class: 'cup-step-balls' }, ballRow(levelBalls(r), 3))),
+      h('span', { class: 'cup-step-label' }, r.label)
+    )
+  );
+  const cup = h('li', { class: `cup-step cup-step-trophy${cupsWon ? ' is-won' : ''}` }, h('span', { class: 'cup-step-dot' }, trophyIcon(cupsWon > 0)), cupsWon > 1 ? h('span', { class: 'cup-count' }, `×${cupsWon}`) : null);
+  return h('ol', { class: `cup-ladder${big ? ' is-big' : ''}`, 'aria-label': `The cup: ${rounds.map((r) => `${r.label} ${r.state === 'won' ? 'won' : r.state === 'now' ? 'now' : 'to come'}`).join(', ')}` }, steps, cup);
+}
+const levelBalls = (r) => ({ easy: 1, medium: 2, difficult: 3 })[r.difficulty] || 1;
 
 // A row of little footballs: how hard a match is. Empty ones are faded.
 function ballRow(n, of) {
@@ -592,40 +611,69 @@ function ballRow(n, of) {
 function footballIcon(size = 30) {
   return s('svg', { viewBox: `${-size / 2 - 1} ${-size / 2 - 1} ${size + 2} ${size + 2}`, class: 'ball-pic', 'aria-hidden': 'true' }, footballSvg(size / 2));
 }
-function newMatchButton(onTap) {
-  const b = h('button', { class: 'new-match-btn is-glow', type: 'button', 'aria-label': 'New match', onclick: onTap }, footballIcon(34), h('span', {}, 'New match'));
+function newMatchButton({ kind, onTap }) {
+  const label = kind === 'cup' ? 'New cup' : 'Next round';
+  const b = h('button', { class: 'new-match-btn is-glow', type: 'button', 'aria-label': label, onclick: onTap }, kind === 'cup' ? trophyIcon(true) : footballIcon(34), h('span', {}, label));
   pointOnce(b, 'newMatch', { above: true });
   return b;
 }
 
-// ---------- A new match: who we play, and how hard ----------
-// She meets the new made-up team, then taps one, two or three balls.
-// Difficult stays locked until she has finished a match on Medium.
-export function newMatchScreen({ opponent, kit, choices, onPick, onLocked, onBack }) {
-  const buttons = choices.map((c) => {
-    const b = h(
-      'button',
-      { class: `level-choice${c.locked ? ' is-locked' : ''}`, type: 'button', 'aria-label': c.locked ? `${c.label}, locked` : c.label },
-      h('span', { class: 'level-balls' }, Array.from({ length: c.balls }, () => footballIcon(40))),
-      c.locked ? h('span', { class: 'level-lock' }, lockIcon()) : null,
-      h('span', { class: 'level-label' }, c.label)
-    );
-    b.addEventListener('click', () => {
-      if (c.locked) {
-        shake(b);
-        onLocked(c);
-      } else onPick(c);
-    });
-    return b;
-  });
+// ---------- The cup: the next round ----------
+// Between matches she sees the cup run: the rounds she has won, the round
+// that is next, and the team she will play. Each round is a bit harder
+// (one, two or three balls), and the voice says so (Rich asked, 27th
+// November 2026). One yellow tick starts the round.
+// lines: what the voice says, chosen in main.js.
+export function cupScreen({ cup, cupsWon, round, opponent, kit, lines, onPlay, onBack }) {
+  const playBtn = h('button', { class: 'ready-btn is-glow', type: 'button', 'aria-label': `Play the ${round.label}`, onclick: onPlay }, tickIcon());
+  pointOnce(playBtn, 'cup-play');
   const el = h(
     'section',
-    { class: 'screen new-match' },
-    h('header', { class: 'setup-top' }, h('button', { class: 'icon-btn back-btn', type: 'button', 'aria-label': 'Back', onclick: onBack }, backIcon()), againButton()),
-    h('div', { class: 'versus' }, h('span', { class: 'versus-v' }, 'v'), h('div', { class: 'versus-shirt' }, shirtIcon(kit.pattern, kit.shirt, kit.stripe)), h('h1', { class: 'versus-name' }, opponent.name)),
-    h('div', { class: 'level-choices' }, buttons)
+    { class: 'screen cup-screen' },
+    h('header', { class: 'setup-top' }, h('button', { class: 'icon-btn back-btn', type: 'button', 'aria-label': 'Back', onclick: onBack }, backIcon()), h('h1', { class: 'cup-title' }, 'The Cup'), againButton()),
+    cupLadder(cup, cupsWon, round, true),
+    h(
+      'div',
+      { class: 'cup-next' },
+      h('p', { class: 'cup-round' }, round.label),
+      h('div', { class: 'versus' }, h('span', { class: 'versus-v' }, 'v'), h('div', { class: 'versus-shirt' }, shirtIcon(kit.pattern, kit.shirt, kit.stripe)), h('h2', { class: 'versus-name' }, opponent.name)),
+      h('div', { class: 'cup-balls', 'aria-label': `${levelBalls(round)} of 3 balls: how hard` }, Array.from({ length: 3 }, (_, i) => h('span', { class: `mini-ball${i < levelBalls(round) ? '' : ' is-off'}` }, footballIcon(40))))
+    ),
+    h('div', { class: 'setup-bottom' }, playBtn)
   );
-  el.begin = () => narrator.say(['match.new', 'match.pick']);
+  el.begin = () => narrator.say(lines);
+  return el;
+}
+
+// ---------- Cup winners! ----------
+// Winning the final wins the cup: the biggest moment in the game (Rich,
+// 27th November 2026). Her whole team stands round the trophy, with
+// confetti, a fanfare and Coach's words. Only pictures and a tick: touch
+// works as normal.
+export function cupWinScreen({ team, profile, lines, onDone, celebrate }) {
+  const mates = team.squad.map((p, i) => h('span', { class: `cup-win-player${p.you ? ' is-you' : ''}` }, avatarSvg(p, { size: p.you ? 74 : 58, kit: p.keeper ? 'keeper' : 'us', idSuffix: `cupwin${i}` })));
+  // Her player stands in the middle, holding up the cup.
+  const you = mates.findIndex((m) => m.classList.contains('is-you'));
+  const row = [...mates];
+  if (you >= 0) {
+    const [me] = row.splice(you, 1);
+    row.splice(Math.floor(row.length / 2), 0, me);
+  }
+  const trophy = h('div', { class: 'cup-win-trophy' }, h('div', { class: 'end-rays' }), trophyIcon(true));
+  const doneBtn = h('button', { class: 'ready-btn is-glow', type: 'button', 'aria-label': 'Done', onclick: onDone }, tickIcon());
+  const el = h(
+    'section',
+    { class: 'screen cup-win' },
+    h('header', { class: 'setup-top' }, h('span'), againButton()),
+    h('div', { class: 'cup-win-title', 'aria-label': 'Cup winners!' }, h('span', { class: 'cup-win-top' }, team.name), h('span', { class: 'cup-win-big' }, 'CUP WINNERS!')),
+    trophy,
+    h('div', { class: 'cup-win-team' }, row),
+    h('div', { class: 'setup-bottom' }, doneBtn)
+  );
+  el.begin = () => {
+    narrator.say(lines);
+    celebrate?.(trophy);
+  };
   return el;
 }
 
@@ -735,7 +783,7 @@ export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWo
     h(
       'ul',
       { class: 'plain-list' },
-      h('li', {}, 'The game keeps a first name or nickname and a look for each player, the two team names, the other team’s kit, which levels are finished, any match she is playing again and the settings below. That is all.'),
+      h('li', {}, 'The game keeps a first name or nickname and a look for each player, the two team names, the other team’s kit, which levels are finished, how far she is in the cup and the settings below. That is all.'),
       h('li', {}, 'It is stored on this device only. Nothing is sent anywhere. There are no accounts, adverts or tracking.'),
       h('li', {}, 'The game does not use the camera, microphone, location or notifications.'),
       h('li', {}, 'Spoken lines use the phone’s own voice, which runs on the device.')
@@ -765,9 +813,9 @@ export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWo
       ? h(
           'div',
           { class: 'replay-box' },
-          h('p', {}, `Playing again: against ${replay.name}, on ${replay.label}, ${replay.done} of ${replay.total} levels done.`),
+          h('p', {}, `In the cup: ${replay.round} against ${replay.name}, on ${replay.label}, ${replay.done} of ${replay.total} levels done.`),
           h('button', { class: 'big-btn secondary', type: 'button', onclick: onStopReplay }, 'Stop this match'),
-          h('p', { class: 'small' }, 'Her stickers and finished levels stay. She can start a new match from the path.')
+          h('p', { class: 'small' }, 'Her stickers and finished levels stay. She can start this round again from the match clock.')
         )
       : null,
     h('h2', {}, 'Player'),
