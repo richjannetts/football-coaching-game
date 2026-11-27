@@ -4,6 +4,7 @@
 
 import { s } from './svg.js';
 import { avatarFigure } from './avatar.js';
+import { footballSvg } from './ball.js';
 
 let count = 0;
 
@@ -20,11 +21,11 @@ const star = (cx, cy, r, inner = 0.45) => {
 // Kit bag pictures, drawn around the middle of the card (50, 54).
 const INK = '#1f2937';
 const ITEMS = {
-  ball: () => [
-    s('circle', { cx: 50, cy: 54, r: 27, fill: '#fff', stroke: INK, 'stroke-width': 3.5 }),
-    s('path', { d: 'M50 42 L61.5 50.5 L57 64 L43 64 L38.5 50.5 Z', fill: INK }),
-    s('path', { d: 'M50 42 V28 M61.5 50.5 L75 46 M57 64 L65 76 M43 64 L35 76 M38.5 50.5 L25 46', stroke: INK, 'stroke-width': 3.5, 'stroke-linecap': 'round', fill: 'none' }),
-  ],
+  ball: () => {
+    const b = footballSvg(28);
+    b.setAttribute('transform', 'translate(50 54)');
+    return [b];
+  },
   boots: () => [
     s('path', { d: 'M22 44 Q22 36 30 36 L40 36 Q42 48 56 52 L72 56 Q80 58 80 66 L80 70 L22 70 Z', fill: INK }),
     s('path', { d: 'M42 46 L50 40 M47 50 L55 44 M53 53 L60 48', stroke: '#fff', 'stroke-width': 3, 'stroke-linecap': 'round' }),

@@ -913,10 +913,21 @@ h2 {
 .centre-mark {
   fill: #fff;
 }
-.goal {
-  fill: rgba(255, 255, 255, 0.35);
+.goal-net {
+  fill: rgba(255, 255, 255, 0.28);
+}
+.goal-mesh {
+  stroke: rgba(255, 255, 255, 0.75);
+  stroke-width: 1.2;
+  fill: none;
+}
+.goal-frame,
+.goal-line-posts {
   stroke: #fff;
-  stroke-width: 3;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
 }
 .helper-ring {
   fill: none;
@@ -943,13 +954,13 @@ h2 {
 .why-half-on .why-half {
   opacity: 1;
 }
-.why-goal-on .goal-ours,
-.why-ball-on .ball-shape {
+.why-goal-on .goal-ours .goal-frame,
+.why-ball-on .ball-edge {
   stroke: var(--hint);
   stroke-width: 5;
   animation: pulse-op 0.8s ease-in-out infinite;
 }
-.flash-goal-line .goal-ours {
+.flash-goal-line .goal-ours .goal-frame {
   stroke: var(--hint);
 }
 @keyframes pulse-op {
@@ -1120,14 +1131,6 @@ h2 {
   }
 }
 
-.ball-shape {
-  fill: #fff;
-  stroke: #1f2937;
-  stroke-width: 2;
-}
-.ball-patch {
-  fill: #1f2937;
-}
 
 /* Goal banner and end card */
 .goal-banner {
@@ -1417,11 +1420,6 @@ h2 {
 .quiz-them {
   fill: var(--wrong);
   stroke: #fff;
-  stroke-width: 0.3;
-}
-.quiz-ball {
-  fill: #fff;
-  stroke: #1f2937;
   stroke-width: 0.3;
 }
 .quiz-arrow {

@@ -1,5 +1,6 @@
 // Simple icons drawn in code.
 import { s } from './svg.js';
+import { footballSvg } from './ball.js';
 
 const icon = (...children) => s('svg', { viewBox: '0 0 48 48', class: 'icon', 'aria-hidden': 'true' }, ...children);
 
@@ -105,8 +106,8 @@ export function quizPicture(pic, length = 40, width = 30) {
   svg.append(
     s('rect', { x: 0, y: 0, width, height: length, rx: 1.5, class: 'quiz-grass' }),
     s('line', { x1: 0, y1: length / 2, x2: width, y2: length / 2, class: 'quiz-line' }),
-    s('rect', { x: width / 2 - 2, y: -0.8, width: 4, height: 0.8, class: 'quiz-goal' }),
-    s('rect', { x: width / 2 - 2, y: length, width: 4, height: 0.8, class: 'quiz-goal' })
+    s('rect', { x: width / 2 - 3, y: -1.2, width: 6, height: 1.2, class: 'quiz-goal' }),
+    s('rect', { x: width / 2 - 3, y: length, width: 6, height: 1.2, class: 'quiz-goal' })
   );
   if (pic.ring) svg.append(s('circle', { cx: pic.ball[0], cy: Y(pic.ball[1]), r: 5, class: 'quiz-ring' }));
   (pic.them || []).forEach(([x, y]) => svg.append(s('circle', { cx: x, cy: Y(y), r: 1.6, class: 'quiz-them' })));
@@ -120,7 +121,11 @@ export function quizPicture(pic, length = 40, width = 30) {
       s('polygon', { points: `${x2},${Y(y2)} ${head.join(' ')}`, class: 'quiz-arrow-head' })
     );
   }
-  if (pic.ball) svg.append(s('circle', { cx: pic.ball[0], cy: Y(pic.ball[1]), r: 0.9, class: 'quiz-ball' }));
+  if (pic.ball) {
+    const ball = footballSvg(2, { cls: 'quiz-ball' });
+    ball.setAttribute('transform', `translate(${pic.ball[0]} ${Y(pic.ball[1])})`);
+    svg.append(ball);
+  }
   return svg;
 }
 
@@ -223,12 +228,7 @@ export function titleScene() {
   // A ball flying into the top corner, with speed lines.
   g.append(
     s('path', { d: 'M70 168 Q120 90 176 86', class: 'ts-trail' }),
-    s(
-      'g',
-      { class: 'ts-ball' },
-      s('circle', { cx: 0, cy: 0, r: 9, fill: '#fff', stroke: '#1f2937', 'stroke-width': 1.5 }),
-      s('path', { d: 'M0 -4 L3.8 -1.2 L2.4 3.2 L-2.4 3.2 L-3.8 -1.2 Z', fill: '#1f2937' })
-    )
+    footballSvg(11, { cls: 'ts-ball' })
   );
   svg.append(defs, g);
   return svg;
