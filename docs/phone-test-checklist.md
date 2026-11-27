@@ -155,3 +155,15 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - [ ] Finish level 2 with level 1 done: a shiny trophy sticker appears, and it is on the Shinies page.
 - [ ] Change a team-mate's name or look on the team screen. Her sticker changes too.
 - [ ] Turn the phone sideways in the album. All six stickers on a page fit in one row.
+
+## Setup, kit and voice (27th November 2026)
+
+- [ ] Start a level straight after the path speaks. The voice should say the whole first line without stopping. Tap through levels quickly and listen for any line that stops part way.
+- [ ] Each first-run step has a back arrow that goes one step back, and nothing typed is lost.
+- [ ] "GAME DAY!" sits over the first story picture and does not cover the speaker button.
+- [ ] "Tap here!" shows on Play, the first story arrow, the setup tick once everything is chosen, both team ticks, level 1 and the first Ready tick, then never again.
+- [ ] My team: change our kit. The other team's shirt colour is crossed out in our shirt row, and ours in theirs. Both keepers stand out.
+- [ ] Level 1 says our new kit colours in its first line.
+- [ ] The scoreboard sits clear of the clock and camera.
+- [ ] Passing lines say the real player names.
+- [ ] A right bonus answer fills the screen with "New sticker!", then the sticker settles beside the medal.
