@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkRule, checkShape } from '../src/lib/checks.js';
+import { checkRule, checkShape, inZone } from '../src/lib/checks.js';
 import { resolveRuleSet } from '../src/lib/rules.js';
 import { resolveAt, buildSpots } from '../src/lib/geometry.js';
 import { readJson } from './helpers.js';
@@ -12,7 +12,10 @@ const ruleSet = resolveRuleSet('shwgl-2026-27-u8', [fa, league]);
 const centre = { x: 15, y: 20 };
 const halfway = 20;
 const grid = team.grid;
-const at = (col, row) => ({ x: grid.cols[col], y: grid.rows[row] });
+// Places named by the first grid's columns and rows, in yards. The game's
+// grid has since changed, but these are good test positions.
+const OLD = { cols: [4, 9, 15, 21, 26], rows: [1.5, 7.5, 11, 14, 18.5, 26, 33] };
+const at = (col, row) => ({ x: OLD.cols[col], y: OLD.rows[row] });
 
 // The coach's shapes, written out as spots, in the order a child might place them.
 const ourShape = team.shapes.ourCentreKick.spots.map((s) => resolveAt(s.at, grid));
@@ -206,18 +209,18 @@ for (const key of ['ourCentreKick', 'theirCentreKick']) {
 
   test(`shape, ${key}: back player on the penalty box line passes`, () => {
     const players = base.map((p) => ({ ...p }));
-    players[backIndex] = { x: grid.cols[2], y: grid.rows[1] };
+    players[backIndex] = { x: grid.cols[2], y: grid.rows[2] };
     assert.equal(checkShape({ players, shape: team.shapes[key], grid }).ok, true);
   });
 
   test(`shape, ${key}: back player one dot in front also passes`, () => {
     const players = base.map((p) => ({ ...p }));
-    players[backIndex] = { x: grid.cols[2], y: grid.rows[2] };
+    players[backIndex] = { x: grid.cols[2], y: grid.rows[3] };
     const result = checkShape({ players, shape: team.shapes[key], grid });
     assert.equal(result.ok, true);
     // The story plays out from where she actually stands.
     const back = result.roles.find((r) => r.role === 'back');
-    assert.equal(back.y, grid.rows[2]);
+    assert.equal(back.y, grid.rows[3]);
   });
 
 }
@@ -225,7 +228,7 @@ for (const key of ['ourCentreKick', 'theirCentreKick']) {
 test('shape, our kick: back player two dots in front does not pass', () => {
   const players = ourShape.map((p) => ({ ...p }));
   const backIndex = team.shapes.ourCentreKick.spots.findIndex((s) => s.role === 'back');
-  players[backIndex] = { x: grid.cols[2], y: grid.rows[3] };
+  players[backIndex] = { x: grid.cols[2], y: grid.rows[4] };
   assert.equal(checkShape({ players, shape: team.shapes.ourCentreKick, grid }).ok, false);
 });
 
@@ -371,4 +374,39 @@ test('the kick-in spot on the side line only appears when a level asks for it', 
   assert.equal(plain.some((s) => s.id === 'kick-in-left'), false);
   assert.equal(withKickIn.some((s) => s.id === 'kick-in-left'), true);
   assert.equal(withKickIn.find((s) => s.id === 'kick-in-left').optional, undefined);
+});
+
+// ---------- Zones: anywhere in the right area counts ----------
+
+test('zones: a friend one dot wider still counts at our centre kick', () => {
+  const players = ourShape.map((p) => ({ ...p }));
+  const side = team.shapes.ourCentreKick.spots.findIndex((s) => s.role === 'side');
+  players[side] = { x: grid.cols[0], y: grid.rows[5] };
+  assert.equal(checkShape({ players, shape: team.shapes.ourCentreKick, grid }).ok, true);
+});
+
+test('zones: a back player off to one side of the box line still counts', () => {
+  const players = ourShape.map((p) => ({ ...p }));
+  const backIndex = team.shapes.ourCentreKick.spots.findIndex((s) => s.role === 'back');
+  players[backIndex] = { x: grid.cols[1], y: grid.rows[2] };
+  assert.equal(checkShape({ players, shape: team.shapes.ourCentreKick, grid }).ok, true);
+});
+
+test('zones: every shape spot sits inside its own zone, on a grid dot', () => {
+  for (const [key, shape] of Object.entries(team.shapes)) {
+    for (const s of shape.spots) {
+      if (!s.zone) continue;
+      const p = resolveAt(s.at, grid);
+      assert.ok(inZone(p, s.zone), `${key} ${s.role} is outside its zone`);
+    }
+  }
+});
+
+test('grid: the dots are evenly spaced', () => {
+  const gaps = (list) => list.slice(1).map((v, i) => +(v - list[i]).toFixed(2));
+  assert.equal(new Set(gaps(grid.cols)).size, 1);
+  // Up the pitch: even, apart from the keeper's row on the goal line and
+  // the step over the halfway line.
+  const rows = gaps(grid.rows.slice(1));
+  assert.ok(rows.every((g) => g === 3.5 || g === 4), rows.join(', '));
 });
