@@ -918,8 +918,13 @@
     },
     {
       "id": "shape.c5.inside",
-      "text": "In our team, a friend stands inside, towards the middle of the pitch, for another pass.",
+      "text": "In our team, another friend stands further away, up the pitch or in the middle, for a longer pass.",
       "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c5.back",
+      "text": "In our team, one friend stays back, between the ball and our goal, in case they win it.",
+      "cue": "The space in front of our penalty box glows."
     },
     {
       "id": "shape.c6.line",

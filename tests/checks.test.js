@@ -520,3 +520,63 @@ test('grid: the dots are evenly spaced', () => {
   const rows = gaps(grid.rows.slice(1));
   assert.ok(rows.every((g) => g === 3.5 || g === 4), rows.join(', '));
 });
+
+// Kick-ins: jobs, not spots (Rich's choice, 27th November 2026).
+const KICK_IN_BALL = { x: 0.4, y: 24.5 };
+const GK = { x: 15, y: 1 };
+const ourKickIn = (taker, close, far, back) => [taker, close, far, back, GK];
+
+test('jobs, our kick-in: different set-ups that do every job all count', () => {
+  const shape = team.shapes.ourKickIn;
+  const setups = [
+    // Short pass down the line, long pass up the line, back player central.
+    ourKickIn(KICK_IN_BALL, { x: 3, y: 18 }, { x: 3, y: 36 }, { x: 15, y: 8 }),
+    // Short pass inside, long pass across to the middle.
+    ourKickIn(KICK_IN_BALL, { x: 9, y: 25.5 }, { x: 21, y: 22 }, { x: 12, y: 11 }),
+    // Short pass up the line, long pass into the middle up the pitch.
+    ourKickIn(KICK_IN_BALL, { x: 3, y: 32.5 }, { x: 15, y: 32.5 }, { x: 21, y: 7.5 }),
+  ];
+  for (const players of setups) assert.equal(checkShape({ players, shape, grid, keepers: [4] }).ok, true, JSON.stringify(players));
+});
+
+test('jobs, our kick-in: a missing job is named', () => {
+  const shape = team.shapes.ourKickIn;
+  // Nobody close enough for a short pass.
+  let fit = checkShape({ players: ourKickIn(KICK_IN_BALL, { x: 15, y: 18 }, { x: 15, y: 32.5 }, { x: 15, y: 8 }), shape, grid, keepers: [4] });
+  assert.equal(fit.ok, false);
+  assert.equal(fit.problems[0].line, 'shape.c5.close');
+  // Nobody staying back.
+  fit = checkShape({ players: ourKickIn(KICK_IN_BALL, { x: 3, y: 18 }, { x: 15, y: 32.5 }, { x: 21, y: 25.5 }), shape, grid, keepers: [4] });
+  assert.equal(fit.ok, false);
+  assert.equal(fit.problems[0].line, 'shape.c5.back');
+  // Two close and nobody further away: no longer pass.
+  fit = checkShape({ players: ourKickIn(KICK_IN_BALL, { x: 3, y: 18 }, { x: 3, y: 30 }, { x: 15, y: 8 }), shape, grid, keepers: [4] });
+  assert.equal(fit.ok, false);
+  assert.equal(fit.problems[0].line, 'shape.c5.inside');
+});
+
+test('jobs, their kick-in: each nearby player of theirs has one of ours goal side', () => {
+  const shape = team.shapes.theirKickIn;
+  const [, , downLine, upLine, insider] = team.opponents.theirKickIn;
+  const marks = shape.spots.filter((sp) => sp.job?.mark).map((sp) => sp.job.mark);
+  assert.deepEqual(marks, [downLine, upLine, insider]);
+  const ok = [
+    [GK, { x: 21, y: 7.5 }, { x: 21, y: 18 }, { x: 15, y: 14.5 }, { x: 15, y: 7.5 }],
+    [GK, { x: 27, y: 4 }, { x: 22, y: 17 }, { x: 18, y: 13 }, { x: 12, y: 9 }],
+  ];
+  for (const players of ok) assert.equal(checkShape({ players, shape, grid, keepers: [0] }).ok, true, JSON.stringify(players));
+  // Standing beside their up-the-line player but on the wrong side (nearer
+  // their goal) does not count.
+  const wrongSide = [GK, { x: 21, y: 7.5 }, { x: 23, y: 25 }, { x: 15, y: 14.5 }, { x: 15, y: 7.5 }];
+  const fit = checkShape({ players: wrongSide, shape, grid, keepers: [0] });
+  assert.equal(fit.ok, false);
+  assert.equal(fit.problems[0].line, 'shape.c6.up');
+});
+
+test('jobs, kick-ins: every example place does its job and keeps the rule', () => {
+  for (const key of ['ourKickIn', 'theirKickIn']) {
+    const shape = team.shapes[key];
+    const players = shape.spots.map((sp) => resolveAt(sp.at, grid));
+    assert.equal(checkShape({ players, shape, grid }).ok, true, key);
+  }
+});

@@ -122,6 +122,30 @@ const EDGE = 0.01; // yards of slack, so a dot on the zone's edge counts
 export function inZone(p, zone) {
   return p.x >= zone.x[0] - EDGE && p.x <= zone.x[1] + EDGE && p.y >= zone.y[0] - EDGE && p.y <= zone.y[1] + EDGE;
 }
+// A shape spot can have a job instead (kick-ins, Rich's choice, 27th
+// November 2026): anywhere that does the job counts. A job lists one or
+// more tests, and all of them must pass:
+//   near + yards: within [min, max] yards of a point ("near" is a point
+//     in yards, { x, y })
+//   box: a box in yards, like a zone
+//   mark + yards: between that player of theirs and our goal, and no more
+//     than "yards" from her ("goal side")
+const OUR_GOAL = { x: 15, y: 0 };
+export function doesJob(p, job) {
+  if (job.near) {
+    const d = distance(p, job.near);
+    if (d < job.yards[0] - EDGE || d > job.yards[1] + EDGE) return false;
+  }
+  if (job.box && !inZone(p, job.box)) return false;
+  if (job.mark) {
+    const them = { x: job.mark[0], y: job.mark[1] };
+    if (distance(p, them) > job.markYards + EDGE) return false;
+    if (distance(p, OUR_GOAL) >= distance(them, OUR_GOAL)) return false;
+  }
+  return true;
+}
+const fitsTarget = (p, t, tolerance) => (t.job ? doesJob(p, t.job) : t.zone ? inZone(p, t.zone) : spotDistance(p, t) <= tolerance);
+
 const nearestPlace = (p, target) => [target, ...(target.also || [])].reduce((a, b) => (distance(p, b) < distance(p, a) ? b : a));
 
 // Pair players with shape spots so that as many spots as possible are
@@ -145,8 +169,7 @@ export function matchShape(players, targets, tolerance, fits = () => true) {
     for (let i = 0; i < players.length; i++) {
       if (used[i] || !fits(i, targets[t])) continue;
       const d = spotDistance(players[i], targets[t]);
-      const fitsSpot = targets[t].zone ? inZone(players[i], targets[t].zone) : d <= tolerance;
-      if (!fitsSpot) continue;
+      if (!fitsTarget(players[i], targets[t], tolerance)) continue;
       used[i] = true;
       assign[t] = i;
       walk(t + 1, count + 1, total + d);
@@ -158,6 +181,12 @@ export function matchShape(players, targets, tolerance, fits = () => true) {
   return best.assign;
 }
 
+// A job's "near" can name a spot, like "kick-in-left", or a grid place.
+function resolveJob(job, grid) {
+  if (!job.near || (typeof job.near === 'object' && !Array.isArray(job.near))) return job;
+  return { ...job, near: resolveAt(job.near, grid) };
+}
+
 // shape: one entry from team.json "shapes". grid: team.json "grid".
 // keepers: indexes of players marked as our goalkeeper (Rich's choice,
 // 26th November 2026). A marked keeper fills the keeper spot and only that
@@ -166,7 +195,7 @@ export function matchShape(players, targets, tolerance, fits = () => true) {
 // Returns { ok, roles, emptySpots, strayPlayers, problems }.
 // roles[i] is the role of shape spot i and which player filled it.
 export function checkShape({ players, shape, grid, keepers = [] }) {
-  const targets = shape.spots.map((s) => ({ ...resolveAt(s.at, grid), also: (s.also || []).map((a) => resolveAt(a, grid)), role: s.role, hint: s.hint, zone: s.zone || null }));
+  const targets = shape.spots.map((s) => ({ ...resolveAt(s.at, grid), also: (s.also || []).map((a) => resolveAt(a, grid)), role: s.role, hint: s.hint, zone: s.zone || null, job: s.job ? resolveJob(s.job, grid) : null }));
   const isKeeper = (i) => keepers.includes(i);
   const fits = (i, t) => !keepers.length || isKeeper(i) === (t.role === 'keeper');
   const assign = matchShape(players, targets, shape.tolerance, fits);
@@ -177,7 +206,7 @@ export function checkShape({ players, shape, grid, keepers = [] }) {
   // of its places), so the story plays out from there.
   const roles = targets.map((t, i) => {
     // In a zone, the player's own position is the place.
-    const at = assign[i] < 0 ? t : t.zone ? players[assign[i]] : nearestPlace(players[assign[i]], t);
+    const at = assign[i] < 0 ? t : t.zone || t.job ? players[assign[i]] : nearestPlace(players[assign[i]], t);
     return { role: t.role, x: at.x, y: at.y, player: assign[i] };
   });
 
