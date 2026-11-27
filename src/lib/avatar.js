@@ -29,7 +29,8 @@ function applyVars(el, look, kitName = 'us') {
   el.style.setProperty('--shorts', kit.shorts);
   el.style.setProperty('--socks', kit.socks);
   el.dataset.hair = v.hairStyle;
-  return v;
+  // The other team's kit carries its own shirt style (stripes, hoops...).
+  return { ...v, pattern: kit.pattern };
 }
 
 const layer = (name, ...children) => s('g', { 'data-layer': name }, ...children);
@@ -94,20 +95,20 @@ function shirtPattern(pattern) {
 }
 
 // Front view, for the setup screen and menu. viewBox 0 0 100 150.
-export function avatarSvg(look, { size = 160, kit = 'us', idSuffix = 'a', pattern = 'stripes' } = {}) {
+export function avatarSvg(look, { size = 160, kit = 'us', idSuffix = 'a', pattern } = {}) {
   const svg = s('svg', { viewBox: '0 0 100 150', width: size, height: size * 1.5, class: 'avatar', 'aria-hidden': 'true' });
   const v = applyVars(svg, look, kit);
-  svg.append(...avatarParts(v, `shirt-clip-${idSuffix}`, pattern));
+  svg.append(...avatarParts(v, `shirt-clip-${idSuffix}`, pattern || v.pattern || 'stripes'));
   return svg;
 }
 
 // Head and shoulders, to sit inside a sticker. Placed with x, y, width and
 // height inside the sticker's own drawing.
 let figureCount = 0;
-export function avatarFigure(look, { kit = 'us', pattern = 'stripes', x = 0, y = 0, width = 80, height = 88 } = {}) {
+export function avatarFigure(look, { kit = 'us', pattern, x = 0, y = 0, width = 80, height = 88 } = {}) {
   const svg = s('svg', { viewBox: '15 8 70 77', x, y, width, height, class: 'avatar' });
   const v = applyVars(svg, look, kit);
-  svg.append(...avatarParts(v, `fig-clip-${++figureCount}`, pattern));
+  svg.append(...avatarParts(v, `fig-clip-${++figureCount}`, pattern || v.pattern || 'stripes'));
   return svg;
 }
 
@@ -171,7 +172,7 @@ export function tokenSvg(look, kit = 'us', name = '') {
     layer('token-wrong', ring('token-wrong', 2)),
     layer('token-you', ring('token-you-glow', 3), ring('token-you-ring')),
     layer('token-shadow', s('ellipse', { cx: 1, cy: 8, rx: 17, ry: 6.5, class: 'token-shadow' })),
-    s('g', { class: 'token-mini', transform: `translate(${-50 * MINI} ${-128 * MINI}) scale(${MINI})` }, ...avatarParts(v, `token-clip-${++tokenCount}`))
+    s('g', { class: 'token-mini', transform: `translate(${-50 * MINI} ${-128 * MINI}) scale(${MINI})` }, ...avatarParts(v, `token-clip-${++tokenCount}`, v.pattern || 'stripes'))
   );
   // Her name on a small white plate under her feet.
   if (name) {

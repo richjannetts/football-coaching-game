@@ -1,7 +1,7 @@
 {
   "teamName": "The Stripes",
   "opponentName": "The Rovers",
-  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A shape spot can list \"also\": other grid spots that count as filling it (the back player may stand on the penalty box line or one dot in front, Rich's choice, 27th November 2026). A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal. Squad names are made-up starting names; the child can change them on her phone. theirKits are the colours she can pick for the other team; kit.them is only used if that list is missing.",
+  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A shape spot can list \"also\": other grid spots that count as filling it (the back player may stand on the penalty box line or one dot in front, Rich's choice, 27th November 2026). A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal. Squad names are made-up starting names; the child can change them on her phone. theirKit holds the kit choices for the other team; kit.them is only used if that is missing.",
   "kit": {
     "us": {
       "shirt": "#1d4ed8",
@@ -28,105 +28,88 @@
       "socks": "#1f2937"
     }
   },
-  "defaultTheirKit": "red",
-  "theirKits": [
-    {
-      "id": "red",
-      "label": "Red",
-      "them": {
-        "shirt": "#dc2626",
-        "stripe": "#dc2626",
-        "shorts": "#ffffff",
-        "socks": "#dc2626"
-      },
-      "theirKeeper": {
-        "shirt": "#1f2937",
-        "stripe": "#1f2937",
-        "shorts": "#ffffff",
-        "socks": "#1f2937"
-      }
+  "theirKit": {
+    "note": "What she can choose for the other team's kit (Rich asked, 27th November 2026): a shirt style, the shirt's main colour, its second colour (for stripes, hoops, halves or a sash), the shorts and the socks. Colours are named by id. Blue, yellow and orange are left out so the other team never looks like us or our keeper. Their keeper wears 'usual', or 'ifDark' when the outfield shirt is dark.",
+    "default": {
+      "pattern": "plain",
+      "shirt": "red",
+      "stripe": "white",
+      "shorts": "white",
+      "socks": "red"
     },
-    {
-      "id": "white",
-      "label": "White",
-      "them": {
-        "shirt": "#f8fafc",
-        "stripe": "#f8fafc",
-        "shorts": "#111827",
-        "socks": "#f8fafc"
+    "patterns": [
+      {
+        "id": "plain",
+        "label": "Plain"
       },
-      "theirKeeper": {
-        "shirt": "#84cc16",
-        "stripe": "#84cc16",
-        "shorts": "#111827",
-        "socks": "#84cc16"
-      }
-    },
-    {
-      "id": "black",
-      "label": "Black",
-      "them": {
-        "shirt": "#1f2937",
-        "stripe": "#1f2937",
-        "shorts": "#1f2937",
-        "socks": "#1f2937"
+      {
+        "id": "stripes",
+        "label": "Stripes"
       },
-      "theirKeeper": {
-        "shirt": "#84cc16",
-        "stripe": "#84cc16",
-        "shorts": "#1f2937",
-        "socks": "#84cc16"
-      }
-    },
-    {
-      "id": "pink",
-      "label": "Pink",
-      "them": {
-        "shirt": "#ec4899",
-        "stripe": "#ec4899",
-        "shorts": "#ffffff",
-        "socks": "#ec4899"
+      {
+        "id": "hoops",
+        "label": "Hoops"
       },
-      "theirKeeper": {
-        "shirt": "#1f2937",
-        "stripe": "#1f2937",
-        "shorts": "#ffffff",
-        "socks": "#1f2937"
-      }
-    },
-    {
-      "id": "purple",
-      "label": "Purple",
-      "them": {
-        "shirt": "#7e22ce",
-        "stripe": "#7e22ce",
-        "shorts": "#ffffff",
-        "socks": "#7e22ce"
+      {
+        "id": "halves",
+        "label": "Halves"
       },
-      "theirKeeper": {
-        "shirt": "#1f2937",
-        "stripe": "#1f2937",
-        "shorts": "#ffffff",
-        "socks": "#1f2937"
+      {
+        "id": "sash",
+        "label": "Sash"
       }
-    },
-    {
-      "id": "green",
-      "label": "Green",
-      "them": {
-        "shirt": "#065f46",
-        "stripe": "#065f46",
-        "shorts": "#ffffff",
-        "socks": "#065f46"
+    ],
+    "colours": [
+      {
+        "id": "red",
+        "label": "Red",
+        "colour": "#dc2626"
       },
-      "theirKeeper": {
-        "shirt": "#1f2937",
-        "stripe": "#1f2937",
-        "shorts": "#ffffff",
-        "socks": "#1f2937"
+      {
+        "id": "white",
+        "label": "White",
+        "colour": "#f8fafc"
+      },
+      {
+        "id": "black",
+        "label": "Black",
+        "colour": "#1f2937",
+        "dark": true
+      },
+      {
+        "id": "pink",
+        "label": "Pink",
+        "colour": "#ec4899"
+      },
+      {
+        "id": "purple",
+        "label": "Purple",
+        "colour": "#7e22ce",
+        "dark": true
+      },
+      {
+        "id": "green",
+        "label": "Green",
+        "colour": "#065f46",
+        "dark": true
+      },
+      {
+        "id": "sky",
+        "label": "Sky blue",
+        "colour": "#7dd3fc"
+      },
+      {
+        "id": "claret",
+        "label": "Claret",
+        "colour": "#881337",
+        "dark": true
       }
+    ],
+    "keeper": {
+      "usual": "#1f2937",
+      "ifDark": "#84cc16"
     }
-  ],
+  },
   "grid": {
     "cols": [
       4,

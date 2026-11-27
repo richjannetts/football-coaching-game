@@ -6,7 +6,7 @@ import { buildPath } from './lib/path.js';
 import { stickerCard, emptyCard } from './lib/stickers.js';
 import { avatarSvg } from './lib/avatar.js';
 import { missingStep } from './lib/profile.js';
-import { menuDotsIcon, installIcon } from './lib/icons.js';
+import { menuDotsIcon, installIcon, shirtIcon, shortsIcon, sockIcon } from './lib/icons.js';
 import { ballIcon, bonusStickerSvg, titleLogo, titleScene, lockIcon, bookIcon, homeIcon, nextIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
 import * as narrator from './lib/narrator.js';
 import looks from './data/looks.json';
@@ -112,6 +112,52 @@ export function startScreen({ profile, onStart }) {
     h('button', { class: 'play-btn', type: 'button', 'aria-label': 'Play', onclick: onStart }, ballIcon(true), h('span', { class: 'play-label' }, 'PLAY')),
     h('p', { class: 'small start-note' }, 'Turn the sound up.')
   );
+}
+
+// ---------- Story opening ----------
+// A short story before a new player makes her player, so the game has a
+// lead-in (Rich asked, 27th November 2026). Each page is a picture and one
+// spoken line. Tap the arrow for the next page. Each line starts inside the
+// tap, so sound is allowed to play.
+// pages: [{ line, scene }] where scene is a name for storyScene().
+export function storyScreen({ pages, team, profile, coach, onDone }) {
+  let at = 0;
+  const art = h('div', { class: 'story-art' });
+  const dots = h('div', { class: 'dots story-dots', 'aria-hidden': 'true' }, pages.length > 1 ? pages.map(() => h('i', {})) : []);
+  const nextBtn = h('button', { class: 'ready-btn is-glow story-next', type: 'button', 'aria-label': 'Next' }, nextIcon());
+  const show = () => {
+    art.replaceChildren(storyScene(pages[at].scene, { team, profile, coach }));
+    [...dots.children].forEach((d, i) => d.classList.toggle('on', i === at));
+    narrator.say([pages[at].line]);
+  };
+  let lastTap = 0;
+  nextBtn.addEventListener('click', () => {
+    const now = Date.now();
+    if (now - lastTap < 400) return; // a double tap turns one page
+    lastTap = now;
+    if (at >= pages.length - 1) return onDone();
+    at += 1;
+    show();
+  });
+  const el = h('section', { class: 'screen story' }, h('header', { class: 'menu-top story-top' }, h('span', {}), againButton()), art, dots, h('div', { class: 'setup-bottom' }, nextBtn));
+  el.begin = show;
+  return el;
+}
+
+// The pictures for the story pages, drawn from the real team.
+function storyScene(name, { team, profile, coach }) {
+  const figure = (look, opts, cls = '') => h('span', { class: `story-figure ${cls}` }, avatarSvg(look, opts));
+  const empty = (big) => h('span', { class: `story-figure story-empty${big ? ' is-big' : ''}` }, h('span', { class: 'story-q' }, '?'));
+  const coachFig = () => figure(coach.look, { size: 62, kit: coach.kit, pattern: 'coach', idSuffix: 'story-coach' }, 'is-coach');
+  const mates = team.squad.filter((p) => !p.you).map((p, i) => figure(p, { size: 50, kit: p.keeper ? 'keeper' : 'us', idSuffix: `story${i}` }));
+  const grass = (...kids) => h('div', { class: 'story-grass' }, ...kids);
+  if (name === 'morning') return h('div', { class: 'title-art story-pic' }, titleScene());
+  if (name === 'coach') return h('div', { class: 'story-pic story-panel' }, grass(coachFig(), ...mates.slice(0, 2), empty(false), ...mates.slice(2)));
+  if (name === 'you') return h('div', { class: 'story-pic story-panel' }, grass(empty(true)));
+  // 'ready': the whole team with her in the middle, Coach and a ball.
+  const me = profile ? figure(profile, { size: 62, idSuffix: 'story-me' }, 'is-you') : empty(false);
+  const ball = h('span', { class: 'story-ball' }, ballIcon(true));
+  return h('div', { class: 'story-pic story-panel' }, grass(coachFig(), mates[0], mates[1], me, ball, mates[2], mates[3]));
 }
 
 // ---------- Player setup ----------
@@ -256,9 +302,14 @@ function avatarHead(look, size = 56, id = `h-${look.hair}`, kit = 'us') {
 }
 
 // ---------- My team ----------
-// Every player can be changed, both teams can be named and the other team
-// can be given a kit colour (Rich's choice, 26th November 2026).
-export function teamScreen({ team, kits, onBack, onPlayer, onTeamName, onTheirName, onTheirKit }) {
+// Every player can be changed, both teams can be named and the other team's
+// kit can be chosen: shirt style, colours, shorts and socks (Rich's
+// choices, 26th and 27th November 2026).
+// mode: 'both' from the menu, with a back button. 'us' or 'them' when a new
+// player sets up her team before the first game, with a tick to go on.
+const TEAM_LINES = { both: 'team.hello', us: 'team.meet', them: 'team.them' };
+const PATTERN_WORDS = { stripes: 'Stripes', hoops: 'Hoops', halves: 'Halves', sash: 'Sash', plain: 'Trim' };
+export function teamScreen({ team, kits, mode = 'both', onBack, onNext, onPlayer, onTeamName, onTheirName, onTheirKit }) {
   const nameField = (id, label, value, placeholder, onChange) => {
     const input = h('input', { type: 'text', id, maxlength: TEAM_NAME_MAX, autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', value, placeholder, 'aria-label': label });
     input.addEventListener('input', () => {
@@ -279,42 +330,76 @@ export function teamScreen({ team, kits, onBack, onPlayer, onTeamName, onTheirNa
       p.keeper ? h('span', { class: 'gk-badge' }, 'GK') : null,
       h('span', { class: 'team-player-name' }, p.name || ' ')
     );
-  const themPreview = h('div', { class: 'them-preview' });
-  const drawThem = () => themPreview.replaceChildren(avatarSvg({ skin: 's5', hair: 'short', hairColour: 'h1' }, { size: 50, idSuffix: 'them', kit: 'them' }));
-  drawThem();
-  const kitRow = h(
+  const ours = h(
     'div',
-    { class: 'choice-row row-kit', role: 'radiogroup', 'aria-label': 'The other team’s colour' },
-    kits.map((k) => {
-      const b = h('button', { class: 'choice', type: 'button', role: 'radio', 'aria-checked': String(team.theirKit === k.id), 'aria-label': k.label }, h('span', { class: 'swatch', style: { background: k.them.shirt } }));
-      b.addEventListener('click', () => {
-        kitRow.querySelectorAll('.choice').forEach((c) => c.setAttribute('aria-checked', String(c === b)));
-        onTheirKit(k.id);
-        drawThem();
-      });
-      return b;
-    })
+    { class: 'team-card' },
+    nameField('team-name', 'Our team’s name', team.name, 'Our team', onTeamName),
+    h('div', { class: 'team-players' }, team.squad.map(card))
   );
+
+  // The other team's kit, as colour ids. Each tap saves and redraws.
+  const kit = { ...team.theirKit };
+  const colourOf = (id) => kits.colours.find((c) => c.id === id)?.colour || '#fff';
+  const themPreview = h('div', { class: 'them-preview' });
+  const kitRows = h('div', { class: 'kit-rows' });
+  // A pattern needs a second colour that shows up on the shirt.
+  const contrast = (shirt) => (shirt === 'white' ? 'black' : 'white');
+  const choose = (key, value) => {
+    kit[key] = value;
+    if (kit.pattern !== 'plain' && kit.stripe === kit.shirt) kit.stripe = contrast(kit.shirt);
+    onTheirKit({ ...kit });
+    drawKit();
+  };
+  const choiceRow = (key, items, label, render) =>
+    h(
+      'div',
+      { class: `kit-row kit-row-${key}` },
+      h('span', { class: 'kit-row-label' }, label),
+      h(
+        'div',
+        { class: 'choice-row', role: 'radiogroup', 'aria-label': label.textContent || key },
+        items.map((it) => h('button', { class: 'choice', type: 'button', role: 'radio', 'aria-checked': String(kit[key] === it.id), 'aria-label': it.label, onclick: () => choose(key, it.id) }, render(it)))
+      )
+    );
+  const swatch = (it) => h('span', { class: 'swatch', style: { background: it.colour } });
+  const rowLabel = (icon, word) => h('span', { class: 'kit-label' }, icon, h('span', { class: 'kit-word' }, word));
+  function drawKit() {
+    themPreview.replaceChildren(avatarSvg({ skin: 's5', hair: 'short', hairColour: 'h1' }, { size: 64, idSuffix: 'them', kit: 'them' }));
+    const sh = colourOf(kit.shirt);
+    const st = colourOf(kit.stripe === kit.shirt ? contrast(kit.shirt) : kit.stripe);
+    const rows = [
+      choiceRow('pattern', kits.patterns, rowLabel(shirtIcon(kit.pattern, sh, st), 'Style'), (it) => shirtIcon(it.id, sh, st)),
+      choiceRow('shirt', kits.colours, rowLabel(shirtIcon('plain', sh, sh), 'Shirt'), swatch),
+      kit.pattern === 'plain' ? null : choiceRow('stripe', kits.colours, rowLabel(shirtIcon(kit.pattern, '#fff', st), PATTERN_WORDS[kit.pattern]), swatch),
+      choiceRow('shorts', kits.colours, rowLabel(shortsIcon(colourOf(kit.shorts)), 'Shorts'), swatch),
+      choiceRow('socks', kits.colours, rowLabel(sockIcon(colourOf(kit.socks)), 'Socks'), swatch),
+    ];
+    kitRows.replaceChildren(...rows.filter(Boolean));
+  }
+  drawKit();
+  const theirs = h(
+    'div',
+    { class: 'team-card them' },
+    h('div', { class: 'them-top' }, themPreview, nameField('their-name', 'The other team’s name', team.theirName, 'The other team', onTheirName)),
+    kitRows
+  );
+
+  const top =
+    mode === 'both'
+      ? h('header', { class: 'menu-top' }, h('button', { class: 'icon-btn back-btn', type: 'button', 'aria-label': 'Back', onclick: onBack }, backIcon()), againButton())
+      : h('header', { class: 'menu-top team-step-top' }, h('h1', { class: 'team-step-title' }, mode === 'us' ? 'Your team' : 'The other team'), againButton());
+  const nextBtn = mode === 'both' ? null : h('button', { class: 'ready-btn is-glow', type: 'button', 'aria-label': 'Next', onclick: onNext }, tickIcon());
   const el = h(
     'section',
-    { class: 'screen team' },
-    h('header', { class: 'menu-top' }, h('button', { class: 'icon-btn back-btn', type: 'button', 'aria-label': 'Back', onclick: onBack }, backIcon()), againButton()),
-    h(
-      'div',
-      { class: 'team-card' },
-      nameField('team-name', 'Our team’s name', team.name, 'Our team', onTeamName),
-      h('div', { class: 'team-players' }, team.squad.map(card))
-    ),
-    h('div', { class: 'team-vs' }, 'v'),
-    h(
-      'div',
-      { class: 'team-card them' },
-      nameField('their-name', 'The other team’s name', team.theirName, 'The other team', onTheirName),
-      h('div', { class: 'them-row' }, themPreview, kitRow)
-    ),
-    h('p', { class: 'small team-note' }, 'Grown-ups: first names or nicknames, and made-up team names, please. They stay on this phone.')
+    { class: `screen team team-${mode}` },
+    top,
+    mode !== 'them' ? ours : null,
+    mode === 'both' ? h('div', { class: 'team-vs' }, 'v') : null,
+    mode !== 'us' ? theirs : null,
+    h('p', { class: 'small team-note' }, 'Grown-ups: first names or nicknames, and made-up team names, please. They stay on this phone.'),
+    nextBtn ? h('div', { class: 'setup-bottom' }, nextBtn) : null
   );
-  el.begin = () => narrator.say(['team.hello']);
+  el.begin = () => narrator.say([TEAM_LINES[mode]]);
   return el;
 }
 
@@ -520,7 +605,7 @@ export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWo
     h(
       'ul',
       { class: 'plain-list' },
-      h('li', {}, 'The game keeps a first name or nickname and a look for each player, the two team names, the other team’s colour, which levels are finished and the two settings below. That is all.'),
+      h('li', {}, 'The game keeps a first name or nickname and a look for each player, the two team names, the other team’s kit, which levels are finished and the two settings below. That is all.'),
       h('li', {}, 'It is stored on this device only. Nothing is sent anywhere. There are no accounts, adverts or tracking.'),
       h('li', {}, 'The game does not use the camera, microphone, location or notifications.'),
       h('li', {}, 'Spoken lines use the phone’s own voice, which runs on the device.')

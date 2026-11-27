@@ -25,12 +25,45 @@ export function cleanTeamName(raw) {
 
 const pick = (list, id) => (list.some((x) => x.id === id) ? id : null);
 
+// The other team's kit as she chose it: a shirt style and colour ids.
+// Earlier versions saved just one colour id ('red', 'pink' and so on), so
+// that is turned into a full kit here and nothing she chose is lost.
+const OLD_SHORTS = { white: 'black', black: 'black' };
+export function theirKitChoice(team, saved) {
+  const opts = team.theirKit;
+  const base = opts.default;
+  let mine = saved;
+  if (typeof mine === 'string') mine = { pattern: 'plain', shirt: mine, stripe: mine === 'white' ? 'black' : 'white', shorts: OLD_SHORTS[mine] || 'white', socks: mine };
+  if (!mine || typeof mine !== 'object') mine = {};
+  return {
+    pattern: pick(opts.patterns, mine.pattern) || base.pattern,
+    shirt: pick(opts.colours, mine.shirt) || base.shirt,
+    stripe: pick(opts.colours, mine.stripe) || base.stripe,
+    shorts: pick(opts.colours, mine.shorts) || base.shorts,
+    socks: pick(opts.colours, mine.socks) || base.socks,
+  };
+}
+
+// Colour ids to the colours used for drawing. Their keeper wears a colour
+// that stands out from the rest of the team.
+export function theirKitColours(team, choice) {
+  const opts = team.theirKit;
+  const c = (id) => opts.colours.find((x) => x.id === id);
+  const dark = c(choice.shirt).dark || (choice.pattern !== 'plain' && c(choice.stripe).dark);
+  const keeper = dark ? opts.keeper.ifDark : opts.keeper.usual;
+  return {
+    them: { pattern: choice.pattern, shirt: c(choice.shirt).colour, stripe: c(choice.stripe).colour, shorts: c(choice.shorts).colour, socks: c(choice.socks).colour },
+    theirKeeper: { shirt: keeper, stripe: keeper, shorts: c(choice.shorts).colour, socks: keeper },
+  };
+}
+
 // team: team.json. looks: looks.json. saved: what is stored on the device
 // (may be null). profile: the child's own player.
 // Returns the team to draw: every player has a name and a full look.
 export function resolveTeam(team, looks, saved, profile) {
   const s = saved && typeof saved === 'object' ? saved : {};
-  const theirKit = team.theirKits.find((k) => k.id === s.theirKit) || team.theirKits.find((k) => k.id === team.defaultTheirKit) || team.theirKits[0];
+  const theirKit = theirKitChoice(team, s.theirKit);
+  const theirColours = theirKitColours(team, theirKit);
   const squad = team.squad.map((base, i) => {
     const mine = base.you ? profile || {} : (Array.isArray(s.players) && s.players[i]) || {};
     return {
@@ -45,8 +78,8 @@ export function resolveTeam(team, looks, saved, profile) {
   return {
     name: cleanTeamName(s.name).trim() || team.teamName,
     theirName: cleanTeamName(s.theirName).trim() || team.opponentName,
-    theirKit: theirKit.id,
-    kit: { ...team.kit, them: theirKit.them, theirKeeper: theirKit.theirKeeper },
+    theirKit,
+    kit: { ...team.kit, ...theirColours },
     squad,
   };
 }
