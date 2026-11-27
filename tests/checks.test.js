@@ -195,3 +195,35 @@ test('shapes: the back player stands on the penalty box line in both levels', ()
     assert.equal(resolveAt(back.at, grid).y, box.depth);
   }
 });
+
+// ---------- The back player: penalty box line or one dot in front ----------
+// Both count as right (Rich's choice, 27th November 2026).
+
+for (const key of ['ourCentreKick', 'theirCentreKick']) {
+  const base = team.shapes[key].spots.map((s) => resolveAt(s.at, grid));
+  const backIndex = team.shapes[key].spots.findIndex((s) => s.role === 'back');
+
+  test(`shape, ${key}: back player on the penalty box line passes`, () => {
+    const players = base.map((p) => ({ ...p }));
+    players[backIndex] = { x: grid.cols[2], y: grid.rows[1] };
+    assert.equal(checkShape({ players, shape: team.shapes[key], grid }).ok, true);
+  });
+
+  test(`shape, ${key}: back player one dot in front also passes`, () => {
+    const players = base.map((p) => ({ ...p }));
+    players[backIndex] = { x: grid.cols[2], y: grid.rows[2] };
+    const result = checkShape({ players, shape: team.shapes[key], grid });
+    assert.equal(result.ok, true);
+    // The story plays out from where she actually stands.
+    const back = result.roles.find((r) => r.role === 'back');
+    assert.equal(back.y, grid.rows[2]);
+  });
+
+}
+
+test('shape, our kick: back player two dots in front does not pass', () => {
+  const players = ourShape.map((p) => ({ ...p }));
+  const backIndex = team.shapes.ourCentreKick.spots.findIndex((s) => s.role === 'back');
+  players[backIndex] = { x: grid.cols[2], y: grid.rows[3] };
+  assert.equal(checkShape({ players, shape: team.shapes.ourCentreKick, grid }).ok, false);
+});

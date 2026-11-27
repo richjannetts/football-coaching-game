@@ -42,6 +42,16 @@ export function checkRule({ kind, players, ruleSet, centre, halfway }) {
   return { ok: problems.length === 0, problems };
 }
 
+// How far a player is from a shape spot. Some spots can be filled in more
+// than one place (the back player can stand on the penalty box line or one
+// dot in front of it, Rich's choice, 27th November 2026), so take the
+// nearest of them.
+export function spotDistance(p, target) {
+  const places = [target, ...(target.also || [])];
+  return Math.min(...places.map((q) => distance(p, q)));
+}
+const nearestPlace = (p, target) => [target, ...(target.also || [])].reduce((a, b) => (distance(p, b) < distance(p, a) ? b : a));
+
 // Pair players with shape spots so that as many spots as possible are
 // filled, using the smallest total distance to break ties.
 // Five players means 120 orderings, which is quick to try in full.
@@ -62,7 +72,7 @@ export function matchShape(players, targets, tolerance, fits = () => true) {
     walk(t + 1, count, total);
     for (let i = 0; i < players.length; i++) {
       if (used[i] || !fits(i, targets[t])) continue;
-      const d = distance(players[i], targets[t]);
+      const d = spotDistance(players[i], targets[t]);
       if (d > tolerance) continue;
       used[i] = true;
       assign[t] = i;
@@ -83,14 +93,19 @@ export function matchShape(players, targets, tolerance, fits = () => true) {
 // Returns { ok, roles, emptySpots, strayPlayers, problems }.
 // roles[i] is the role of shape spot i and which player filled it.
 export function checkShape({ players, shape, grid, keepers = [] }) {
-  const targets = shape.spots.map((s) => ({ ...resolveAt(s.at, grid), role: s.role, hint: s.hint }));
+  const targets = shape.spots.map((s) => ({ ...resolveAt(s.at, grid), also: (s.also || []).map((a) => resolveAt(a, grid)), role: s.role, hint: s.hint }));
   const isKeeper = (i) => keepers.includes(i);
   const fits = (i, t) => !keepers.length || isKeeper(i) === (t.role === 'keeper');
   const assign = matchShape(players, targets, shape.tolerance, fits);
   const filledBy = new Set(assign.filter((i) => i >= 0));
   const emptySpots = targets.map((t, i) => ({ ...t, index: i })).filter((t) => assign[t.index] < 0);
   const strayPlayers = players.map((_, i) => i).filter((i) => !filledBy.has(i));
-  const roles = targets.map((t, i) => ({ role: t.role, x: t.x, y: t.y, player: assign[i] }));
+  // A filled spot reports where the player actually stands (the nearest
+  // of its places), so the story plays out from there.
+  const roles = targets.map((t, i) => {
+    const at = assign[i] >= 0 ? nearestPlace(players[assign[i]], t) : t;
+    return { role: t.role, x: at.x, y: at.y, player: assign[i] };
+  });
 
   const problems = [];
   const seen = new Set();

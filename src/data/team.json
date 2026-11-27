@@ -1,7 +1,7 @@
 {
   "teamName": "The Stripes",
   "opponentName": "The Rovers",
-  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal. Squad names are made-up starting names; the child can change them on her phone. theirKits are the colours she can pick for the other team; kit.them is only used if that list is missing.",
+  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A shape spot can list \"also\": other grid spots that count as filling it (the back player may stand on the penalty box line or one dot in front, Rich's choice, 27th November 2026). A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal. Squad names are made-up starting names; the child can change them on her phone. theirKits are the colours she can pick for the other team; kit.them is only used if that list is missing.",
   "kit": {
     "us": {
       "shirt": "#1d4ed8",
@@ -218,6 +218,12 @@
             2,
             1
           ],
+          "also": [
+            [
+              2,
+              2
+            ]
+          ],
           "hint": "shape.back"
         },
         {
@@ -263,6 +269,12 @@
           "at": [
             2,
             1
+          ],
+          "also": [
+            [
+              2,
+              2
+            ]
           ],
           "hint": "shape.back"
         },
