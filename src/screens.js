@@ -405,7 +405,7 @@ export function menuScreen({ profile, progress, team, levels, album, updateReady
         h('span', { class: 'chip-face' }, avatarHead(profile, 44, 'chip')),
         h('span', { class: 'chip-name' }, profile.name)
       ),
-      h('button', { class: 'chip chip-count', type: 'button', 'aria-label': `Sticker album: ${album.count} stickers`, onclick: onAlbum }, h('span', { class: 'chip-stk' }, stickerCard(album.pages[0].stickers[0])), String(album.count)),
+      h('button', { class: 'chip chip-count', type: 'button', 'aria-label': `Sticker album: ${album.count} stickers`, onclick: onAlbum }, h('span', { class: 'chip-stk' }, album.pages[0].stickers[0].earned ? stickerCard(album.pages[0].stickers[0]) : emptyCard(album.pages[0].stickers[0])), String(album.count)),
       againButton()
     ),
     updateReady ? h('button', { class: 'update-btn', type: 'button', onclick: onUpdate }, 'Grown-ups: a new version is ready. Tap to update.') : null,

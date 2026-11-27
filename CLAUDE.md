@@ -86,7 +86,7 @@ Added at Rich's request, 26th November 2026, so others can play on their own pho
 - A wrong answer gets a friendly whistle, a picture of why, a hint, and another go straight away. Hints step up: nudge, show, do it together.
 - A wrong answer never loses the match or concedes a goal.
 - Praise effort, not cleverness.
-- No timer pressure, no streaks, no daily rewards. Stickers collected are a record of progress. Passing a level moves her up the path. Her own player is sticker 1 from the start, and finishing every level of a match gives a shiny sticker.
+- No timer pressure, no streaks, no daily rewards. Stickers collected are a record of progress. Passing a level moves her up the path. The first sticker she wins is her own player (sticker 1, Rich's choice, 27th November 2026), and finishing every level of a match gives a shiny sticker.
 - Each level ends with one bonus question on what it taught, with three picture answers. Right wins the next sticker in the album, once for each level. Wrong is never called wrong: the right picture glows and the voice explains it. She can try again next time she plays the level.
 - A correct line-up starts the play. Goals come from a passing move, so the message is "we were ready", not "stand here and score".
 - Explainer animations have no tappable extras. Touch is off while one plays.

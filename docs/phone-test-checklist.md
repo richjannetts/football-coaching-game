@@ -120,7 +120,8 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 ## Sticker album
 
 - [ ] On the path, tap the book button at the bottom right. The album opens on your team's page, and the voice explains it.
-- [ ] Your own player is sticker 1. The other spaces are grey with a number.
+- [ ] A new player starts with an empty album: every space is grey with a number.
+- [ ] The first bonus question she gets right wins her own player, sticker 1.
 - [ ] Swipe sideways, or tap the arrows, to turn the pages: your team, club colours, world colours, kit bag, shinies. The dots show which page you are on.
 - [ ] Finish a level: a football medal spins in. The voice says "Level one done", not "sticker".
 - [ ] Get the bonus question right: a new sticker pops up beside the medal and the voice says you have won a sticker. It is in the album afterwards.
