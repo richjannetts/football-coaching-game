@@ -2,7 +2,7 @@
 // player setup, menu, grown-ups gate and grown-ups area.
 
 import { h, s, motion } from './lib/svg.js';
-import { RING, angleFor } from './lib/clock.js';
+import { buildCupPath } from './lib/path.js';
 import { stickerCard, emptyCard } from './lib/stickers.js';
 import { avatarSvg } from './lib/avatar.js';
 import { missingStep } from './lib/profile.js';
@@ -470,74 +470,96 @@ export function teamScreen({ team, kits, mode = 'both', onBack, onNext, onPlayer
   return el;
 }
 
-// ---------- Menu: the match clock ----------
-// A match is 40 minutes, and each level is a moment in it (Rich's choice,
-// 27th November 2026). The moments sit round a clock face, from kick-off
-// at the top, through half-time at the bottom, to full time. Finished
-// moments are green, the one to play next is yellow and glows, the rest
-// are white and locked. The hand points at the moment to play next, and
-// moves on when she passes one. Above the clock, the cup: which round she
-// is in, and the rounds still to come.
-// clock: from buildClock(). round: the round being played. cup: the rounds
-// from ladder(). opponent: who we are playing, if a round has started.
-// nextButton: { kind: 'round' | 'cup', onTap } between rounds.
+// ---------- Menu: the cup path ----------
+// One winding trail up the screen through the whole cup (Rich's choice,
+// 27th November 2026): Round 1's moments, the semi-final's, the final's,
+// and the cup at the top. A flag starts each round. Finished moments are
+// green, the one to play next is yellow and glows, the rest are white and
+// locked. Her player stands beside the moment to play next, and hops on
+// when she passes one. The trail scrolls under the top buttons.
+// clock: from buildClock(), for the round being played. round: that round.
+// cup: the rounds from ladder(). opponent: who we are playing, if a round
+// has started. nextButton: { kind: 'round' | 'cup', onTap } between rounds.
 export function menuScreen({ profile, team, album, updateReady, clock, round, cup, cupsWon = 0, opponent = null, movedFrom = null, nextButton = null, onChapter, onGrownUps, onUpdate, onTeam, onAlbum }) {
-  const pct = (v) => `${v.toFixed(2)}%`;
-  const face = s(
-    'svg',
-    { viewBox: '0 0 100 100', class: 'clock-face', 'aria-hidden': 'true' },
-    s('circle', { cx: 50, cy: 50, r: 48, class: 'clock-rim' }),
-    s('circle', { cx: 50, cy: 50, r: 45.5, class: 'clock-dial' }),
-    s('circle', { cx: 50, cy: 50, r: RING, class: 'clock-track' }),
-    clock.played ? s('path', { d: clock.played, class: 'clock-played' }) : null,
-    // Half-time, at the bottom.
-    s('line', { x1: 50, y1: 50 + RING - 5, x2: 50, y2: 50 + RING + 5, class: 'clock-ht' }),
-    s('text', { x: 50, y: 50 + RING - 8.5, class: 'clock-ht-label' }, 'HALF-TIME'),
-    // Kick-off and full time, at the top.
-    s('line', { x1: 50, y1: 50 - RING - 5, x2: 50, y2: 50 - RING + 5, class: 'clock-ht' })
-  );
-  // The hand, drawn pointing straight up and turned to its minute.
-  const hand = s('g', { class: 'clock-hand' }, s('line', { x1: 50, y1: 52, x2: 50, y2: 50 - RING + 9, class: 'clock-hand-line' }), s('circle', { cx: 50, cy: 50, r: 3, class: 'clock-hand-pin' }));
-  hand.style.transform = `rotate(${clock.handAngle}deg)`;
-  face.append(hand);
+  const path = buildCupPath(cup, clock, cupsWon);
 
-  const markerBtn = (m) => {
-    const locked = m.state === 'locked';
+  const trail = s(
+    'svg',
+    { viewBox: `0 0 ${path.width} ${path.height}`, width: path.width, height: path.height, class: 'path-trail', 'aria-hidden': 'true' },
+    s('path', { d: path.trail, class: 'trail-lip' }),
+    s('path', { d: path.trail, class: 'trail' }),
+    path.doneTrail ? s('path', { d: path.doneTrail, class: 'trail-done' }) : null,
+    s('path', { d: path.trail, class: 'trail-dots' })
+  );
+  const place = (x, y) => ({ left: `${x}px`, top: `${y}px` });
+  const nodeBtn = (n) => {
+    if (n.kind === 'cup') {
+      return h('div', { class: `path-cup${n.state === 'won' ? ' is-won' : ''}`, style: place(n.x - 44, n.y - 44), 'aria-label': 'The cup' }, trophyIcon(n.state === 'won'));
+    }
+    const locked = n.state === 'locked';
+    const label = `${cup[n.round].label}, moment ${n.number}${n.state === 'done' ? ', done' : locked ? ', locked' : ''}`;
     const b = h(
       'button',
-      {
-        class: `clock-marker is-${m.state}`,
-        type: 'button',
-        'aria-label': `Level ${m.number}, ${m.shown} minutes${m.state === 'done' ? ', done' : locked ? ', locked' : ''}`,
-        style: { left: pct(m.x), top: pct(m.y) },
-      },
-      h('span', { class: 'clock-marker-no' }, String(m.number)),
-      m.bonus ? h('span', { class: 'node-bonus' }, bonusStickerSvg(m.level, true)) : null
+      { class: `path-node is-${n.state}`, type: 'button', 'aria-label': label, style: place(n.x - 38, n.y - 38) },
+      String(n.number),
+      n.bonus ? h('span', { class: 'node-bonus' }, bonusStickerSvg(n.level, true)) : null
     );
-    // The very first time on the clock, point at the first moment.
-    if (m.state === 'now' && m.number === 1) pointOnce(b, 'path', { above: true });
+    // The very first time on the path, point at the first moment.
+    if (n.state === 'now' && n.number === 1 && n.round === 0) pointOnce(b, 'path', { above: true });
     b.addEventListener('click', () => {
+      // Moments in rounds already won, or still to come, are not played
+      // from here: only the round she is in.
+      if (!n.playable) {
+        if (locked) {
+          shake(b);
+          onChapter(n.level, true);
+        } else hop(b);
+        return;
+      }
       if (locked) shake(b);
-      onChapter(m.level, locked);
+      onChapter(n.level, locked);
     });
     return b;
   };
+  // A flag sits above the first moment of each round, on the far side.
+  const flag = (n) => h('div', { class: `path-flag${n.state === 'locked' ? ' is-soon' : ''}`, style: { top: `${n.y - 18}px`, [n.x > path.width / 2 ? 'left' : 'right']: '6px' } }, n.flag);
 
-  // In the middle: her player, and the minute of the moment to play next.
-  const now = clock.markers[clock.at];
-  const minute = clock.allDone ? 'FULL TIME' : `${now.shown} mins`;
-  const you = h('div', { class: 'clock-you' }, h('span', { class: 'path-you-shadow' }), avatarSvg(profile, { size: 60, idSuffix: 'menu' }));
-  const centre = h('div', { class: 'clock-centre' }, you, h('span', { class: 'clock-minute' }, minute));
-
-  // She has just passed a moment: the hand sweeps on to the next one, and
-  // her player gives a happy hop.
-  const from = movedFrom == null ? null : clock.markers.find((m) => m.level === movedFrom);
-  if (from && from !== now) {
-    hand.animate([{ transform: `rotate(${angleFor(from.minute)}deg)` }, { transform: `rotate(${angleFor(from.minute)}deg)`, offset: 0.25 }, { transform: `rotate(${clock.handAngle}deg)` }], { duration: motion(1500), easing: 'ease-in-out', fill: 'backwards' });
-    you.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(0)', offset: 0.5 }, { transform: 'translateY(-26px)', offset: 0.75 }, { transform: 'translateY(0)' }], { duration: motion(1500), easing: 'ease-out' });
+  // Her player stands beside the moment she is on.
+  const beside = (n) => ({ x: n.x > path.width / 2 ? n.x - 108 : n.x + 48, y: n.y - 70 });
+  const here = path.nodes[path.at];
+  const spot = beside(here);
+  const you = h('div', { class: 'path-you', style: place(spot.x, spot.y) }, h('span', { class: 'path-you-shadow' }), avatarSvg(profile, { size: 60, idSuffix: 'menu' }));
+  const fromNode = movedFrom == null ? null : path.nodes.find((n) => n.playable && n.level === movedFrom);
+  if (fromNode && fromNode !== here) {
+    const was = beside(fromNode);
+    const dx = was.x - spot.x;
+    const dy = was.y - spot.y;
+    you.animate(
+      [
+        { transform: `translate(${dx}px, ${dy}px)`, offset: 0 },
+        { transform: `translate(${dx}px, ${dy}px)`, offset: 0.3 },
+        { transform: `translate(${dx / 2}px, ${dy / 2 - 34}px)`, offset: 0.65 },
+        { transform: 'translate(0, 0)', offset: 1 },
+      ],
+      { duration: motion(1500), easing: 'ease-in-out', fill: 'backwards' }
+    );
   }
 
-  const clockEl = h('div', { class: 'clock' }, face, centre, clock.markers.map(markerBtn));
+  const map = h(
+    'div',
+    { class: 'path-map', style: { width: `${path.width}px`, height: `${path.height}px` } },
+    trail,
+    path.nodes.filter((n) => n.flag).map(flag),
+    [...path.nodes].reverse().map(nodeBtn),
+    you
+  );
+  const scroller = h('div', { class: 'path-scroll' }, map);
+  // Open with her own moment in view, a little below the middle.
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => {
+      scroller.scrollTop = Math.max(0, here.y - scroller.clientHeight * 0.6);
+    })
+  );
 
   // Once she has a sticker, point at her sticker book the first time
   // (Rich asked for a bigger deal to be made of it, 27th November 2026).
@@ -546,7 +568,7 @@ export function menuScreen({ profile, team, album, updateReady, clock, round, cu
 
   const top = h(
     'header',
-    { class: 'path-top clock-top' },
+    { class: 'path-top' },
     h(
       'button',
       { class: 'chip team-btn', type: 'button', 'aria-label': `My team: ${team.name}`, onclick: onTeam },
@@ -570,21 +592,26 @@ export function menuScreen({ profile, team, album, updateReady, clock, round, cu
 
   return h(
     'section',
-    { class: 'screen menu clock-menu' },
+    { class: 'screen menu cup-menu' },
     top,
-    h('div', { class: 'clock-side' }, cupLadder(cup, cupsWon, round), versus),
-    h('div', { class: 'clock-stage' }, clockEl),
+    versus ? h('div', { class: 'menu-side' }, versus) : null,
+    h('div', { class: 'menu-stage' }, scroller),
     h(
       'footer',
-      { class: 'clock-bottom' },
+      { class: 'menu-bottom' },
       h('button', { class: 'text-btn grown-ups-btn', type: 'button', onclick: onGrownUps }, 'Grown-ups'),
       // Between rounds: on to the next round, or a new cup. Yellow,
       // because it is the thing to tap next.
-      nextButton ? h('div', { class: 'clock-next' }, newMatchButton(nextButton)) : null,
+      nextButton ? h('div', { class: 'menu-next' }, newMatchButton(nextButton)) : null,
       bookBtn
     ),
     updateReady ? h('button', { class: 'update-btn', type: 'button', onclick: onUpdate }, 'Grown-ups: a new version is ready. Tap to update.') : null
   );
+}
+
+// A happy little hop, for a moment already won.
+function hop(el) {
+  el.animate([{ translate: '0 0' }, { translate: '0 -14px' }, { translate: '0 0' }], { duration: motion(380), easing: 'ease-out' });
 }
 
 // The cup run: Round 1, then the semi-final, then the final, then the cup.
@@ -815,7 +842,7 @@ export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWo
           { class: 'replay-box' },
           h('p', {}, `In the cup: ${replay.round} against ${replay.name}, on ${replay.label}, ${replay.done} of ${replay.total} levels done.`),
           h('button', { class: 'big-btn secondary', type: 'button', onclick: onStopReplay }, 'Stop this match'),
-          h('p', { class: 'small' }, 'Her stickers and finished levels stay. She can start this round again from the match clock.')
+          h('p', { class: 'small' }, 'Her stickers and finished levels stay. She can start this round again from the path.')
         )
       : null,
     h('h2', {}, 'Player'),

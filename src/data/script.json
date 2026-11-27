@@ -88,13 +88,13 @@
     },
     {
       "id": "menu.welcome",
-      "text": "Hi {name}! It's {round|round one} of the cup. Tap the glowing number on the match clock to play.",
-      "cue": "The match clock, with the next moment to play glowing yellow. The cup run sits above it."
+      "text": "Hi {name}! It's {round|round one} of the cup. Tap the glowing number on the path to play.",
+      "cue": "The cup path, with the next moment to play glowing yellow. Further up are the semi-final, the final and the cup."
     },
     {
       "id": "menu.moved",
-      "text": "The clock has moved on, {name}! Tap the glowing number to play the next bit of the match.",
-      "cue": "The clock's hand sweeps round to the next moment, which glows yellow."
+      "text": "You've moved up the path, {name}! Tap the glowing number to play the next bit of the match.",
+      "cue": "Her player hops up the path to the next moment, which glows yellow."
     },
     {
       "id": "menu.locked",
@@ -118,8 +118,8 @@
     },
     {
       "id": "menu.replay",
-      "text": "Hi {name}! It's {round|the semi-final}, against {them}. Tap the glowing number on the match clock to play.",
-      "cue": "The match clock, with the next moment glowing. The other team's shirt and name are under the cup run."
+      "text": "Hi {name}! It's {round|the semi-final}, against {them}. Tap the glowing number on the path to play.",
+      "cue": "The cup path, with the next moment glowing. The other team's shirt and name are under the top buttons."
     },
     {
       "id": "menu.album",
@@ -163,8 +163,8 @@
     },
     {
       "id": "cup.letsGo",
-      "text": "Let's go! Tap the glowing number on the match clock.",
-      "cue": "The match clock starts again at kick-off, with the first moment glowing."
+      "text": "Let's go! Tap the glowing number on the path.",
+      "cue": "The cup path starts again at Round 1, with the first moment glowing."
     },
     {
       "id": "cup.won",
@@ -178,7 +178,7 @@
     },
     {
       "id": "cup.again",
-      "text": "Tap the tick to go back to the clock. You can play the cup again, against new teams.",
+      "text": "Tap the tick to go back to the path. You can play the cup again, against new teams.",
       "cue": "The tick glows yellow."
     },
     {
@@ -668,7 +668,7 @@
     },
     {
       "id": "end.tapHome",
-      "text": "Tap the house to go back to the match clock.",
+      "text": "Tap the house to go back to the path.",
       "cue": "A hand points at the house button and says 'Tap here!'"
     },
     {

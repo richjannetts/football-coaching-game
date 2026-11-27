@@ -39,9 +39,8 @@ The "Saturday morning" look (Rich's choice, 26th November 2026). Colours and fon
 - Players on the pitch are mini copies of the full player, drawn by the same code in `src/lib/avatar.js`, so any look carries across. They stay upright in landscape. A keeper has a round GK badge by her shoulder.
 - Each of our players has her name on a small plate under her feet. Long names are cut short there. In landscape, names on the bench wait until a player is picked up, because the bench is a column.
 - A small scoreboard above the pitch shows both team names with a dot of each kit colour.
-- The menu is a 40-minute match clock (`src/lib/clock.js`, drawn in `src/screens.js`, Rich's choice, 27th November 2026). Each level is a numbered moment round the clock face: kick-off near the top, half-time at the bottom, the last minute back near the top. Finished moments are green, the one to play next is yellow and glows, the rest are white and locked. The hand points at the next moment and sweeps on when she passes one. Her player stands in the middle with the minute. Markers show the moment's place in this match (1 to 4 or 5), not the level's number in the code.
-- The cup run sits above the clock (beside it in landscape): Round 1, Semi-final, Final, then a trophy. Won rounds are green with a tick, the round she is in is blue, the rest are white. Each round shows one, two or three balls for how hard it is.
-- The sticker album (`src/lib/album.js`, `src/lib/stickers.js`) has cream paper pages with numbered spaces, opened from the book button or the sticker count on the clock screen. Page order (Rich's choice, 26th November 2026): our team with the coach, club colours, world colours, kit bag, shinies. Club and world colours are made-up kits with made-up names: colours and patterns only. Never a badge, a sponsor, a real club or a country name.
+- The menu is the cup path (`src/lib/path.js`, drawn in `src/screens.js`, Rich's choice, 27th November 2026, after the match clock did not work for him): one winding trail up the screen through the whole cup. Round 1's moments, a flag and the semi-final's, a flag and the final's, then the cup at the top (gold once she has won a cup). Each moment shows its place in its round (1 to 4 or 5). Finished moments are green, the one to play next is yellow and glows, the rest are white and locked. Her player stands beside the next moment and hops up when she passes one. Only the round she is in can be played from the path. The match's minutes still come from `src/lib/clock.js` for the scoreboard. Who she is playing sits under the top buttons.
+- The sticker album (`src/lib/album.js`, `src/lib/stickers.js`) has cream paper pages with numbered spaces, opened from the book button or the sticker count on the path screen. Page order (Rich's choice, 26th November 2026): our team with the coach, club colours, world colours, kit bag, shinies. Club and world colours are made-up kits with made-up names: colours and patterns only. Never a badge, a sponsor, a real club or a country name.
 
 ## Commands
 
@@ -85,19 +84,19 @@ Added at Rich's request, 26th November 2026, so others can play on their own pho
 
 ## How it should feel
 
-- A new player's first run (Rich's choice, 27th November 2026): a short story (three picture pages), then she makes her player, meets her team-mates, sets up the other team, and one last story page takes her to the match clock. All of it can be changed later on the "My team" screen.
+- A new player's first run (Rich's choice, 27th November 2026): a short story (three picture pages), then she makes her player, meets her team-mates, sets up the other team, and one last story page takes her to the cup path. All of it can be changed later on the "My team" screen.
 
 - Every setup step (story pages, her player, team-mates, the other team) has a back button (Rich, 27th November 2026).
-- The first time she meets each kind of button, a yellow "Tap here!" pointer shows it (`src/lib/firstTap.js`): Play, the story arrow, the setup tick, the team ticks, the first moment on the clock, the cup screen's tick and the Ready tick. Once tapped, that pointer never comes back.
+- The first time she meets each kind of button, a yellow "Tap here!" pointer shows it (`src/lib/firstTap.js`): Play, the story arrow, the setup tick, the team ticks, the first moment on the path, the cup screen's tick and the Ready tick. Once tapped, that pointer never comes back.
 - Passing moves name the real players: script lines use `{mate|a friend}` style words, filled by `stage.callNames`.
-- The last story page before the clock shows her sticker book and explains that each right bonus answer wins a sticker. A right bonus answer gets a full-screen "New sticker!" moment, then her album page appears and the sticker flies into its numbered space, before it settles beside the medal. The first time she has a sticker, a pointer shows the book on the clock screen (Rich, 27th November 2026).
+- The last story page before the path shows her sticker book and explains that each right bonus answer wins a sticker. A right bonus answer gets a full-screen "New sticker!" moment, then her album page appears and the sticker flies into its numbered space, before it settles beside the medal. The first time she has a sticker, a pointer shows the book on the path screen (Rich, 27th November 2026).
 - Every instruction is spoken and shown in pictures. Words on screen are off by default (Rich's choice, 26th November 2026), switch on in the grown-ups area, and come on by themselves if the phone has no voice. Many 6 year olds cannot read fluently. The one exception is the bonus question: its question and answer labels are always shown, big and bold, as well as spoken (Rich's choice, 26th November 2026).
 - A wrong answer gets a friendly whistle and another go straight away. The first wrong try gives only a gentle nudge: "not quite", plus which player or part of the pitch to think about, and those players hop (`src/lib/nudge.js`). No reasons, no glowing spots (Rich, 27th November 2026). On Easy only, yellow circles also flash for a moment on the places still to fill, after every wrong try until the glowing spots take over, never before her first try (Rich, 27th November 2026; `flash` in `difficulty.json`). Then help steps up: a picture of why, the glowing spots, then do one together. How soon each step comes is set per difficulty in `src/data/difficulty.json`.
 - A wrong answer never loses the match. On Easy and Medium it never concedes anything. On Difficult only, a first wrong try at a line-up can let them win the ball, or have a shot that goes wide, or score once (only at levels 2, 4 and 7, and only in a round where our corner at level 8 comes later and goes in off the post, so she can always still win; the current final has no such goal), told kindly. A grown-ups switch turns this off (`src/game/consequence.js`).
 - After a right line-up, a short coaching tip says what to do next in the game, such as "be first to their pass, or tackle if they dribble it in" (`coach.c1` to `coach.c10`). Bonus answers end with one too.
 - The dotted ring is never on a real pitch. Words always give the distance as "five big steps" and call the ring a helper that shows how far (Rich, 27th November 2026).
 - Praise effort, not cleverness.
-- No timer pressure, no streaks, no daily rewards. Stickers collected are a record of progress. Passing a level moves the match clock on, and winning a match moves her on in the cup. The first sticker she wins is her own player (sticker 1, Rich's choice, 27th November 2026), and finishing every level of a match gives a shiny sticker.
+- No timer pressure, no streaks, no daily rewards. Stickers collected are a record of progress. Passing a level moves her up the path, and winning a match moves her on in the cup. The first sticker she wins is her own player (sticker 1, Rich's choice, 27th November 2026), and finishing every level of a match gives a shiny sticker.
 - Each level ends with one bonus question on what it taught, with three picture answers. Right wins the next sticker in the album, once for each level. Wrong is never called wrong: the right picture glows and the voice explains it. She can try again next time she plays the level.
 - A correct line-up starts the play. Goals come from a passing move, so the message is "we were ready", not "stand here and score".
 - Explainer animations have no tappable extras. Touch is off while one plays.
@@ -163,7 +162,7 @@ The full match is storyboarded in `docs/match-1-storyboard.md` (agreed by Rich, 
 
 ## The cup, replays and difficulty
 
-Replays and difficulty built 27th November 2026. The cup and match clock replaced the path and the difficulty picker later that day (Rich's choice).
+Replays and difficulty built 27th November 2026. The cup replaced the difficulty picker later that day (Rich's choice). A match clock briefly replaced the level path, then the path came back as one cup path (Rich, 27th November 2026).
 
 - The matches make a cup: Round 1 (Easy), the semi-final (Medium), then the final (Difficult). The order is fixed, so she always knows she will move on if she keeps trying, and that it gets harder. The cup screen between rounds shows the cup run, the next team and the balls, and the voice says so. Winning the final wins the cup: a full-screen "Cup winners!" moment with the trophy, her team, confetti, the fanfare and Coach's words. Then a yellow "New cup" button starts again, against new teams.
 - Round 1 of her first cup is her first time through the match, saved in `progress`. Every other round is played like a replay, saved separately (`src/lib/replays.js`, store key `replays`), so her own progress, stickers and team never change. Where she is in the cup is saved under `cup` (`src/lib/cup.js`). A player who finished the match before the cup existed starts at the semi-final.
@@ -173,7 +172,7 @@ Replays and difficulty built 27th November 2026. The cup and match clock replace
 - Difficult has no dots. Players snap to an unseen one-yard grid (`freeSpots` in `src/lib/geometry.js`), and every shape spot's zone decides if she is right.
 - The score in spoken lines comes from `{score}` and `{final}`, so extra goals on Difficult are said correctly.
 - Stickers stay first-time-only for bonus answers, whatever the round.
-- A grown-up can stop a round in the grown-ups area. Her levels and stickers stay, and she can start that round again from the clock.
+- A grown-up can stop a round in the grown-ups area. Her levels and stickers stay, and she can start that round again from the path.
 
 ## Not in scope yet
 

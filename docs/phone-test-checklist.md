@@ -192,8 +192,8 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 
 These replace the "Replays and difficulty" checks above about the path and the new match screen.
 
-- [ ] The menu is a round match clock that fits the screen in portrait and landscape, with nothing cut off. Numbers 1 to 4 (or 5) sit round the face and none overlap. The cup run (Round 1, Semi-final, Final, cup) sits above it, or beside it in landscape.
-- [ ] The next number glows yellow. Passing a level the first time: the hand sweeps round to the next number and her player hops.
+- [ ] (Updated: the clock is now the cup path.) The menu is one path up the screen: Round 1, a Semi-final flag, a Final flag, then the cup at the top. It scrolls, and opens with her player in view. In landscape the path is a column on the right.
+- [ ] The next number glows yellow. Passing a level the first time: her player hops up to the next number. Tapping a number in a later round shakes it; tapping one in a round already won gives a little hop.
 - [ ] During a level, the scoreboard shows the minute (for example 3'), and team names are not cut short.
 - [ ] Round 1 is four moments: kick-off, their restart, then two goal kicks after half-time. A half-time whistle comes after moment 2, and a full-time whistle after moment 4.
 - [ ] Finishing Round 1: the arrow at the end goes to the cup screen, which ticks Round 1, shows the semi-final team and two balls, and says it will be a bit harder.
