@@ -136,6 +136,27 @@ export function unlock() {
   }
 }
 
+// Why speech can stall on iPhone, and what we do about it (Rich heard the
+// voice say a word or two, then stop for 5 to 10 seconds, 27th November 2026):
+//  - Calling cancel() and then speak() straight away makes iPhone drop or
+//    freeze the new line. So we only cancel a line that is really still
+//    being spoken, and after a cancel we wait a moment before speaking.
+//  - iPhone can still say it is "speaking" just after a line has ended.
+//    We keep track of our own line instead of trusting that.
+//  - A button tick starting on the other audio element at the same moment
+//    as the voice can interrupt the voice. The tick is stopped, and the
+//    voice starts just after it.
+//  - If a line goes quiet part way through, we pick it up again from the
+//    last word we heard, instead of waiting for the safety timer.
+let active = null; // the utterance we are speaking now, if any
+let lastCancel = 0;
+const CANCEL_GAP = 250; // ms to wait after a cancel before speaking again
+const STALL_MS = 3000; // no new word for this long means the voice is stuck
+
+function now() {
+  return typeof performance !== 'undefined' ? performance.now() : Date.now();
+}
+
 export function stop() {
   run++;
   try {
@@ -143,10 +164,16 @@ export function stop() {
   } catch {
     /* ignore */
   }
-  try {
-    if (synth && (synth.speaking || synth.pending)) synth.cancel();
-  } catch {
-    /* ignore */
+  if (active) {
+    active = null;
+    try {
+      if (synth) {
+        synth.cancel();
+        lastCancel = now();
+      }
+    } catch {
+      /* ignore */
+    }
   }
   setSpeaking(false);
 }
@@ -158,6 +185,7 @@ export function say(ids, { remember = true } = {}) {
   const list = Array.isArray(ids) ? ids : [ids];
   unlock();
   stop();
+  sfx.hush();
   const mine = run;
   if (remember) lastIds = list.filter((id) => !id.startsWith('sfx.'));
   setSpeaking(true);
@@ -246,39 +274,121 @@ function playUrl(url, mine, maxMs) {
   });
 }
 
+// Voices that tell us about each word as they say it. Only for these can we
+// tell that a line has gone quiet part way through.
+let wordsReported = false;
+
 function speak(text, mine) {
   return new Promise((resolve) => {
     let done = false;
+    let stallTimer = null;
+    let retries = 0;
     const finish = () => {
       if (done) return;
       done = true;
       clearTimeout(timer);
+      clearTimeout(stallTimer);
       clearInterval(watch);
+      if (active && active.mine === mine) active = null;
       resolve(true);
     };
     // If the phone's voice is missing or never reports that it finished,
     // move on after a generous reading time so the child is never stuck.
     const timer = setTimeout(finish, synth && voice ? readingTime(text) * 1.8 + 1500 : readingTime(text));
     const watch = setInterval(() => {
-      if (mine !== run) finish();
-    }, 100);
+      if (mine !== run) return finish();
+      // iPhone sometimes pauses the voice by itself. Nudge it on.
+      try {
+        if (synth?.paused) synth.resume();
+      } catch {
+        /* ignore */
+      }
+    }, 250);
     if (!synth) return;
     if (!voice) pickVoice();
     if (!voice) {
       noVoiceHandler(); // no on-device voice: the words on screen carry the line
       return;
     }
-    try {
-      const u = new SpeechSynthesisUtterance(text);
+
+    // from: where in the line to start, after a stall.
+    const start = (from) => {
+      if (done || mine !== run) return;
+      const part = text.slice(from);
+      if (!part.trim()) return finish();
+      let lastWord = from;
+      let heard = false;
+      const u = new SpeechSynthesisUtterance(part);
       u.lang = voice.lang;
       u.voice = voice;
       u.rate = 0.92;
       u.pitch = 1.05;
+      // Keep hold of the line, or some browsers throw it away mid-sentence
+      // and never say that it ended.
+      active = { u, mine };
+      const armStall = () => {
+        clearTimeout(stallTimer);
+        // Only when this voice reports words, and only twice per line.
+        if (!wordsReported || retries >= 2) return;
+        stallTimer = setTimeout(() => {
+          if (done || mine !== run || active?.u !== u) return;
+          retries++;
+          // Gone quiet: start again from the last word we heard.
+          u.onend = null;
+          u.onerror = null;
+          try {
+            synth.cancel();
+          } catch {
+            /* ignore */
+          }
+          lastCancel = now();
+          setTimeout(() => start(lastWord), CANCEL_GAP);
+        }, STALL_MS);
+      };
+      u.onstart = () => {
+        heard = true;
+        armStall();
+      };
+      u.onboundary = (e) => {
+        if (e.name && e.name !== 'word') return;
+        wordsReported = true;
+        heard = true;
+        lastWord = from + (e.charIndex || 0);
+        armStall();
+      };
       u.onend = finish;
-      u.onerror = finish;
-      synth.speak(u);
-    } catch {
-      /* the caption is still on screen */
-    }
+      u.onerror = (e) => {
+        // "interrupted" and "canceled" are us moving on; anything else, try once more.
+        if (e?.error && e.error !== 'interrupted' && e.error !== 'canceled' && retries < 1 && !done && mine === run) {
+          retries++;
+          setTimeout(() => start(lastWord), CANCEL_GAP);
+          return;
+        }
+        finish();
+      };
+      try {
+        synth.speak(u);
+      } catch {
+        /* the caption is still on screen */
+      }
+      // Never started at all: try once more.
+      setTimeout(() => {
+        if (!heard && !done && mine === run && active?.u === u && retries < 2 && !synth.speaking) {
+          retries++;
+          try {
+            synth.cancel();
+          } catch {
+            /* ignore */
+          }
+          lastCancel = now();
+          setTimeout(() => start(from), CANCEL_GAP);
+        }
+      }, 2000);
+    };
+
+    // Wait for a cancel to settle, and for a button tick to finish.
+    const delay = Math.max(0, lastCancel + CANCEL_GAP - now(), sfx.busyFor());
+    if (delay > 0) setTimeout(() => start(0), delay);
+    else start(0);
   });
 }

@@ -54,9 +54,29 @@ function element() {
   return el;
 }
 
-function start(u) {
+// When the small sound on its element will finish, so the voice can wait
+// for it instead of starting on top of it.
+let busyUntil = 0;
+const clock = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+export function busyFor() {
+  return Math.max(0, busyUntil - clock());
+}
+// The voice is about to speak: let a tick finish, but stop anything longer.
+export function hush() {
+  if (busyFor() > 120 && el) {
+    try {
+      el.pause();
+    } catch {
+      /* ignore */
+    }
+    busyUntil = 0;
+  }
+}
+
+function start(u, name) {
   const a = element();
   if (!a || !u) return;
+  busyUntil = clock() + (lengths[name] || 0) + 40;
   try {
     if (a.src !== u) a.src = u;
     else a.currentTime = 0;
@@ -80,7 +100,7 @@ export function play(name, { haptic = 0 } = {}) {
   if (!enabled) return;
   buzz(haptic);
   if (speaking) return;
-  start(urls[name]);
+  start(urls[name], name);
 }
 
 // The first tap anywhere wakes our audio element up, so iPhone lets it play
@@ -88,7 +108,7 @@ export function play(name, { haptic = 0 } = {}) {
 function onFirstTouch() {
   if (unlocked) return;
   unlocked = true;
-  start(urls.silent);
+  start(urls.silent, 'silent');
 }
 function onClick(e) {
   const b = e.target?.closest?.('button');
