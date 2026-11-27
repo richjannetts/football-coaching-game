@@ -50,6 +50,7 @@ export async function chapter9(stage) {
   const keeper = role('keeper')[0];
   const [guardL, guardR] = role('guard').sort((a, b) => a.x - b.x);
   const up = role('up')[0].el;
+  stage.callNames({ mate: guardR.el, runner: up });
 
   await stage.play(['sfx.whistle', 'sfx.kick', 'c9.cross', 'c9.catch', 'c9.roll', 'c9.up', 'c9.race', 'c9.trip', 'sfx.whistle', 'c9.penalty'], {
     'sfx.kick': () => pitch.setRing(false),

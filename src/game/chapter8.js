@@ -65,6 +65,7 @@ export async function chapter8(stage) {
     stage.check();
     if (wrong >= 3) {
       stage.setBusy(true);
+      stage.callNames({ mate: near.el });
       await Promise.all([stage.play(['sfx.kick', 'c8.passTogether']), passTo(near)]);
       await playOut(near);
       return;
@@ -72,6 +73,7 @@ export async function chapter8(stage) {
     const choices = wrong >= 2 ? targets.filter((t) => t.kind === 'friend') : targets;
     const pick = await stage.pickTarget(choices, (t) => {
       stage.setBusy(true);
+      if (t.kind === 'friend') stage.callNames({ mate: t.role.el });
       if (t.kind === 'friend') return stage.play(['sfx.kick', 'c8.passGood'], { 'c8.passGood': () => passTo(t.role) });
       wrong++;
       const next = wrong >= 3 ? [] : wrong === 2 ? ['c8.passShow'] : ['hint.tryAgain'];
@@ -104,6 +106,7 @@ export async function chapter8(stage) {
   // Whoever got the corner passes to the other friend, who shoots.
   async function playOut(first) {
     const shooter = first === near ? edge : near;
+    stage.callNames({ runner: shooter.el, defender: stay.el });
     const from = { x: shooter.x < 18 ? 16 : 19.5, y: shooter.y < 33 ? 31 : 34 };
     await stage.play(['c8.move1', 'sfx.kick', 'c8.post', 'c8.break', 'c8.block', 'c8.theirCorner'], {
       'c8.move1': async () => {

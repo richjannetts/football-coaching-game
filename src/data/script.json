@@ -1013,7 +1013,7 @@
     },
     {
       "id": "c8.passGood",
-      "text": "A pass to a friend. Lovely!",
+      "text": "A pass to {mate|a friend}. Lovely!",
       "cue": "The ball rolls to a friend."
     },
     {
@@ -1028,12 +1028,12 @@
     },
     {
       "id": "c8.passTogether",
-      "text": "Let's do it together. A short pass to our friend by the post.",
+      "text": "Let's do it together. A short pass to {mate|our friend by the post}.",
       "cue": "The ball rolls to the friend near the post."
     },
     {
       "id": "c8.move1",
-      "text": "She passes it to a friend, who has a clear shot...",
+      "text": "She passes it to {runner|a friend}, who has a clear shot...",
       "cue": "Our friends pass the ball to the edge of the box."
     },
     {
@@ -1048,7 +1048,7 @@
     },
     {
       "id": "c8.block",
-      "text": "Our friend who stayed back was ready. She blocks the shot!",
+      "text": "{defender|Our friend} stayed back, so she was ready. She blocks the shot!",
       "cue": "Our friend stops the ball. It rolls out past our goal."
     },
     {
@@ -1088,12 +1088,12 @@
     },
     {
       "id": "c9.roll",
-      "text": "She rolls it out to a friend, quick as a flash.",
+      "text": "She rolls it out to {mate|a friend}, quick as a flash.",
       "cue": "Our keeper rolls the ball to a friend at the side."
     },
     {
       "id": "c9.up",
-      "text": "A big pass up to our front player, who was waiting near halfway.",
+      "text": "A big pass up to {runner|our front player}, who was waiting near halfway.",
       "cue": "The ball goes up the pitch to our front player."
     },
     {
