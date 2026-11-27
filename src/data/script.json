@@ -655,6 +655,241 @@
       "id": "rule.goalKickOurs",
       "text": "The rule says: at a goal kick, both teams start in their own half. That means us too.",
       "cue": "Their half turns red. The player in it has a red ring."
+    },
+    {
+      "id": "rule.kickInOnBall",
+      "text": "The rule says: one of us takes the kick-in, with the ball still on the side line where it went out.",
+      "cue": "The ball glows."
+    },
+    {
+      "id": "rule.kickInRing",
+      "text": "The rule says: stay about five metres away from the ball until it's kicked in. That's five big grown-up steps. Keep outside the dotted ring.",
+      "cue": "The ring turns red. The player inside it has a red ring."
+    },
+    {
+      "id": "shape.c5.taker",
+      "text": "In our team, one player stands on the ball, on the side line, to take the kick-in.",
+      "cue": "The ball glows."
+    },
+    {
+      "id": "shape.c5.close",
+      "text": "In our team, a friend comes close to the kicker, for an easy short pass.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c5.inside",
+      "text": "In our team, a friend stands inside, towards the middle of the pitch, for another pass.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c6.line",
+      "text": "In our team, a friend stands between their player down the line and our goal.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c6.up",
+      "text": "In our team, our front player stands between their player up the line and our goal.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c6.inside",
+      "text": "In our team, a friend stands inside, between their middle player and our goal.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "c5.intro1",
+      "text": "The ball went off the side, so it's our kick-in.",
+      "cue": "The ball rolls back to the side line."
+    },
+    {
+      "id": "c5.intro2",
+      "text": "The rule says: put the ball still on the side line where it went out. Then pass it in or dribble it in. No throwing!",
+      "cue": "The ball does a little hop on the side line."
+    },
+    {
+      "id": "c5.intro3",
+      "text": "{them} have to stand five big steps away from the ball.",
+      "cue": "A dotted ring glows round the ball."
+    },
+    {
+      "id": "c5.place",
+      "text": "Spots! Put our five players where they go for our kick-in.",
+      "cue": "Our players at the side gently bounce."
+    },
+    {
+      "id": "c5.passAsk",
+      "text": "Where should our kick-in go? Tap a place.",
+      "cue": "Glowing circles on our friends, and one on their player."
+    },
+    {
+      "id": "c5.passGood",
+      "text": "A pass to a friend. Lovely!",
+      "cue": "The ball rolls to a friend."
+    },
+    {
+      "id": "c5.passThem",
+      "text": "Oh! That went straight to them. Look for a friend first.",
+      "cue": "The ball goes to their player. A red cross shows it didn't work."
+    },
+    {
+      "id": "c5.passShow",
+      "text": "Look. Our friends are glowing. Tap one.",
+      "cue": "Only our friends glow."
+    },
+    {
+      "id": "c5.passTogether",
+      "text": "Let's do it together. A short pass to a friend.",
+      "cue": "The ball rolls to the friend nearby."
+    },
+    {
+      "id": "c5.move1",
+      "text": "Pass and move! Our friend takes it towards their goal.",
+      "cue": "Our friends pass the ball up the pitch."
+    },
+    {
+      "id": "c5.shot",
+      "text": "Shot!",
+      "cue": "Our friend shoots."
+    },
+    {
+      "id": "c5.save",
+      "text": "Their keeper saves it!",
+      "cue": "Their keeper catches the ball."
+    },
+    {
+      "id": "c5.break",
+      "text": "Their keeper kicks it long, and they race down the other side.",
+      "cue": "Their player runs with the ball towards our goal."
+    },
+    {
+      "id": "c5.tackle",
+      "text": "Our back player gets across and makes a great tackle!",
+      "cue": "Our back player knocks the ball off the side line."
+    },
+    {
+      "id": "c5.theirKick",
+      "text": "It went off the side off us, so now it's their kick-in. That's the next level.",
+      "cue": "The ball sits on the side line in our half."
+    },
+    {
+      "id": "c5.end",
+      "text": "Level five done! On Saturday, when the ball goes off the side, look for a friend first.",
+      "cue": "A gold football medal with a 5 on it spins in."
+    },
+    {
+      "id": "c6.intro1",
+      "text": "Now it's their kick-in, in our half.",
+      "cue": "Their kicker glows on the side line."
+    },
+    {
+      "id": "c6.intro2",
+      "text": "The rule says: we stay five big steps away from the ball until it's kicked in. The dotted ring helps us see.",
+      "cue": "The dotted ring round the ball glows."
+    },
+    {
+      "id": "c6.place",
+      "text": "Spots! Where do we stand when they have a kick-in? Stand between their players and our goal.",
+      "cue": "Our players at the side gently bounce."
+    },
+    {
+      "id": "c6.kick",
+      "text": "They pass it in.",
+      "cue": "Their kicker passes to a friend inside."
+    },
+    {
+      "id": "c6.defend",
+      "text": "Our friend was standing in the right place, so she steps in and wins it!",
+      "cue": "Our friend takes the ball."
+    },
+    {
+      "id": "c6.clear",
+      "text": "We clear it up the pitch.",
+      "cue": "The ball goes up the pitch."
+    },
+    {
+      "id": "c6.shot",
+      "text": "Their player gets it, a long way out, and shoots...",
+      "cue": "Their player kicks the ball from far away."
+    },
+    {
+      "id": "c6.theirGoal",
+      "text": "What a shot! It flies into the top corner. Nobody could have stopped that one.",
+      "cue": "The ball goes into our goal. The score is one each."
+    },
+    {
+      "id": "c6.headsUp",
+      "text": "Heads up, team! We're still a team. Back to our spots.",
+      "cue": "Our players jump and clap each other."
+    },
+    {
+      "id": "c6.halfTime",
+      "text": "That's the whistle for half-time. One each!",
+      "cue": "The players walk off for a drink."
+    },
+    {
+      "id": "c6.end",
+      "text": "Level six done! You defended really well. On Saturday, if a goal goes in against us, heads up and back to our spots.",
+      "cue": "A gold football medal with a 6 on it spins in."
+    },
+    {
+      "id": "quiz.c5.ask",
+      "text": "At our kick-in, where do our friends stand? Tap the right picture.",
+      "cue": "Three little pitches. Our kicker has the ball on the side line in each one."
+    },
+    {
+      "id": "quiz.c5.a",
+      "text": "All right next to the kicker?",
+      "cue": "The first picture glows."
+    },
+    {
+      "id": "quiz.c5.b",
+      "text": "Spread out, with friends to pass to?",
+      "cue": "The middle picture glows."
+    },
+    {
+      "id": "quiz.c5.c",
+      "text": "All far away up the pitch?",
+      "cue": "The last picture glows."
+    },
+    {
+      "id": "quiz.c5.right",
+      "text": "That's right! In our team, a friend comes close and a friend goes inside, so there are easy passes. Well done, {name}!",
+      "cue": "The right picture has a green edge."
+    },
+    {
+      "id": "quiz.c5.reveal",
+      "text": "Good try. In our team, a friend comes close and a friend goes inside, like this one, so there are easy passes. You can try for the sticker again next time you play level five.",
+      "cue": "The right picture glows. The other two pictures fade."
+    },
+    {
+      "id": "quiz.c6.ask",
+      "text": "When they have a kick-in, how close can we stand to the ball? Tap the right picture.",
+      "cue": "Three little pitches. Their kicker is on the side line, with the helper ring round the ball."
+    },
+    {
+      "id": "quiz.c6.a",
+      "text": "Right next to the ball?",
+      "cue": "The first picture glows."
+    },
+    {
+      "id": "quiz.c6.b",
+      "text": "Two of us inside the ring?",
+      "cue": "The middle picture glows."
+    },
+    {
+      "id": "quiz.c6.c",
+      "text": "Everyone outside the ring?",
+      "cue": "The last picture glows."
+    },
+    {
+      "id": "quiz.c6.right",
+      "text": "That's right! The rule says we stay five big steps away until it's kicked in. Well done, {name}!",
+      "cue": "The right picture has a green edge."
+    },
+    {
+      "id": "quiz.c6.reveal",
+      "text": "Good try. The rule says we stay five big steps from the ball until it's kicked in, like this one. You can try for the sticker again next time you play level six.",
+      "cue": "The right picture glows. The other two pictures fade."
     }
   ]
 }

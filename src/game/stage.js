@@ -10,7 +10,8 @@ import { createQuiz } from './quiz.js';
 import * as narrator from '../lib/narrator.js';
 import * as sfx from '../lib/sfx.js';
 import { burst, burstFrom } from '../lib/confetti.js';
-import { team, pitchSize, gridSpots, benchSpots, keeperAt } from './content.js';
+import { team, pitchSize, benchSpots, keeperAt } from './content.js';
+import { buildSpots } from '../lib/geometry.js';
 import { myTeam } from '../lib/teamState.js';
 
 export const ABORT = Symbol('left the chapter');
@@ -26,7 +27,9 @@ const THEIR_LOOKS = [
   { skin: 's1', hair: 'braids', hairColour: 'h5' },
 ];
 
-export function createStage({ profile, onHome, showWords = false }) {
+// spots: ids of optional extra spots this level needs (team.json grid.extra).
+export function createStage({ profile, onHome, showWords = false, spots: extraSpots = [] }) {
+  const gridSpots = buildSpots(team.grid, extraSpots);
   const caption = h('p', { class: 'caption', 'aria-live': 'polite' });
   const homeBtn = h('button', { class: 'icon-btn home-btn', type: 'button', 'aria-label': 'Home' }, homeIcon());
   const againBtn = h('button', { class: 'icon-btn again', type: 'button', 'aria-label': 'Hear it again' }, speakerIcon());
@@ -72,6 +75,7 @@ export function createStage({ profile, onHome, showWords = false }) {
     alive: true,
     players: [],
     them: [],
+    spots: gridSpots,
     placement: null,
     onReady: null,
   };

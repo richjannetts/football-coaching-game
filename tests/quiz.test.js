@@ -91,3 +91,22 @@ test('every level on the path has a bonus question and an end line', () => {
     assert.ok(ids.has(`c${n}.end`), `level ${n} has no end line`);
   }
 });
+
+test('quiz, level 5: only the right picture spreads out with a friend in reach', () => {
+  const q = quizFor(quiz, 5);
+  q.options.forEach((o, i) => {
+    const [bx, by] = o.picture.ball;
+    const friends = o.picture.us.slice(1, -1).map(([x, y]) => Math.hypot(x - bx, y - by));
+    const spread = friends.every((d) => d > 3.5) && friends.some((d) => d <= 11);
+    assert.equal(spread, i === q.answer, `option ${i}: ${o.label}`);
+  });
+});
+
+test('quiz, level 6: only the right picture keeps five yards from the ball', () => {
+  const q = quizFor(quiz, 6);
+  q.options.forEach((o, i) => {
+    const [x, y] = o.picture.ball;
+    const result = checkRule({ kind: 'theirKickIn', players: toPlayers(o.picture), ruleSet, centre, halfway: 20, ball: { x, y } });
+    assert.equal(result.ok, i === q.answer, `option ${i}: ${o.label}`);
+  });
+});

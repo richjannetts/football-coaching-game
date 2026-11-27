@@ -1,7 +1,7 @@
 {
   "teamName": "The Stripes",
   "opponentName": "The Rovers",
-  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A shape spot can list \"also\": other grid spots that count as filling it (the back player may stand on the penalty box line or one dot in front, Rich's choice, 27th November 2026). A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal. Squad names are made-up starting names; the child can change them on her phone. theirKit holds the kit choices for the other team; kit.them is only used if that is missing.",
+  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A shape spot can list \"also\": other grid spots that count as filling it (the back player may stand on the penalty box line or one dot in front, Rich's choice, 27th November 2026). A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal. Squad names are made-up starting names; the child can change them on her phone. theirKit holds the kit choices for the other team; kit.them is only used if that is missing. An extra grid spot marked optional (the kick-in spot on the side line) only shows in the levels that ask for it.",
   "kit": {
     "us": {
       "shirt": "#1d4ed8",
@@ -132,6 +132,12 @@
         "id": "centre-mark",
         "x": 15,
         "y": 20
+      },
+      {
+        "id": "kick-in-left",
+        "x": 0.4,
+        "y": 24.5,
+        "optional": true
       }
     ]
   },
@@ -424,6 +430,143 @@
           "hint": "shape.keeper"
         }
       ]
+    },
+    "ourKickIn": {
+      "label": "Our kick-in",
+      "tolerance": 2,
+      "spots": [
+        {
+          "role": "taker",
+          "at": "kick-in-left",
+          "hint": "shape.c5.taker"
+        },
+        {
+          "role": "close",
+          "at": [
+            1,
+            4
+          ],
+          "also": [
+            [
+              0,
+              4
+            ]
+          ],
+          "hint": "shape.c5.close"
+        },
+        {
+          "role": "inside",
+          "at": [
+            2,
+            5
+          ],
+          "also": [
+            [
+              2,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "hint": "shape.c5.inside"
+        },
+        {
+          "role": "back",
+          "at": [
+            2,
+            1
+          ],
+          "also": [
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "hint": "shape.back"
+        },
+        {
+          "role": "keeper",
+          "at": [
+            2,
+            0
+          ],
+          "hint": "shape.keeper"
+        }
+      ]
+    },
+    "theirKickIn": {
+      "label": "Their kick-in",
+      "tolerance": 2,
+      "spots": [
+        {
+          "role": "line",
+          "at": [
+            3,
+            1
+          ],
+          "hint": "shape.c6.line"
+        },
+        {
+          "role": "up",
+          "at": [
+            3,
+            4
+          ],
+          "also": [
+            [
+              3,
+              3
+            ]
+          ],
+          "hint": "shape.c6.up"
+        },
+        {
+          "role": "inside",
+          "at": [
+            2,
+            3
+          ],
+          "also": [
+            [
+              1,
+              3
+            ]
+          ],
+          "hint": "shape.c6.inside"
+        },
+        {
+          "role": "back",
+          "at": [
+            2,
+            1
+          ],
+          "also": [
+            [
+              2,
+              2
+            ]
+          ],
+          "hint": "shape.back"
+        },
+        {
+          "role": "keeper",
+          "at": [
+            2,
+            0
+          ],
+          "hint": "shape.keeper"
+        }
+      ]
     }
   },
   "opponents": {
@@ -514,12 +657,58 @@
         19,
         23.5
       ]
+    ],
+    "ourKickIn": [
+      [
+        15,
+        38.5
+      ],
+      [
+        5,
+        27.5
+      ],
+      [
+        10,
+        22.5
+      ],
+      [
+        14,
+        30
+      ],
+      [
+        21,
+        25
+      ]
+    ],
+    "theirKickIn": [
+      [
+        15,
+        38.5
+      ],
+      [
+        29.6,
+        14
+      ],
+      [
+        25,
+        8
+      ],
+      [
+        23.5,
+        21
+      ],
+      [
+        17.5,
+        17.5
+      ]
     ]
   },
   "opponentKeeper": {
     "ourCentreKick": 0,
     "theirCentreKick": 4,
     "ourGoalKick": 0,
-    "theirGoalKick": 0
+    "theirGoalKick": 0,
+    "ourKickIn": 0,
+    "theirKickIn": 0
   }
 }

@@ -6,10 +6,11 @@
 
 import { checkRule, checkShape } from '../lib/checks.js';
 import { nearestSpot } from '../lib/geometry.js';
-import { ruleSet, team, gridSpots } from './content.js';
+import { ruleSet, team } from './content.js';
 import { wait, motion } from '../lib/svg.js';
 
-export function runLineup(stage, { kind, shapeKey, promptIds }) {
+// ball: where the restart is taken from, for kick-ins (defaults to the centre mark).
+export function runLineup(stage, { kind, shapeKey, promptIds, ball }) {
   const { pitch, placement } = stage;
   const shape = team.shapes[shapeKey];
   let attempts = 0;
@@ -59,7 +60,7 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
         return;
       }
       const players = placement.positions();
-      const rule = checkRule({ kind, players, ruleSet, centre: pitch.centre, halfway: pitch.halfway });
+      const rule = checkRule({ kind, players, ruleSet, centre: pitch.centre, halfway: pitch.halfway, ball });
       const fit = checkShape({ players, shape, grid: team.grid, keepers });
       stage.clearWhy();
 
@@ -125,11 +126,11 @@ export function runLineup(stage, { kind, shapeKey, promptIds }) {
       if (mover === undefined || !target) {
         // Shape is right but the rule is not: only possible if data changes.
         mover = rule.problems[0]?.players[0] ?? 0;
-        target = pitch.centre;
+        target = ball || pitch.centre;
       }
       await spoken;
       if (!stage.alive) return;
-      const spot = nearestSpot(target, gridSpots);
+      const spot = nearestSpot(target, stage.spots);
       stage.clearWhy();
       await placement.moveTo(mover, spot.id);
       await wait(motion(400));

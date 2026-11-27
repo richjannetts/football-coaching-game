@@ -6,14 +6,20 @@ export function distance(a, b) {
 }
 
 // Every spot a player can snap to, built from the grid in team.json.
-export function buildSpots(grid) {
+// An extra spot marked "optional" (a spot on the side line for a kick-in)
+// only appears in the levels that ask for it by id.
+export function buildSpots(grid, include = []) {
   const spots = [];
   grid.rows.forEach((y, row) => {
     grid.cols.forEach((x, col) => {
       spots.push({ id: `c${col}r${row}`, col, row, x, y });
     });
   });
-  for (const extra of grid.extra || []) spots.push({ ...extra });
+  for (const extra of grid.extra || []) {
+    if (extra.optional && !include.includes(extra.id)) continue;
+    const { optional, ...spot } = extra;
+    spots.push(spot);
+  }
   return spots;
 }
 

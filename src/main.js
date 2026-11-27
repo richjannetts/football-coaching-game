@@ -8,6 +8,8 @@ import { chapter1 } from './game/chapter1.js';
 import { chapter2 } from './game/chapter2.js';
 import { chapter3 } from './game/chapter3.js';
 import { chapter4 } from './game/chapter4.js';
+import { chapter5 } from './game/chapter5.js';
+import { chapter6 } from './game/chapter6.js';
 import quiz from './data/quiz.json';
 import levels from './data/levels.json';
 import stickers from './data/stickers.json';
@@ -20,7 +22,9 @@ import * as teams from './lib/teamState.js';
 
 const app = document.getElementById('app');
 const VERSION = __APP_VERSION__;
-const chapters = { 1: chapter1, 2: chapter2, 3: chapter3, 4: chapter4 };
+// A level can list extra spots it needs, such as the kick-in spot on the side line.
+chapter5.spots = ['kick-in-left'];
+const chapters = { 1: chapter1, 2: chapter2, 3: chapter3, 4: chapter4, 5: chapter5, 6: chapter6 };
 
 let profile = store.load('profile');
 let progress = store.load('progress', {});
@@ -282,7 +286,7 @@ function goGrownUps() {
 }
 
 function goChapter(n) {
-  const stage = createStage({ profile, onHome: () => goMenu(true), showWords: !!store.load('showWords') });
+  const stage = createStage({ profile, onHome: () => goMenu(true), showWords: !!store.load('showWords'), spots: chapters[n].spots || [] });
   show(stage.el);
   stage.el.dataset.chapter = n;
   // The chapter's first line is spoken now, inside the tap that opened it.
