@@ -2775,16 +2775,7 @@ button.chip:active {
   opacity: 0.3;
 }
 
-/* The new match screen: the other team, then one, two or three balls. */
-.new-match {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: var(--edge-top) var(--edge-right) var(--edge-bottom) var(--edge-left);
-  min-height: 100vh;
-  min-height: var(--app-h, 100dvh);
-  overflow-y: auto;
-}
+/* The other team: its shirt and name (the cup screen). */
 .versus {
   display: flex;
   flex-direction: column;
@@ -2805,83 +2796,11 @@ button.chip:active {
   font: 400 30px/1.1 var(--font-display);
   color: var(--ink);
 }
-.level-choices {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: stretch;
-  width: min(100%, 420px);
-  margin: 0 auto;
-}
-.level-choice {
-  position: relative;
-  min-height: 84px;
-  border: none;
-  border-radius: var(--radius);
-  background: var(--panel);
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 10px 18px;
-  font: 600 22px var(--font);
-  box-shadow: 0 7px 0 var(--lip), 0 12px 14px rgba(10, 26, 60, 0.15);
-  margin-bottom: 7px;
-}
-.level-choice:active {
-  translate: 0 5px;
-  box-shadow: 0 2px 0 var(--lip);
-}
-.level-balls {
-  display: flex;
-  gap: 4px;
-  width: 140px;
-  flex: none;
-}
-.level-balls .ball-pic {
-  width: 42px;
-  height: 42px;
-}
-.level-choice.is-locked {
-  opacity: 0.65;
-}
-.level-lock {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  translate: 0 -50%;
-}
-.level-lock .icon {
-  width: 34px;
-  height: 34px;
-}
-.level-label {
-  flex: 1;
-  text-align: left;
-}
 .replay-box {
   background: var(--panel);
   border-radius: var(--radius);
   padding: 12px;
   margin: 8px 0;
-}
-@media (orientation: landscape) and (max-height: 500px) {
-  .new-match {
-    display: grid;
-    grid-template-columns: 1fr 1.3fr;
-    grid-template-rows: auto 1fr;
-    align-items: center;
-  }
-  .new-match .setup-top {
-    grid-column: 1 / -1;
-  }
-  .versus-shirt .shirt-icon {
-    width: 80px;
-    height: 80px;
-  }
-  .level-choice {
-    min-height: 64px;
-  }
 }
 
 /* ---------- Story: the sticker book page ----------
@@ -3174,8 +3093,7 @@ button.chip:active {
   display: flex;
   align-items: center;
   gap: 3px;
-  padding-left: 7px;
-  border-left: 2px solid rgba(255, 255, 255, 0.3);
+  padding-left: 4px;
   white-space: nowrap;
 }
 .mini-clock {
@@ -3552,4 +3470,42 @@ button.chip:active {
     width: 72px;
     height: 72px;
   }
+}
+.clock-menu .album-btn {
+  position: static;
+}
+.cup-step-balls .mini-ball .ball-pic {
+  width: 13px;
+  height: 13px;
+}
+/* Between rounds, the yellow button has a row of its own above the others. */
+.clock-bottom {
+  flex-wrap: wrap;
+}
+.clock-next {
+  order: -1;
+  flex-basis: 100%;
+  display: flex;
+  justify-content: center;
+}
+.clock-menu .match-chip {
+  position: static;
+}
+/* The scoreboard never makes the level wider than the screen: long team
+   names are cut short instead. */
+@media (orientation: portrait), (min-height: 601px) {
+  .chapter {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.chapter-top {
+  min-width: 0;
+}
+/* With the minute, the scoreboard can need two lines on a narrow phone.
+   The minute moves to the second line, so team names stay whole. */
+.scoreboard:has(.scoreboard-minute) {
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 2px;
+  border-radius: 16px;
 }

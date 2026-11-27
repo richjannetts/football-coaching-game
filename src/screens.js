@@ -7,7 +7,7 @@ import { stickerCard, emptyCard } from './lib/stickers.js';
 import { avatarSvg } from './lib/avatar.js';
 import { missingStep } from './lib/profile.js';
 import { menuDotsIcon, installIcon, shirtIcon, shortsIcon, sockIcon, trophyIcon } from './lib/icons.js';
-import { ballIcon, bonusStickerSvg, titleLogo, titleScene, lockIcon, bookIcon, homeIcon, nextIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
+import { ballIcon, bonusStickerSvg, titleLogo, titleScene, bookIcon, homeIcon, nextIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
 import * as narrator from './lib/narrator.js';
 import { pointOnce } from './lib/firstTap.js';
 import looks from './data/looks.json';
@@ -580,7 +580,7 @@ export function menuScreen({ profile, team, album, updateReady, clock, round, cu
       h('button', { class: 'text-btn grown-ups-btn', type: 'button', onclick: onGrownUps }, 'Grown-ups'),
       // Between rounds: on to the next round, or a new cup. Yellow,
       // because it is the thing to tap next.
-      nextButton ? newMatchButton(nextButton) : h('span', { class: 'clock-bottom-gap' }),
+      nextButton ? h('div', { class: 'clock-next' }, newMatchButton(nextButton)) : null,
       bookBtn
     ),
     updateReady ? h('button', { class: 'update-btn', type: 'button', onclick: onUpdate }, 'Grown-ups: a new version is ready. Tap to update.') : null

@@ -187,3 +187,18 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - [ ] Level 3: the glowing spots show one friend inside to one side and our front player on the other side, like the other team at level 4.
 - [ ] After each right line-up, a short coaching tip is spoken (for example level 6: get to their pass first, or tackle).
 - [ ] Levels 6 and 9: the voice calls the ring a helper and says five big steps.
+
+## Match clock and cup (added 27th November 2026)
+
+These replace the "Replays and difficulty" checks above about the path and the new match screen.
+
+- [ ] The menu is a round match clock that fits the screen in portrait and landscape, with nothing cut off. Numbers 1 to 10 sit round the face and none overlap. The cup run (Round 1, Semi-final, Final, cup) sits above it, or beside it in landscape.
+- [ ] The next number glows yellow. Passing a level the first time: the hand sweeps round to the next number and her player hops.
+- [ ] During a level, the scoreboard shows the minute (for example 3'), and team names are not cut short.
+- [ ] Finishing all ten in Round 1: the arrow at the end goes to the cup screen, which ticks Round 1, shows the semi-final team and two balls, and says it will be a bit harder.
+- [ ] The semi-final plays the moments in a different order (for example a kick-in at 4 minutes). The score at each level is right, and "that's the next level" is only said when it really is next.
+- [ ] The final has no dots, and the voice says it is the hardest match.
+- [ ] Winning the final: "Cup winners!" with the gold cup, her team, confetti, the fanfare and Coach's words. Tapping the house instead of the arrow at the end of the last level still shows it.
+- [ ] After the cup, a yellow "New cup" button starts Round 1 again against a new team, and the cup at the end of the cup run is gold.
+- [ ] Easy (Round 1): after a wrong line-up, yellow circles flash for a moment where players should go. Not before the first try, and not in the semi-final or final.
+- [ ] An existing phone that had already finished Match 1 opens on the semi-final, not Round 1.
