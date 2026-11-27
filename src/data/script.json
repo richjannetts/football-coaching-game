@@ -273,8 +273,8 @@
     },
     {
       "id": "c1.end",
-      "text": "You've earned a football sticker for level one. Well played, {name}!",
-      "cue": "A shiny football sticker pops into your sticker book."
+      "text": "Level one done! Well played, {name}!",
+      "cue": "A gold football medal with a 1 on it spins in."
     },
     {
       "id": "c2.intro1",
@@ -318,13 +318,13 @@
     },
     {
       "id": "c2.end",
-      "text": "You've earned a football sticker for level two. Brilliant defending, {name}!",
-      "cue": "A shiny football sticker pops into your sticker book."
+      "text": "Level two done! Brilliant defending, {name}!",
+      "cue": "A gold football medal with a 2 on it spins in."
     },
     {
       "id": "quiz.bonus",
-      "text": "Bonus question! Get it right for a bonus sticker.",
-      "cue": "The level sticker gets smaller and three pictures appear."
+      "text": "Bonus question! Get it right to win a sticker.",
+      "cue": "The medal gets smaller and three pictures appear."
     },
     {
       "id": "quiz.c1.ask",
@@ -348,12 +348,12 @@
     },
     {
       "id": "quiz.c1.right",
-      "text": "That's right! In our team, the first pass goes across to a friend. Here's your bonus sticker, {name}!",
-      "cue": "A gold bonus sticker spins into your sticker book."
+      "text": "That's right! In our team, the first pass goes across to a friend. Well done, {name}!",
+      "cue": "The right picture has a green edge."
     },
     {
       "id": "quiz.c1.reveal",
-      "text": "Good try. In our team, the first pass goes across to a friend beside you, like this one. You can try for the bonus sticker again next time you play level one.",
+      "text": "Good try. In our team, the first pass goes across to a friend beside you, like this one. You can try for the sticker again next time you play level one.",
       "cue": "The pass across glows. The other two pictures fade."
     },
     {
@@ -378,13 +378,28 @@
     },
     {
       "id": "quiz.c2.right",
-      "text": "That's right! The rule says we all stay in our own half, about five big grown-up steps from the ball. Here's your bonus sticker, {name}!",
-      "cue": "A gold bonus sticker spins into your sticker book."
+      "text": "That's right! The rule says we all stay in our own half, about five big grown-up steps from the ball. Well done, {name}!",
+      "cue": "The right picture has a green edge."
     },
     {
       "id": "quiz.c2.reveal",
-      "text": "Good try. The rule says we all stay in our own half, about five big grown-up steps from the ball, like this one. You can try for the bonus sticker again next time you play level two.",
+      "text": "Good try. The rule says we all stay in our own half, about five big grown-up steps from the ball, like this one. You can try for the sticker again next time you play level two.",
       "cue": "The right picture glows. The other two pictures fade."
+    },
+    {
+      "id": "end.sticker",
+      "text": "You've won a sticker for your album!",
+      "cue": "A new sticker pops up next to the medal."
+    },
+    {
+      "id": "end.shiny",
+      "text": "And you've finished the match! Here's a shiny sticker.",
+      "cue": "A shiny trophy sticker sits next to the medal."
+    },
+    {
+      "id": "album.hello",
+      "text": "This is your sticker album. Get a bonus question right to win a sticker. Tap the arrows to turn the pages.",
+      "cue": "The album page shows your stickers and the numbered spaces still to fill."
     },
     {
       "id": "end.tapNext",
@@ -393,7 +408,7 @@
     },
     {
       "id": "end.tapHome",
-      "text": "Tap the house to go back and see all your stickers.",
+      "text": "Tap the house to go back to the path.",
       "cue": "A hand points at the house button and says 'Tap here!'"
     }
   ]

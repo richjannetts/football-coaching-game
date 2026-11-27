@@ -1,0 +1,63 @@
+{
+  "note": "The sticker album, page by page. Stickers are won in this order, one for each bonus question answered right. Her own player is in the album from the start. 'squad' is a player's place in team.json (0 is her own player). Club colours and world colours are made-up kits: colours and patterns only, with made-up names. Never add a badge, a sponsor, a real club or a country name (Rich's choice, 26th November 2026; the repository is public). Patterns: stripes, hoops, halves, sash, band, plain. 'bg' is the two colours behind the player. The Shinies page has one sticker for each match in levels.json, given for finishing every level in that match.",
+  "pages": [
+    {
+      "id": "team",
+      "title": "{team}",
+      "colour": "#2463eb",
+      "stickers": [
+        { "kind": "player", "squad": 0 },
+        { "kind": "player", "squad": 1 },
+        { "kind": "player", "squad": 2 },
+        { "kind": "player", "squad": 3 },
+        { "kind": "player", "squad": 4 },
+        { "kind": "coach", "name": "Coach", "look": { "skin": "s3", "hair": "short", "hairColour": "h2" }, "kit": { "shirt": "#12305c", "stripe": "#ffd028", "shorts": "#12305c", "socks": "#12305c" }, "bg": ["#c4eaff", "#35b05c"] }
+      ]
+    },
+    {
+      "id": "club",
+      "title": "Club colours",
+      "colour": "#1f8a4c",
+      "stickers": [
+        { "kind": "kit", "name": "Humbugs", "squad": 1, "pattern": "stripes", "kit": { "shirt": "#f8fafc", "stripe": "#111827", "shorts": "#111827", "socks": "#111827" }, "bg": ["#d9dee7", "#ffd028"] },
+        { "kind": "kit", "name": "Limes", "squad": 2, "pattern": "hoops", "kit": { "shirt": "#f8fafc", "stripe": "#16a34a", "shorts": "#f8fafc", "socks": "#16a34a" }, "bg": ["#bff0cd", "#ffffff"] },
+        { "kind": "kit", "name": "Candy Canes", "squad": 3, "pattern": "stripes", "kit": { "shirt": "#f8fafc", "stripe": "#dc2626", "shorts": "#111827", "socks": "#dc2626" }, "bg": ["#ffd0cc", "#ffffff"] },
+        { "kind": "kit", "name": "Bumblebees", "squad": 4, "pattern": "stripes", "kit": { "shirt": "#facc15", "stripe": "#111827", "shorts": "#111827", "socks": "#facc15" }, "bg": ["#fff2a8", "#111827"] },
+        { "kind": "kit", "name": "Halves", "squad": 0, "pattern": "halves", "kit": { "shirt": "#f8fafc", "stripe": "#2563eb", "shorts": "#f8fafc", "socks": "#2563eb" }, "bg": ["#c4eaff", "#2563eb"] },
+        { "kind": "kit", "name": "Sashes", "squad": 1, "pattern": "sash", "kit": { "shirt": "#f8fafc", "stripe": "#dc2626", "shorts": "#111827", "socks": "#f8fafc" }, "bg": ["#e7e2d6", "#dc2626"] }
+      ]
+    },
+    {
+      "id": "world",
+      "title": "World colours",
+      "colour": "#d4770a",
+      "stickers": [
+        { "kind": "kit", "name": "Sunshine", "squad": 0, "pattern": "plain", "kit": { "shirt": "#fde047", "stripe": "#16a34a", "shorts": "#2563eb", "socks": "#f8fafc" }, "bg": ["#7fd6a0", "#ffffff"] },
+        { "kind": "kit", "name": "Sky Stripes", "squad": 0, "pattern": "stripes", "kit": { "shirt": "#f8fafc", "stripe": "#7dd3fc", "shorts": "#111827", "socks": "#f8fafc" }, "bg": ["#fff2a8", "#7dd3fc"] },
+        { "kind": "kit", "name": "Tangerines", "squad": 0, "pattern": "plain", "kit": { "shirt": "#f97316", "stripe": "#f97316", "shorts": "#f8fafc", "socks": "#f97316" }, "bg": ["#ffe1c2", "#2563eb"] },
+        { "kind": "kit", "name": "Snowballs", "squad": 0, "pattern": "plain", "kit": { "shirt": "#f8fafc", "stripe": "#f8fafc", "shorts": "#1e3a8a", "socks": "#f8fafc" }, "bg": ["#c7d2fe", "#dc2626"] },
+        { "kind": "kit", "name": "Deep Blues", "squad": 0, "pattern": "band", "kit": { "shirt": "#1d4ed8", "stripe": "#f8fafc", "shorts": "#f8fafc", "socks": "#dc2626" }, "bg": ["#bfdbfe", "#ffffff"] },
+        { "kind": "kit", "name": "Rockets", "squad": 0, "pattern": "plain", "kit": { "shirt": "#dc2626", "stripe": "#facc15", "shorts": "#1e3a8a", "socks": "#111827" }, "bg": ["#fff2a8", "#dc2626"] }
+      ]
+    },
+    {
+      "id": "kitbag",
+      "title": "Kit bag",
+      "colour": "#7a4a2c",
+      "stickers": [
+        { "kind": "item", "item": "ball", "name": "Ball", "bg": ["#bff0cd", "#ffffff"] },
+        { "kind": "item", "item": "boots", "name": "Boots", "bg": ["#c4eaff", "#ffd028"] },
+        { "kind": "item", "item": "gloves", "name": "Gloves", "bg": ["#ffe1c2", "#ffffff"] },
+        { "kind": "item", "item": "cone", "name": "Cone", "bg": ["#bff0cd", "#2563eb"] },
+        { "kind": "item", "item": "whistle", "name": "Whistle", "bg": ["#fff2a8", "#ffffff"] },
+        { "kind": "item", "item": "bottle", "name": "Bottle", "bg": ["#c7d2fe", "#ffd028"] }
+      ]
+    },
+    {
+      "id": "shiny",
+      "title": "Shinies",
+      "colour": "#7b4dff",
+      "perMatch": true
+    }
+  ]
+}

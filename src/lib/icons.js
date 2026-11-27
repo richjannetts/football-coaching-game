@@ -26,6 +26,8 @@ export const nextIcon = () => icon(s('path', { d: 'M12 24 H36 M26 13 L37 24 L26 
 
 export const backIcon = () => icon(s('path', { d: 'M36 24 H12 M22 13 L11 24 L22 35', class: 'icon-stroke icon-thick' }));
 
+export const bookIcon = () => icon(s('path', { d: 'M7 12 Q16 7 24 12 Q32 7 41 12 V38 Q32 33 24 38 Q16 33 7 38 Z M24 12 V38', class: 'icon-stroke' }));
+
 export const lockIcon = () => icon(s('rect', { x: 12, y: 22, width: 24, height: 18, rx: 3, class: 'icon-fill' }), s('path', { d: 'M17 22 V16 A7 7 0 0 1 31 16 V22', class: 'icon-stroke' }));
 
 export const shareIcon = () => icon(s('path', { d: 'M16 18 H12 V42 H36 V18 H32 M24 6 V30 M16 13 L24 5 L32 13', class: 'icon-stroke' }));

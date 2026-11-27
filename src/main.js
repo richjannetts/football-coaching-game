@@ -8,9 +8,11 @@ import { chapter1 } from './game/chapter1.js';
 import { chapter2 } from './game/chapter2.js';
 import quiz from './data/quiz.json';
 import levels from './data/levels.json';
+import stickers from './data/stickers.json';
+import { buildAlbum, newShinies } from './lib/album.js';
 import { quizFor } from './lib/quiz.js';
 import { detectPlatform } from './lib/platform.js';
-import { installScreen, welcomeScreen, startScreen, setupScreen, menuScreen, teamScreen, gateScreen, grownUpsScreen } from './screens.js';
+import { installScreen, welcomeScreen, startScreen, setupScreen, menuScreen, teamScreen, albumScreen, gateScreen, grownUpsScreen } from './screens.js';
 import * as teams from './lib/teamState.js';
 
 
@@ -170,6 +172,18 @@ function goTeam(speak = true) {
   if (speak) el.begin();
 }
 
+// The sticker album as it stands: worked out from her progress and team.
+function albumNow() {
+  const t = teams.myTeam(profile);
+  return buildAlbum(stickers, { squad: t.squad, teamName: t.name, progress, levels });
+}
+
+function goAlbum() {
+  const el = albumScreen({ album: albumNow(), onBack: () => goMenu(false) });
+  show(el);
+  el.begin();
+}
+
 // justPassed: the level she has only now finished for the first time, so
 // the path can show her player walking up from it.
 let justPassed = null;
@@ -183,6 +197,8 @@ function goMenu(speak) {
       profile,
       progress,
       levels,
+      album: albumNow(),
+      onAlbum: goAlbum,
       movedFrom,
       onSoon: () => narrator.say(['menu.soon']),
       team: teams.myTeam(profile),
@@ -246,14 +262,17 @@ function goChapter(n) {
 async function finishChapter(n, stage) {
   const firstTime = !progress[`ch${n}`];
   if (firstTime && chapters[n + 1]) justPassed = n;
+  const before = albumNow();
   progress = { ...progress, [`ch${n}`]: true };
   store.save('progress', progress);
-  const levels = Object.keys(chapters);
+  const after = albumNow();
+  // Finishing the last level of a match gives its shiny sticker.
+  const shiny = newShinies(before, after)[0] || null;
   const end = stage.showEnd({
     level: n,
-    earned: levels.map((k) => !!progress[`ch${k}`]),
-    bonus: levels.map((k) => !!progress[`bonus${k}`]),
-    total: levels.length,
+    // A right bonus answer wins the next sticker, once for each level.
+    prize: progress[`bonus${n}`] ? null : after.next,
+    shiny,
     question: quizFor(quiz, n),
     firstTime,
     onBonus: () => {
@@ -266,7 +285,7 @@ async function finishChapter(n, stage) {
   });
   stage.setBusy(false);
   stage.showReady(false);
-  await stage.play(['sfx.sticker', `c${n}.end`]).catch(() => {});
+  await stage.play(['sfx.sticker', `c${n}.end`, ...(shiny ? ['end.shiny'] : [])]).catch(() => {});
   await end.startQuiz().catch(() => {});
 }
 
