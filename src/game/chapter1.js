@@ -66,6 +66,7 @@ export async function chapter1(stage) {
     stage.check();
     if (wrong >= 3) {
       stage.setBusy(true);
+      stage.callNames({ mate: sideL.el });
       await Promise.all([stage.play(['c1.passTogether']), passAcross(sideL)]);
       await passingMove(sideL, sideR);
       return;
@@ -74,6 +75,7 @@ export async function chapter1(stage) {
     const pick = await stage.pickTarget(choices, (t) => {
       // Inside the tap: start the sound now.
       stage.setBusy(true);
+      if (t.kind === 'friend') stage.callNames({ mate: t.role.el });
       if (t.kind === 'friend') return stage.play(['sfx.kick', 'c1.passShort'], { 'c1.passShort': () => passAcross(t.role) });
       wrong++;
       const next = wrong >= 3 ? [] : wrong === 2 ? ['c1.passShow'] : ['hint.tryAgain'];
@@ -132,6 +134,7 @@ export async function chapter1(stage) {
     const flip = friend.x > 15 ? (x) => 30 - x : (x) => x; // mirror when passing right
     const [gk, back, wideA, wideB] = them;
     const nearWide = friend.x > 15 ? wideB : wideA;
+    stage.callNames({ runner: friend.el, mate: other.el });
     // The shot, a kick sound, then the goal fanfare and confetti before the
     // voice says "Goal!", so the celebration never talks over the words.
     await stage.play(['c1.move1', 'c1.move2', 'sfx.kick', 'sfx.goal', 'c1.goal'], {

@@ -568,6 +568,24 @@ h2 {
   }
 }
 
+/* Above a button, pointing down: for wide buttons and ones near the edge. */
+.tap-here.is-above {
+  left: 50%;
+  top: auto;
+  bottom: calc(100% + 6px);
+  translate: -50% 0;
+  flex-direction: column-reverse;
+  animation-name: tap-nudge-down;
+}
+.tap-here.is-above .tap-here-hand {
+  rotate: -90deg;
+}
+@keyframes tap-nudge-down {
+  50% {
+    transform: translateY(8px);
+  }
+}
+
 /* Make room for the pointer so it stays clear of the screen edge. */
 .end-buttons:has(.has-pointer) {
   padding-right: 72px;
@@ -1143,7 +1161,7 @@ h2 {
   place-items: center;
   font: 400 5rem var(--font-display);
   letter-spacing: 2px;
-  color: var(--accent);
+  color: #fff; /* not yellow: yellow only ever means "tap me next" */
   -webkit-text-stroke: 3px var(--navy);
   paint-order: stroke fill;
   text-shadow: 0 6px 0 var(--navy);
@@ -2616,5 +2634,200 @@ button.chip:active {
   }
   .story-pic {
     max-width: min(460px, calc((var(--app-h, 100vh) - 80px) * 1.6));
+  }
+}
+
+/* ---------- Story: back button and the "GAME DAY!" title ----------
+   The back button keeps its place on the first page, so the speaker button
+   never jumps across. "GAME DAY!" sits over the top of the first picture
+   (Rich asked for more oomph, 27th November 2026). */
+.story-top .back-btn.is-hidden {
+  display: inline-flex !important;
+  visibility: hidden;
+}
+.story-morning {
+  position: relative;
+}
+.game-day {
+  position: absolute;
+  left: 50%;
+  top: -8%;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  rotate: -5deg;
+  animation: game-day-in 0.7s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+.game-day-top {
+  font: 400 1.2rem/1 var(--font-display);
+  color: var(--navy);
+  background: #fff;
+  padding: 4px 14px 6px;
+  border-radius: 999px;
+  box-shadow: 0 4px 0 var(--lip);
+  margin-bottom: -6px;
+  z-index: 1;
+}
+.game-day-big {
+  font: 400 clamp(2.6rem, 13vw, 3.6rem)/1 var(--font-display);
+  color: #fff; /* not yellow: yellow only ever means "tap me next" */
+  -webkit-text-stroke: 3px var(--navy);
+  paint-order: stroke fill;
+  text-shadow: 0 6px 0 var(--navy), 0 12px 18px rgba(10, 26, 60, 0.35);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+@keyframes game-day-in {
+  from {
+    scale: 0.3;
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-day {
+    animation: none;
+  }
+}
+
+/* ---------- My team: our kit ---------- */
+.kit-title {
+  margin: 10px 0 2px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+/* The other team's shirt colour: shown, but can't be picked. */
+.kit-row .choice.is-taken {
+  opacity: 0.35;
+  position: relative;
+}
+.kit-row .choice.is-taken::after {
+  content: '';
+  position: absolute;
+  inset: 20% 48%;
+  background: var(--ink);
+  rotate: 45deg;
+  border-radius: 2px;
+}
+
+/* ---------- Chapter: room at the top ----------
+   On an iPhone the clock and the camera notch sit over the top of the
+   screen. Rich found the scoreboard looked blurred and cramped right up
+   there (27th November 2026), so the scoreboard, the pitch and its
+   surround all start a little lower, and the scoreboard is a touch bigger. */
+.screen.chapter {
+  padding-top: calc(var(--edge-top) + 14px);
+}
+.scoreboard {
+  font-size: 0.92rem;
+  padding: 6px 14px;
+  box-shadow: 0 3px 0 rgba(10, 26, 60, 0.25);
+  -webkit-font-smoothing: antialiased;
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .screen.chapter {
+    padding-top: calc(var(--edge-top) + 4px);
+  }
+  .scoreboard {
+    font-size: 0.8rem;
+    padding: 4px 12px;
+  }
+}
+
+/* ---------- The big "new sticker" moment ----------
+   After a right bonus answer the new sticker fills the screen, then the
+   whole picture fades and the sticker settles beside the medal. Purple
+   behind it, because purple only ever means the bonus. */
+.sticker-win {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: var(--edge-top) var(--edge-right) var(--edge-bottom) var(--edge-left);
+  background: radial-gradient(circle at 50% 45%, #9b7bff, var(--bonus) 55%, var(--bonus-lip));
+  pointer-events: none;
+  overflow: hidden;
+  animation: sticker-win-in 0.35s ease-out both;
+}
+.sticker-win.is-leaving {
+  animation: sticker-win-out 0.5s ease-in both;
+}
+.sticker-win-rays {
+  position: absolute;
+  width: 160vmax;
+  height: 160vmax;
+  left: 50%;
+  top: 45%;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(255, 255, 255, 0.18) 0 10deg, transparent 10deg 24deg);
+  animation: spin 14s linear infinite;
+}
+.sticker-win-title {
+  position: relative;
+  font: 400 clamp(2.2rem, 11vw, 3.4rem)/1 var(--font-display);
+  color: #fff;
+  -webkit-text-stroke: 3px var(--navy);
+  paint-order: stroke fill;
+  text-shadow: 0 6px 0 var(--navy);
+  rotate: -4deg;
+  animation: pop 0.5s 0.1s ease-out both;
+}
+.sticker-win-card {
+  position: relative;
+  width: min(46vw, 200px);
+  rotate: 4deg;
+  filter: drop-shadow(0 10px 8px rgba(10, 26, 60, 0.45));
+  animation: sticker-in 0.9s 0.15s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+.sticker-win-album {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: 700 1.15rem/1 var(--font);
+  padding: 8px 16px 8px 10px;
+  border-radius: 999px;
+  box-shadow: 0 5px 0 var(--bonus-lip);
+  animation: pop 0.5s 0.6s ease-out both;
+}
+.sticker-win-book {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+}
+.sticker-win-book .icon {
+  width: 100%;
+  height: 100%;
+}
+.end-prize.is-waiting {
+  visibility: hidden;
+  animation: none;
+}
+@keyframes sticker-win-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes sticker-win-out {
+  to {
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sticker-win,
+  .sticker-win-rays,
+  .sticker-win-title,
+  .sticker-win-card,
+  .sticker-win-album {
+    animation: none;
   }
 }
