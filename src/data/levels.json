@@ -1,22 +1,40 @@
 {
   "note": "The levels, grouped into matches. 'matches' lists every level a match has, for the sticker album and the Match shiny. A match still being built has 'complete' set to false, so its shiny sticker waits for full time. 'cup' is the cup run on the match clock (Rich's choice, 27th November 2026): the rounds in order, each with its difficulty and its own order of moments, half by half. To add a level, add its number to the match and to every round, and add the level itself in src/main.js.",
   "matches": [
-    { "id": "m1", "label": "Match 1", "levels": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "complete": true }
+    {"id": "m1", "label": "Match 1", "levels": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "complete": true}
   ],
   "cup": {
-    "note": "Each round plays every level of the match once, in its own order, so each match feels different but every rule is still covered. The story needs some moments in fixed places ('fixed', checked by the tests): we kick off first and they restart after our goal (1, 2); they score just before half-time (6); the second half starts with their centre kick (7); the trip at their corner leads to the last-minute penalty (9, 10). 'before' lists levels that must come before another: their extra goals on Difficult (levels 2, 4 and 7) all come before our corner (8), which goes in as a comeback. 'storyGoals' are the story's own goals, so the score at each level follows the order.",
+    "note": "Rich's daughter found ten moments in one match too many (Rich, 27th November 2026), so each cup match has a few moments and the skills are spread across the rounds: Round 1 is kick-offs and goal kicks, the semi-final kick-ins and corners, and the final a mix of everything, ending with the penalty to win the cup. Every level is in at least one round. 'goals' is each round's story: who scores at which moment, so the score follows the round and we always win. Levels 1, 6 and 10 always score; levels 8 and 9 score only where 'goals' says so (otherwise our corner hits the post, and their corner leads to the penalty). 'minutes' moves a moment on the match clock (otherwise they are spread out evenly). 'comeback' is the moment that goes in if a Difficult mistake let them score; their goal levels only count before it, and without one a Difficult mistake never costs a goal. 'story' lists the rules every round must keep (checked by tests/cup.test.js).",
     "name": "The Cup",
     "match": "m1",
-    "storyGoals": { "1": "us", "6": "them", "10": "us" },
-    "fixed": [
-      { "start": [1, 2], "end": [6] },
-      { "start": [7], "end": [9, 10] }
-    ],
-    "before": [[2, 8], [4, 8], [7, 8]],
+    "story": {
+      "rightAfter": {"2": 1, "10": 9},
+      "endFirstHalf": [6],
+      "startSecondHalf": [7],
+      "lastOnly": [10],
+      "alwaysScores": {"1": "us", "6": "them", "10": "us"},
+      "canScore": {"8": "us", "9": "us"}
+    },
+    "comeback": 8,
     "rounds": [
-      { "id": "round1", "label": "Round 1", "spoken": "round one", "difficulty": "easy", "halves": [[1, 2, 3, 4, 5, 6], [7, 8, 9, 10]] },
-      { "id": "semi", "label": "Semi-final", "spoken": "the semi-final", "difficulty": "medium", "halves": [[1, 2, 5, 3, 6], [7, 4, 8, 9, 10]] },
-      { "id": "final", "label": "Final", "spoken": "the final", "difficulty": "difficult", "halves": [[1, 2, 4, 5, 6], [7, 3, 8, 9, 10]] }
+      {"id": "round1", "label": "Round 1", "spoken": "round one", "difficulty": "easy", "halves": [[1, 2], [3, 4]], "goals": {"1": "us"}},
+      {
+        "id": "semi",
+        "label": "Semi-final",
+        "spoken": "the semi-final",
+        "difficulty": "medium",
+        "halves": [[5, 6], [8, 9]],
+        "goals": {"6": "them", "8": "us", "9": "us"}
+      },
+      {
+        "id": "final",
+        "label": "Final",
+        "spoken": "the final",
+        "difficulty": "difficult",
+        "halves": [[1, 6], [7, 9, 10]],
+        "goals": {"1": "us", "6": "them", "10": "us"},
+        "minutes": {"9": 32}
+      }
     ]
   }
 }

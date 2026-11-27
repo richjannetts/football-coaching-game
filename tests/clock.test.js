@@ -6,6 +6,7 @@ import { readJson } from './helpers.js';
 const cup = readJson('src/data/levels.json').cup;
 const round1 = cup.rounds[0].halves;
 const semi = cup.rounds[1].halves;
+const finalRound = cup.rounds[2];
 
 test('clock: a 40-minute match, kick-off at 0 and the last moment in the last minute', () => {
   const m = momentsFor(round1);
@@ -40,16 +41,18 @@ test('clock: passing a moment moves the hand on, and the green part grows', () =
 
 test('clock: markers show their place in this match, not the level number', () => {
   const c = buildClock(semi, {});
-  assert.deepEqual(c.markers.map((m) => m.number), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  assert.deepEqual(c.markers.map((m) => m.number), orderOf(semi).map((_, i) => i + 1));
   assert.deepEqual(c.markers.map((m) => m.level), orderOf(semi));
 });
 
 test('clock: the next moment follows the round order', () => {
   const order = orderOf(semi);
-  assert.equal(nextLevel(order, { ch1: true, ch2: true }), order[2]);
-  assert.equal(levelAfter(order, 2), order[2]);
-  assert.equal(levelAfter(order, 10), null);
-  assert.equal(minuteOf(semi, 1), 0);
+  assert.equal(nextLevel(order, { [`ch${order[0]}`]: true, [`ch${order[1]}`]: true }), order[2]);
+  assert.equal(levelAfter(order, order[1]), order[2]);
+  assert.equal(levelAfter(order, order.at(-1)), null);
+  assert.equal(minuteOf(semi, order[0]), 0);
+  // A moment can be placed by hand.
+  assert.equal(minuteOf(finalRound.halves, 9, finalRound.minutes), 32);
 });
 
 test('clock: with every moment finished the hand points at full time', () => {
@@ -62,7 +65,7 @@ test('clock: with every moment finished the hand points at full time', () => {
 
 test('clock: markers never sit on top of each other', () => {
   for (const r of cup.rounds) {
-    const c = buildClock(r.halves, {});
+    const c = buildClock(r.halves, {}, r.minutes);
     for (let i = 0; i < c.markers.length; i++) {
       for (let j = i + 1; j < c.markers.length; j++) {
         const a = c.markers[i];

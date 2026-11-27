@@ -21,13 +21,15 @@ export const MARKER = 15;
 // one is always "the last minute". halves: [[1, 2, ...], [7, 8, ...]].
 // Returns [{ level, half, minute }] in the order they are played. minute
 // is exact (for drawing); shown is the whole minute to say or show.
-export function momentsFor(halves) {
+// minutes: { level: minute } to place some moments by hand.
+export function momentsFor(halves, minutes = {}) {
   const out = [];
   halves.forEach((levels, h) => {
     const start = h * HALF_MINUTES;
     const end = h === halves.length - 1 ? MATCH_MINUTES - 1 : start + HALF_MINUTES - 4;
     levels.forEach((level, k) => {
-      const minute = levels.length === 1 ? start : start + ((end - start) * k) / (levels.length - 1);
+      const even = levels.length === 1 ? start : start + ((end - start) * k) / (levels.length - 1);
+      const minute = minutes[level] ?? even;
       out.push({ level, half: h, minute, shown: Math.round(minute) });
     });
   });
@@ -67,10 +69,10 @@ export function levelAfter(order, level) {
 
 // The whole clock for the menu. halves: the round's levels, half by half.
 // progress: what is saved, e.g. { ch1: true, bonus1: true }.
-export function buildClock(halves, progress = {}) {
+export function buildClock(halves, progress = {}, minutes = {}) {
   const order = orderOf(halves);
   const next = nextLevel(order, progress);
-  const moments = momentsFor(halves);
+  const moments = momentsFor(halves, minutes);
   const markers = moments.map((m, i) => {
     const done = !!progress[`ch${m.level}`];
     return {
@@ -97,6 +99,6 @@ export function buildClock(halves, progress = {}) {
 }
 
 // The minute of a level in this order, for the scoreboard.
-export function minuteOf(halves, level) {
-  return momentsFor(halves).find((m) => m.level === level)?.shown ?? null;
+export function minuteOf(halves, level, minutes = {}) {
+  return momentsFor(halves, minutes).find((m) => m.level === level)?.shown ?? null;
 }

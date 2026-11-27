@@ -112,7 +112,10 @@ export async function chapter8(stage) {
     const shooter = first === near ? edge : near;
     stage.callNames({ runner: shooter.el, defender: stay.el });
     const from = { x: shooter.x < 18 ? 16 : 19.5, y: shooter.y < 33 ? 31 : 34 };
-    const comeback = stage.mode.goals.them > stage.mode.goals.us;
+    // It goes in when this round's story says so (the semi-final), or on
+    // Difficult when a mistake let them score, so she can still win.
+    const storyGoal = stage.mode.goal === 'us';
+    const comeback = storyGoal || stage.mode.goals.them > stage.mode.goals.us;
     const middleLines = comeback ? ['sfx.goal', 'c8.postIn', 'c8.kickOff'] : ['c8.post', 'c8.break'];
     await stage.play(['c8.move1', 'sfx.kick', ...middleLines, 'c8.block', ...stage.linked(9, 'c8.theirCorner')], {
       'c8.move1': async () => {
@@ -131,7 +134,8 @@ export async function chapter8(stage) {
       // In off the post! The score is level again.
       'sfx.goal': async () => {
         await pitch.moveBall({ x: 15.6, y: 40.9 }, 400, 'ease-out');
-        stage.addGoal('us');
+        if (storyGoal) stage.storyGoal('us');
+        else stage.addGoal('us');
         stage.goalBanner(true);
         stage.netShake();
         stage.confetti(null, 70);

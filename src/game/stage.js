@@ -37,7 +37,10 @@ const THEIR_LOOKS = [
 // Difficult, and which full-time ending. Missing means Easy, as before.
 // before: the score as the level starts. next: the level after this one in
 // this match's order (undefined means any). minute: the match clock.
-export const defaultMode = () => ({ level: 0, difficulty: 'easy', mirror: false, goals: { us: 0, them: 0 }, consequences: false, ending: 0, before: { us: 0, them: 0 }, next: undefined, minute: null, onGoal: () => {} });
+// goal: who scores at this moment in this round's story ('us', 'them' or
+// null). halfTimeAfter / fullTimeAfter: this moment ends a half or the
+// match. goalLevels: where a Difficult mistake may give a goal this round.
+export const defaultMode = () => ({ level: 0, difficulty: 'easy', mirror: false, goals: { us: 0, them: 0 }, consequences: false, ending: 0, before: { us: 0, them: 0 }, next: undefined, minute: null, goal: null, halfTimeAfter: false, fullTimeAfter: false, goalLevels: null, onGoal: () => {} });
 export function createStage({ profile, onHome, showWords = false, spots: extraSpots = [], mode: given = {} }) {
   const mode = { ...defaultMode(), ...given, goals: { ...defaultMode().goals, ...(given.goals || {}) }, before: { ...defaultMode().before, ...(given.before || {}) } };
   mode.cfg = difficulty.levels[mode.difficulty] || difficulty.levels.easy;
@@ -279,7 +282,8 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
   // The lines at the end of a level that lead into the next one ("so now
   // it's their goal kick, that's the next level") are only said when that
   // level really is next in this match's order.
-  stage.linked = (level, ...ids) => (mode.next == null || mode.next === level ? ids : []);
+  // Not across half-time: the next moment comes after the break.
+  stage.linked = (level, ...ids) => (mode.halfTimeAfter ? [] : mode.next == null || mode.next === level ? ids : []);
 
   // An extra goal, outside the story's own goals: theirs after a mistake
   // on Difficult, or ours when the corner at level 8 goes in.

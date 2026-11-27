@@ -97,7 +97,7 @@ export function runLineup(stage, { kind, shapeKey, promptIds, ball, area, coachI
       attempts++;
       changed = false;
       const help = helpFor(cfg, attempts);
-      const lose = consequenceFor({ cfg, rules: difficulty.consequences, enabled: mode.consequences, level: mode.level, kind, attempts, goalsAgainst: mode.goals.them });
+      const lose = consequenceFor({ cfg, rules: mode.goalLevels ? { ...difficulty.consequences, goalLevels: mode.goalLevels } : difficulty.consequences, enabled: mode.consequences, level: mode.level, kind, attempts, goalsAgainst: mode.goals.them });
 
       // The rule comes first: it is the same for every team.
       const problem = rule.ok ? fit.problems[0] : rule.problems[0];

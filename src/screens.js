@@ -807,7 +807,7 @@ export function grownUpsScreen({ version, onBack, onDelete, onEditPlayer, showWo
       'label',
       { class: 'toggle' },
       h('input', { type: 'checkbox', checked: consequences, onchange: (e) => onToggleConsequences?.(e.target.checked) }),
-      h('span', {}, 'On Difficult only, a first mistake at a line-up can let the other team win the ball, or score once in a match. It is told kindly, and she can still win. Switch off to keep Difficult without it. Easy and Medium never do this.')
+      h('span', {}, 'On Difficult only (the final), a first mistake at a line-up can let the other team win the ball or have a shot. It is told kindly, and she can still win. Switch off to keep Difficult without it. Easy and Medium never do this.')
     ),
     replay
       ? h(
