@@ -242,6 +242,47 @@
           }
         }
       ]
+    },
+    "7": {
+      "teaches": "inOurTeam",
+      "question": "Their centre kick. Where does our front player wait?",
+      "bonus": "quiz.bonus",
+      "ask": "quiz.c7.ask",
+      "right": "quiz.c7.right",
+      "reveal": "quiz.c7.reveal",
+      "answer": 0,
+      "options": [
+        {
+          "label": "Just outside the ring",
+          "line": "quiz.c7.a",
+          "picture": {
+            "us": [[15, 14.5], [9, 18], [21, 18], [15, 7.5], [15, 1.5]],
+            "them": [[15, 20], [15, 38.5]],
+            "ball": [15, 20],
+            "ring": true
+          }
+        },
+        {
+          "label": "Inside the ring",
+          "line": "quiz.c7.b",
+          "picture": {
+            "us": [[15, 17], [9, 18], [21, 18], [15, 7.5], [15, 1.5]],
+            "them": [[15, 20], [15, 38.5]],
+            "ball": [15, 20],
+            "ring": true
+          }
+        },
+        {
+          "label": "Back by our goal",
+          "line": "quiz.c7.c",
+          "picture": {
+            "us": [[15, 4], [9, 18], [21, 18], [15, 7.5], [15, 1.5]],
+            "them": [[15, 20], [15, 38.5]],
+            "ball": [15, 20],
+            "ring": true
+          }
+        }
+      ]
     }
   }
 }

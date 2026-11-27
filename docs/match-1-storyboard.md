@@ -8,10 +8,10 @@ Agreed with Rich on 27th November 2026. The visual version is a published page f
 | 2 | Their centre kick | 1-0 | Built |
 | 3 | Our goal kick (spread wide, find a friend) | 1-0 | Built |
 | 4 | Their goal kick (back, wait, GO) | 1-0 | Built |
-| 5 | Our kick-in (to check) | 1-0 | Planned |
-| 6 | Their kick-in (to check). They score a great shot before half-time, told not tested | 1-1 | Planned |
-| - | Half-time page: drinks and a team talk, no puzzle | 1-1 | Planned |
-| 7 | Second-half centre kick (who kicks off is told, never tested) | 1-1 | Planned |
+| 5 | Our kick-in (FA pass-in or dribble-in) | 1-0 | Built |
+| 6 | Their kick-in. They score a great shot before half-time, told not tested | 1-1 | Built |
+| - | Half-time: drinks and a team talk, told at the start of level 7 | 1-1 | Built |
+| 7 | Second-half centre kick (who kicks off is told, never tested) | 1-1 | Built |
 | 8 | Our corner (to check). Hits the post | 1-1 | Planned |
 | 9 | Their corner (to check). Our keeper catches it and starts a break | 1-1 | Planned |
 | 10 | Our penalty in the last minute (to check). She scores | 2-1 | Planned |
