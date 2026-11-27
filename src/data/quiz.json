@@ -362,6 +362,47 @@
           }
         }
       ]
+    },
+    "10": {
+      "teaches": "theRuleSays",
+      "question": "Our penalty. Where do our friends wait?",
+      "bonus": "quiz.bonus",
+      "ask": "quiz.c10.ask",
+      "right": "quiz.c10.right",
+      "reveal": "quiz.c10.reveal",
+      "answer": 1,
+      "options": [
+        {
+          "label": "Inside the box",
+          "line": "quiz.c10.a",
+          "picture": {
+            "us": [[15, 34], [12, 35], [18, 35], [15, 18], [15, 1.5]],
+            "them": [[15, 39.6], [5, 30], [25, 30]],
+            "ball": [15, 34],
+            "ring": true
+          }
+        },
+        {
+          "label": "Outside the box",
+          "line": "quiz.c10.b",
+          "picture": {
+            "us": [[15, 34], [9, 29], [21, 29], [15, 18], [15, 1.5]],
+            "them": [[15, 39.6], [5, 30], [25, 30]],
+            "ball": [15, 34],
+            "ring": true
+          }
+        },
+        {
+          "label": "By their keeper",
+          "line": "quiz.c10.c",
+          "picture": {
+            "us": [[15, 34], [11, 39], [19, 39], [15, 18], [15, 1.5]],
+            "them": [[15, 39.6], [5, 30], [25, 30]],
+            "ball": [15, 34],
+            "ring": true
+          }
+        }
+      ]
     }
   }
 }

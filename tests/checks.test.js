@@ -434,6 +434,58 @@ test('the corner spot only appears when a level asks for it', () => {
   assert.equal(cornerSpots.some((s) => s.id === 'corner-right'), true);
 });
 
+// ---------- Our penalty (level 10) ----------
+// FA Law 14: everyone except the kicker and the keepers stays outside the
+// penalty area and at least five yards from the penalty mark.
+
+const SPOT = { x: 15, y: 34 };
+const AREA = { x: [7, 23], y: [32.5, 40] };
+const rulePenalty = (players) => checkRule({ kind: 'ourPenalty', players, ruleSet, centre, halfway, ball: SPOT, area: AREA });
+
+test('rule, our penalty: the coach shape obeys the rule', () => {
+  assert.equal(rulePenalty(resolveShape('ourPenalty')).ok, true);
+});
+
+test('rule, our penalty: nobody on the spot breaks the rule', () => {
+  const players = resolveShape('ourPenalty');
+  players[0] = { x: 15, y: 29 };
+  const r = rulePenalty(players);
+  assert.equal(r.ok, false);
+  assert.equal(r.problems[0].line, 'rule.penaltyOnBall');
+});
+
+test('rule, our penalty: a friend on the box line is inside the box', () => {
+  const players = resolveShape('ourPenalty');
+  players[1] = { x: 9, y: 32.5 };
+  const r = rulePenalty(players);
+  assert.equal(r.ok, false);
+  assert.equal(r.problems[0].line, 'rule.penaltyOutside');
+  assert.deepEqual(r.problems[0].players, [1]);
+});
+
+test('rule, our penalty: outside the box but inside five yards still breaks the rule', () => {
+  const players = resolveShape('ourPenalty');
+  players[3] = { x: 15, y: 30 }; // four yards behind the spot
+  assert.deepEqual(rulePenalty(players).problems[0].players, [3]);
+});
+
+test('shape, our penalty: the coach shape passes, and the other team waits outside the box', () => {
+  assert.equal(checkShape({ players: resolveShape('ourPenalty'), shape: team.shapes.ourPenalty, grid }).ok, true);
+  const keeper = team.opponentKeeper.ourPenalty;
+  team.opponents.ourPenalty.forEach(([x, y], i) => {
+    if (i === keeper) return;
+    const inArea = x >= AREA.x[0] && x <= AREA.x[1] && y >= AREA.y[0];
+    assert.ok(!inArea && Math.hypot(x - SPOT.x, y - SPOT.y) >= 5, `their player ${i} is too close`);
+  });
+});
+
+test('the penalty spot is six yards out, and only appears in the penalty level', () => {
+  assert.equal(ruleSet.rules['penalty.markDistance'].value, 6);
+  const extra = team.grid.extra.find((e) => e.id === 'penalty-spot');
+  assert.equal(extra.y, 40 - 6);
+  assert.equal(buildSpots(grid).some((s) => s.id === 'penalty-spot'), false);
+});
+
 // ---------- Zones: anywhere in the right area counts ----------
 
 test('zones: a friend one dot wider still counts at our centre kick', () => {

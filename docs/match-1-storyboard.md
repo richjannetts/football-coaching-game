@@ -14,7 +14,7 @@ Agreed with Rich on 27th November 2026. The visual version is a published page f
 | 7 | Second-half centre kick (who kicks off is told, never tested) | 1-1 | Built |
 | 8 | Our corner (FA 5v5: five yards). Hits the post | 1-1 | Built |
 | 9 | Their corner (FA 5v5: five yards). Our keeper catches it and starts a break, and our front player is tripped: a penalty | 1-1 | Built |
-| 10 | Our penalty in the last minute (to check). She scores | 2-1 | Planned |
-| - | Full-time page: handshakes, effort praised, match shiny | 2-1 | Planned |
+| 10 | Our penalty in the last minute (spot 6 yards out, a guess Rich agreed). She picks a corner and scores | 2-1 | Built |
+| - | Full time: handshakes and Coach praises the effort, told at the end of level 10. Match shiny | 2-1 | Built |
 
 Still to decide with Rich: whether they score before half-time in every mode, the penalty finish, and difficulty levels (easy, medium, difficult) for replays.

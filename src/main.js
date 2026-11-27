@@ -13,6 +13,7 @@ import { chapter6 } from './game/chapter6.js';
 import { chapter7 } from './game/chapter7.js';
 import { chapter8 } from './game/chapter8.js';
 import { chapter9 } from './game/chapter9.js';
+import { chapter10 } from './game/chapter10.js';
 import quiz from './data/quiz.json';
 import levels from './data/levels.json';
 import stickers from './data/stickers.json';
@@ -28,7 +29,8 @@ const VERSION = __APP_VERSION__;
 // A level can list extra spots it needs, such as the kick-in spot on the side line.
 chapter5.spots = ['kick-in-left'];
 chapter8.spots = ['corner-right'];
-const chapters = { 1: chapter1, 2: chapter2, 3: chapter3, 4: chapter4, 5: chapter5, 6: chapter6, 7: chapter7, 8: chapter8, 9: chapter9 };
+chapter10.spots = ['penalty-spot'];
+const chapters = { 1: chapter1, 2: chapter2, 3: chapter3, 4: chapter4, 5: chapter5, 6: chapter6, 7: chapter7, 8: chapter8, 9: chapter9, 10: chapter10 };
 
 let profile = store.load('profile');
 let progress = store.load('progress', {});

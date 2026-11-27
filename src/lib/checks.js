@@ -11,11 +11,11 @@ const ON_SPOT = 0.75; // yards. How close counts as "on" the centre mark.
 
 // kind: "ours" (we take the centre kick), "theirs" (they take it),
 // "ourGoalKick", "theirGoalKick", "ourKickIn", "theirKickIn", "ourCorner"
-// or "theirCorner".
-// ball: where a kick-in or corner is taken.
+// "theirCorner" or "ourPenalty".
+// ball: where a kick-in, corner or penalty is taken.
 // players: array of { x, y } in yards. halfway: the y of the halfway line.
 // Returns { ok, problems: [{ type, line, players: [index] }] }.
-export function checkRule({ kind, players, ruleSet, centre, halfway, ball }) {
+export function checkRule({ kind, players, ruleSet, centre, halfway, ball, area }) {
   const problems = [];
 
   // Kick-ins (FA pass-in or dribble-in): the ball sits still on the side
@@ -35,6 +35,23 @@ export function checkRule({ kind, players, ruleSet, centre, halfway, ball }) {
       .filter(({ p }) => distance(p, ball) < yards)
       .map(({ i }) => i);
     if (tooClose.length) problems.push({ type: 'ring', line: corner ? 'rule.cornerRing' : 'rule.kickInRing', players: tooClose });
+    return { ok: problems.length === 0, problems };
+  }
+
+  // Our penalty (FA Law 14): one of us on the penalty mark. Everyone else,
+  // apart from the keepers, stays outside the penalty area and at least
+  // five yards from the mark until it is kicked. Our own keeper is far away
+  // in our goal, so she is always fine. area: their penalty box in yards.
+  if (kind === 'ourPenalty') {
+    const kicker = players.findIndex((p) => distance(p, ball) <= ON_SPOT);
+    if (kicker < 0) return { ok: false, problems: [{ type: 'onBall', line: 'rule.penaltyOnBall', players: [] }] };
+    const yards = ruleValue(ruleSet, 'penalty.othersDistance');
+    const inArea = (p) => area && p.x >= area.x[0] && p.x <= area.x[1] && p.y >= area.y[0] && p.y <= area.y[1];
+    const bad = players
+      .map((p, i) => ({ p, i }))
+      .filter(({ p, i }) => i !== kicker && (inArea(p) || distance(p, ball) < yards))
+      .map(({ i }) => i);
+    if (bad.length) problems.push({ type: 'ring', line: 'rule.penaltyOutside', players: bad });
     return { ok: problems.length === 0, problems };
   }
 

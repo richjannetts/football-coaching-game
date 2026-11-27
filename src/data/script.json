@@ -677,6 +677,16 @@
       "cue": "The ring turns red. The player inside it has a red ring."
     },
     {
+      "id": "rule.penaltyOnBall",
+      "text": "The rule says: one of us takes the penalty, with the ball on the penalty spot.",
+      "cue": "The ball glows."
+    },
+    {
+      "id": "rule.penaltyOutside",
+      "text": "The rule says: everyone else waits outside the penalty box, and five big steps from the ball, until it's kicked.",
+      "cue": "The ring turns red. The player in the wrong place has a red ring."
+    },
+    {
       "id": "shape.c5.taker",
       "text": "In our team, one player stands on the ball, on the side line, to take the kick-in.",
       "cue": "The ball glows."
@@ -739,6 +749,16 @@
     {
       "id": "shape.c9.up",
       "text": "In our team, our front player waits up near halfway, ready to race away.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c10.taker",
+      "text": "In our team, one player stands on the ball, on the penalty spot, to take it.",
+      "cue": "The ball glows."
+    },
+    {
+      "id": "shape.c10.rebound",
+      "text": "In our team, two friends wait on the edge of the box, one on each side, ready in case it bounces out.",
       "cue": "The players in the wrong place have a red ring."
     },
     {
@@ -1117,6 +1137,56 @@
       "cue": "A gold football medal with a 9 on it spins in."
     },
     {
+      "id": "c10.intro1",
+      "text": "It's the last minute, and it's one each!",
+      "cue": "The scoreboard glows. One each."
+    },
+    {
+      "id": "c10.intro2",
+      "text": "She was tripped in their penalty box, so it's a penalty. The ball goes on the penalty spot.",
+      "cue": "The ball rolls to the penalty spot."
+    },
+    {
+      "id": "c10.intro3",
+      "text": "The rule says: everyone else waits outside the penalty box, and five big steps from the ball.",
+      "cue": "A dotted ring glows round the ball."
+    },
+    {
+      "id": "c10.place",
+      "text": "Spots! Put our five players where they go for our penalty.",
+      "cue": "Our players at the side gently bounce."
+    },
+    {
+      "id": "c10.shootAsk",
+      "text": "{runner|Our friend} is ready. Which corner should she shoot at? Tap one.",
+      "cue": "Glowing circles by both corners of the goal."
+    },
+    {
+      "id": "c10.goal",
+      "text": "GOAL! {runner|She} scores! We're winning two-one!",
+      "cue": "The ball hits the net. Our players run to hug the scorer."
+    },
+    {
+      "id": "c10.fullTime",
+      "text": "That's the final whistle. Full time! We won two-one!",
+      "cue": "Our players jump up and down."
+    },
+    {
+      "id": "c10.handshake",
+      "text": "Both teams line up and shake hands. Well played, everyone!",
+      "cue": "Both teams walk to the middle and shake hands."
+    },
+    {
+      "id": "c10.coach",
+      "text": "Coach says: I am so proud of you. You listened, you helped each other, and you never stopped trying.",
+      "cue": "Our players jump and give each other a high five."
+    },
+    {
+      "id": "c10.end",
+      "text": "Level ten done, and that's the whole match! On Saturday, shake hands at the end, whatever the score.",
+      "cue": "A gold football medal with a 10 on it spins in."
+    },
+    {
       "id": "quiz.c7.ask",
       "text": "When they take the centre kick, where does our front player wait? Tap the right picture.",
       "cue": "Three little pitches. Their kicker is on the ball, with the helper ring round it."
@@ -1204,6 +1274,36 @@
     {
       "id": "quiz.c9.reveal",
       "text": "Good try. The rule says: stay five big steps away until the corner is kicked, like this one. Everyone is outside the ring. You can try for the sticker again next time you play level nine.",
+      "cue": "The right picture glows. The other two pictures fade."
+    },
+    {
+      "id": "quiz.c10.ask",
+      "text": "At our penalty, where do our friends wait? Tap the right picture.",
+      "cue": "Three little pitches. Our player is on the penalty spot, with the dotted ring round the ball."
+    },
+    {
+      "id": "quiz.c10.a",
+      "text": "Inside the box, next to the ball?",
+      "cue": "The first picture glows."
+    },
+    {
+      "id": "quiz.c10.b",
+      "text": "Outside the box, out of the ring?",
+      "cue": "The middle picture glows."
+    },
+    {
+      "id": "quiz.c10.c",
+      "text": "By the goal, next to their keeper?",
+      "cue": "The last picture glows."
+    },
+    {
+      "id": "quiz.c10.right",
+      "text": "That's right! The rule says: wait outside the box, and five big steps from the ball, until it's kicked. Well done, {name}!",
+      "cue": "The right picture has a green edge."
+    },
+    {
+      "id": "quiz.c10.reveal",
+      "text": "Good try. The rule says: wait outside the box, and five big steps from the ball, like this one. You can try for the sticker again next time you play level ten.",
       "cue": "The right picture glows. The other two pictures fade."
     }
   ]

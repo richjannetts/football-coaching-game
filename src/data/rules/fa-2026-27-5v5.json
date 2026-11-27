@@ -3,7 +3,10 @@
   "body": "The FA",
   "season": "2026/27",
   "format": "5v5",
-  "ageGroups": ["U8", "U9"],
+  "ageGroups": [
+    "U8",
+    "U9"
+  ],
   "rules": {
     "kickoff.fromCentreMark": {
       "value": true,
@@ -135,6 +138,32 @@
       "value": null,
       "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 17 'Corner kicks' does not say. Do not test the child on it.",
       "confidence": "unconfirmed",
+      "lastChecked": "2026-11-27"
+    },
+    "penalty.markDistance": {
+      "value": 6,
+      "unit": "yards",
+      "source": "The handbook gives no penalty mark distance for 5v5. Rich asked for a sensible guess (27th November 2026). Not tested: the spot is drawn for her.",
+      "confidence": "unconfirmed",
+      "lastChecked": "2026-11-27"
+    },
+    "penalty.othersOutsideArea": {
+      "value": true,
+      "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 14 'Penalty kicks': 'All players except the defending goalkeeper and kicker must be outside the penalty area and at least 5 yards from the penalty mark.'",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-27"
+    },
+    "penalty.othersDistance": {
+      "value": 5,
+      "unit": "yards",
+      "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 14 'Penalty kicks': 'at least 5 yards from the penalty mark'.",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-27"
+    },
+    "penalty.kickedForward": {
+      "value": true,
+      "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 14 'Penalty kicks': 'The ball must be kicked forward.'",
+      "confidence": "confirmed",
       "lastChecked": "2026-11-27"
     }
   }

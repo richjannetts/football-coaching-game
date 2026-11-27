@@ -10,7 +10,8 @@ import { ruleSet, team } from './content.js';
 import { wait, motion } from '../lib/svg.js';
 
 // ball: where the restart is taken from, for kick-ins (defaults to the centre mark).
-export function runLineup(stage, { kind, shapeKey, promptIds, ball }) {
+// area: their penalty box in yards, for the penalty.
+export function runLineup(stage, { kind, shapeKey, promptIds, ball, area }) {
   const { pitch, placement } = stage;
   const shape = team.shapes[shapeKey];
   let attempts = 0;
@@ -60,7 +61,7 @@ export function runLineup(stage, { kind, shapeKey, promptIds, ball }) {
         return;
       }
       const players = placement.positions();
-      const rule = checkRule({ kind, players, ruleSet, centre: pitch.centre, halfway: pitch.halfway, ball });
+      const rule = checkRule({ kind, players, ruleSet, centre: pitch.centre, halfway: pitch.halfway, ball, area });
       const fit = checkShape({ players, shape, grid: team.grid, keepers });
       stage.clearWhy();
 
