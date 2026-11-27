@@ -167,3 +167,14 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - [ ] The scoreboard sits clear of the clock and camera.
 - [ ] Passing lines say the real player names.
 - [ ] A right bonus answer fills the screen with "New sticker!", then the sticker settles beside the medal.
+
+## Replays and difficulty (added 27th November 2026)
+
+- [ ] With Match 1 finished, the yellow "New match" button shows at the bottom of the path, and the voice says to tap it.
+- [ ] The new match screen shows the new team's shirt and name, and three ball buttons. Difficult has a lock until a Medium match is finished.
+- [ ] After picking, the path starts again at level 1, and the chip under the top buttons shows the new team and the balls.
+- [ ] A kick-in or corner on the other side of the pitch works: players can be placed and the moves play out properly.
+- [ ] Difficult: no dots, and a player lands where the finger lets go, in portrait and landscape.
+- [ ] Difficult: a first wrong line-up at their centre kick lets them score once, kindly. The scoreboard and the voice give the right score afterwards.
+- [ ] Easy: the first wrong line-up only says "Not quite. Have another look".
+- [ ] Grown-ups: switching off "Difficult matches" stops the conceding. "Stop this match" goes back to her own path, stickers kept.

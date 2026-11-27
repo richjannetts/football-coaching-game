@@ -2833,15 +2833,23 @@ button.chip:active {
 }
 
 /* ---------- Playing a match again (replays and difficulty) ---------- */
-/* The new match button and the "who we're playing" chip both sit at the
-   bottom of the path, between the grown-ups button and the album. */
-.menu .new-match-btn,
-.menu .match-chip {
+/* The new match button sits at the bottom of the path, between the
+   grown-ups button and the album. The "who we're playing" chip sits under
+   the top buttons. */
+.menu .new-match-btn {
   position: absolute;
   left: 50%;
   translate: -50% 0;
   bottom: var(--edge-bottom);
-  max-width: calc(100% - 2 * 120px);
+}
+.menu .match-chip {
+  position: absolute;
+  left: var(--edge-left);
+  top: calc(var(--edge-top) + 70px);
+  max-width: calc(100% - var(--edge-left) - var(--edge-right));
+}
+.menu .match-chip ~ .update-btn {
+  top: calc(var(--edge-top) + 126px);
 }
 .new-match-btn {
   min-height: 64px;
