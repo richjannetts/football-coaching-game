@@ -146,10 +146,16 @@ Keep content out of the code so it can be swapped later.
 - The other team stands at least five yards from the ball until it is kicked (level 9 tests this, with a dashed helper ring).
 - Not confirmed yet, so not tested: whether a goal can be scored straight from a corner.
 
+## The rule: 5v5 penalties (FA Law 14)
+
+- One of ours takes it from the penalty spot. Everyone else, apart from the keepers, stays outside the penalty area and at least five yards from the spot until it is kicked (level 10 tests this). The box line counts as inside the box.
+- The ball must be kicked forward.
+- The handbook gives no spot distance for 5v5. The game uses 6 yards, a guess Rich agreed (27th November 2026). It is drawn for her, never tested.
+
 ## Match 1
 
-The full match is storyboarded in `docs/match-1-storyboard.md` (agreed by Rich, 27th November 2026): ten levels, kick-off to full time. Levels 1 to 9 are built (the first half, half-time, the second-half kick-off and both corners). A match still being built has `complete: false` in `levels.json`, so its shiny waits for full time. The scoreboard shows the score once a level sets it (`stage.setScore`).
+The full match is storyboarded in `docs/match-1-storyboard.md` (agreed by Rich, 27th November 2026): ten levels, kick-off to full time. All ten levels are built, ending with the penalty, full time and the Match 1 shiny. A match still being built has `complete: false` in `levels.json`, so its shiny waits for full time. The scoreboard shows the score once a level sets it (`stage.setScore`).
 
 ## Not in scope yet
 
-A coach editor, sharing a team code, the penalty (level 10, next) and the full-time page, recorded voice, polished artwork.
+A coach editor, sharing a team code, replays against new opponents and difficulty levels (next), recorded voice, polished artwork.

@@ -203,6 +203,12 @@
         "x": 29.4,
         "y": 39.4,
         "optional": true
+      },
+      {
+        "id": "penalty-spot",
+        "x": 15,
+        "y": 34,
+        "optional": true
       }
     ]
   },
@@ -969,6 +975,89 @@
           "hint": "shape.c9.up"
         }
       ]
+    },
+    "ourPenalty": {
+      "label": "Our penalty",
+      "tolerance": 2,
+      "spots": [
+        {
+          "role": "taker",
+          "at": "penalty-spot",
+          "hint": "shape.c10.taker"
+        },
+        {
+          "role": "rebound",
+          "at": [
+            1,
+            8
+          ],
+          "zone": {
+            "x": [
+              3,
+              12
+            ],
+            "y": [
+              25.5,
+              32.4
+            ]
+          },
+          "hint": "shape.c10.rebound"
+        },
+        {
+          "role": "rebound",
+          "at": [
+            3,
+            8
+          ],
+          "zone": {
+            "x": [
+              18,
+              27
+            ],
+            "y": [
+              25.5,
+              32.4
+            ]
+          },
+          "hint": "shape.c10.rebound"
+        },
+        {
+          "role": "stay",
+          "at": [
+            2,
+            5
+          ],
+          "zone": {
+            "x": [
+              9,
+              21
+            ],
+            "y": [
+              14.5,
+              22
+            ]
+          },
+          "hint": "shape.c8.stay"
+        },
+        {
+          "role": "keeper",
+          "at": [
+            2,
+            0
+          ],
+          "zone": {
+            "x": [
+              13,
+              17
+            ],
+            "y": [
+              0,
+              2
+            ]
+          },
+          "hint": "shape.keeper"
+        }
+      ]
     }
   },
   "opponents": {
@@ -1147,6 +1236,24 @@
         12,
         24
       ]
+    ],
+    "ourPenalty": [
+      [
+        15,
+        39.6
+      ],
+      [
+        5,
+        30
+      ],
+      [
+        25,
+        30
+      ],
+      [
+        15,
+        25
+      ]
     ]
   },
   "opponentKeeper": {
@@ -1157,6 +1264,7 @@
     "ourKickIn": 0,
     "theirKickIn": 0,
     "ourCorner": 0,
-    "theirCorner": 0
+    "theirCorner": 0,
+    "ourPenalty": 0
   }
 }

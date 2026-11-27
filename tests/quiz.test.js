@@ -139,3 +139,13 @@ test('quiz, level 9: only the right picture keeps five yards from the corner', (
     assert.equal(result.ok, i === q.answer, `option ${i}: ${o.label}`);
   });
 });
+
+test('quiz, level 10: only the right picture keeps our friends outside the box and the ring', () => {
+  const q = quizFor(quiz, 10);
+  const area = { x: [7, 23], y: [32.5, 40] };
+  q.options.forEach((o, i) => {
+    const [x, y] = o.picture.ball;
+    const result = checkRule({ kind: 'ourPenalty', players: toPlayers(o.picture), ruleSet, centre, halfway: 20, ball: { x, y }, area });
+    assert.equal(result.ok, i === q.answer, `option ${i}: ${o.label}`);
+  });
+});
