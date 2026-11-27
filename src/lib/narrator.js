@@ -79,9 +79,12 @@ export function lineText(id) {
   return fill(line.text);
 }
 
+// {key|words}: a player's name set by the level (setVars), or the words
+// after the bar if there isn't one. For example "{mate|a friend}".
 function fill(text) {
   const name = (vars.name || '').trim();
-  const out = text.replace(/\{team\}/g, vars.team || 'our team').replace(/\{them\}/g, vars.them || 'the other team');
+  const out = text
+    .replace(/\{(\w+)\|([^}]*)\}/g, (_, key, fallback) => String(vars[key] || '').trim() || fallback).replace(/\{team\}/g, vars.team || 'our team').replace(/\{them\}/g, vars.them || 'the other team');
   if (!name) return out.replace(/,?\s*\{name\}/g, '');
   return out.replace(/\{name\}/g, name);
 }

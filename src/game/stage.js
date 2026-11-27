@@ -1,10 +1,10 @@
 // The chapter screen: caption, buttons, pitch and the players on it.
 // Chapters use the stage to show things and to wait for taps.
 
-import { h } from '../lib/svg.js';
+import { h, wait, hold } from '../lib/svg.js';
 import { createPitch } from '../lib/pitch.js';
 import { createPlacement } from '../lib/placement.js';
-import { homeIcon, speakerIcon, tickIcon, stickerSvg, nextIcon, tapHere } from '../lib/icons.js';
+import { homeIcon, speakerIcon, tickIcon, stickerSvg, nextIcon, tapHere, bookIcon } from '../lib/icons.js';
 import { stickerCard } from '../lib/stickers.js';
 import { createQuiz } from './quiz.js';
 import * as narrator from '../lib/narrator.js';
@@ -158,6 +158,19 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
     stage.play(ids, cues, opts).catch(() => {});
   };
 
+  // Players' real names in the commentary (Rich asked, 27th November
+  // 2026): "Pass across to Ace". who: { mate: el, runner: el, ... } for our
+  // players' pitch pieces. Lines use {mate|a friend} and so on.
+  stage.nameOf = (pieceEl) => {
+    const i = stage.players.findIndex((p) => p.el === pieceEl);
+    return i < 0 ? '' : mine.squad[i]?.name || '';
+  };
+  stage.callNames = (who) => {
+    const out = {};
+    for (const [key, pieceEl] of Object.entries(who)) out[key] = pieceEl ? stage.nameOf(pieceEl) : '';
+    narrator.setVars(out);
+  };
+
   stage.check = () => {
     if (!stage.alive) throw ABORT;
   };
@@ -303,12 +316,13 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
         onShow: () => endCard.classList.add('has-quiz'),
         thenLines: pointLine ? [pointLine] : [],
         rightLines: prize ? ['end.sticker'] : [],
+        rightSounds: prize ? ['sfx.sticker'] : [],
+        rightCues: prize ? { 'end.sticker': () => stickerWin(prize) } : {},
         onAnswer: (right) => {
           if (right) {
             if (prize) {
-              const won = h('div', { class: 'end-prize' }, stickerCard(prize));
-              award.append(won);
-              requestAnimationFrame(() => stage.confetti(won, 36));
+              // The sticker waits in the corner until its big moment is over.
+              award.append(h('div', { class: 'end-prize is-waiting' }, stickerCard(prize)));
             } else {
               requestAnimationFrame(() => stage.confetti(award, 24));
             }
@@ -321,6 +335,34 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
     } else {
       point();
     }
+    // A right answer wins a sticker: a big, clear moment that says so
+    // (Rich asked, 27th November 2026). The sticker fills the screen with
+    // "New sticker!" and a picture of her album, then settles beside the
+    // medal. It is only pictures: touch carries on as normal underneath.
+    const stickerWin = async (st) => {
+      if (!stage.alive) return;
+      endCard.querySelector('.sticker-win')?.remove();
+      const big = h('div', { class: 'sticker-win-card' }, stickerCard(st));
+      const win = h(
+        'div',
+        { class: 'sticker-win', 'aria-hidden': 'true' },
+        h('div', { class: 'sticker-win-rays' }),
+        h('div', { class: 'sticker-win-title' }, 'NEW STICKER!'),
+        big,
+        h('div', { class: 'sticker-win-album' }, h('span', { class: 'sticker-win-book' }, bookIcon()), h('span', {}, 'For your album'))
+      );
+      endCard.append(win);
+      requestAnimationFrame(() => stage.confetti(big, 60));
+      await wait(hold(3600));
+      win.classList.add('is-leaving');
+      await wait(hold(500));
+      win.remove();
+      const corner = award.querySelector('.end-prize.is-waiting');
+      if (corner) {
+        corner.classList.remove('is-waiting');
+        requestAnimationFrame(() => stage.confetti(corner, 24));
+      }
+    };
     endCard.replaceChildren(h('div', { class: 'end-main' }, h('div', { class: 'end-award' }, award), quiz ? quiz.el : null), buttons);
     endCard.classList.remove('is-hidden');
     // The medal arrives with a burst of confetti.

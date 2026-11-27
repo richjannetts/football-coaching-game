@@ -73,6 +73,7 @@ export async function chapter3(stage) {
     stage.check();
     if (wrong >= 3) {
       stage.setBusy(true);
+      stage.callNames({ mate: wideL.el });
       await Promise.all([stage.play(['sfx.kick', 'c3.passTogether']), passWide(wideL)]);
       await playOut(wideL);
       return;
@@ -81,6 +82,7 @@ export async function chapter3(stage) {
     const pick = await stage.pickTarget(choices, (t) => {
       // Inside the tap: start the sound now.
       stage.setBusy(true);
+      if (t.kind === 'friend') stage.callNames({ mate: t.role.el });
       if (t.kind === 'friend') return stage.play(['sfx.kick', 'c3.passWide'], { 'c3.passWide': () => passWide(t.role) });
       wrong++;
       const next = wrong >= 3 ? [] : wrong === 2 ? ['c3.passShow'] : ['hint.tryAgain'];
@@ -121,6 +123,7 @@ export async function chapter3(stage) {
     const other = friend === wideL ? wideR : wideL;
     const [gk, , , centre, deep] = them;
     const near = right ? them[2] : them[1];
+    stage.callNames({ runner: friend.el, mate: middle.el, shooter: up.el });
     await stage.play(['c3.move1', 'c3.move2', 'c3.shot', 'sfx.kick', 'c3.wide', 'c3.theirKick'], {
       'c3.move1': () =>
         Promise.all([
