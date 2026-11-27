@@ -1,7 +1,7 @@
 {
   "teamName": "The Stripes",
   "opponentName": "The Rovers",
-  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A shape spot can list \"also\": other grid spots that count as filling it (the back player may stand on the penalty box line or one dot in front, Rich's choice, 27th November 2026). A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal. Squad names are made-up starting names; the child can change them on her phone. theirKit holds the kit choices for the other team; kit.them is only used if that is missing. An extra grid spot marked optional (the kick-in spot on the side line) only shows in the levels that ask for it.",
+  "note": "Positions are in yards. x is across the pitch from the left touchline (0 to 30). y is up the pitch from our goal line (0 to 40). Halfway is y = 20. Shape spots name a grid column and row. opponentKeeper says which opponent in the list is their keeper. A shape spot can list \"also\": other grid spots that count as filling it (the back player may stand on the penalty box line or one dot in front, Rich's choice, 27th November 2026). A squad player with \"keeper\": true is our goalkeeper. She wears the keeper kit from the start and is the one who goes in goal. Squad names are made-up starting names; the child can change them on her phone. kitOptions, ourKit and theirKit hold the kit choices for both teams; kit is only used if those are missing. An extra grid spot marked optional (the kick-in spot on the side line) only shows in the levels that ask for it.",
   "kit": {
     "us": {
       "shirt": "#1d4ed8",
@@ -28,15 +28,8 @@
       "socks": "#1f2937"
     }
   },
-  "theirKit": {
-    "note": "What she can choose for the other team's kit (Rich asked, 27th November 2026): a shirt style, the shirt's main colour, its second colour (for stripes, hoops, halves or a sash), the shorts and the socks. Colours are named by id. Blue, yellow and orange are left out so the other team never looks like us or our keeper. Their keeper wears 'usual', or 'ifDark' when the outfield shirt is dark.",
-    "default": {
-      "pattern": "plain",
-      "shirt": "red",
-      "stripe": "white",
-      "shorts": "white",
-      "socks": "red"
-    },
+  "kitOptions": {
+    "note": "The kit choices for both teams (Rich asked, 27th November 2026): a shirt style, the shirt's main colour, its second colour (for stripes, hoops, halves or a sash), the shorts and the socks. Colours are named by id. Both teams can use every colour, but never the same shirt colour: the colour the other team's shirt already uses can't be picked. A colour marked keeperOnly is only for goalkeepers.",
     "patterns": [
       {
         "id": "plain",
@@ -61,9 +54,25 @@
     ],
     "colours": [
       {
+        "id": "blue",
+        "label": "Blue",
+        "colour": "#1d4ed8",
+        "dark": true
+      },
+      {
+        "id": "yellow",
+        "label": "Yellow",
+        "colour": "#facc15"
+      },
+      {
         "id": "red",
         "label": "Red",
         "colour": "#dc2626"
+      },
+      {
+        "id": "orange",
+        "label": "Orange",
+        "colour": "#f97316"
       },
       {
         "id": "white",
@@ -103,12 +112,58 @@
         "label": "Claret",
         "colour": "#881337",
         "dark": true
+      },
+      {
+        "id": "navy",
+        "label": "Navy",
+        "colour": "#1e3a8a",
+        "dark": true
+      },
+      {
+        "id": "lime",
+        "label": "Lime",
+        "colour": "#84cc16",
+        "keeperOnly": true
       }
+    ]
+  },
+  "ourKit": {
+    "note": "Our kit starts as blue and yellow stripes. Our keeper wears the first colour in 'keeper' that is not already in either team's shirts.",
+    "default": {
+      "pattern": "stripes",
+      "shirt": "blue",
+      "stripe": "yellow",
+      "shorts": "navy",
+      "socks": "blue"
+    },
+    "keeper": [
+      "orange",
+      "lime",
+      "pink",
+      "sky"
+    ]
+  },
+  "theirKit": {
+    "note": "Their keeper wears the first colour in 'keeper' (or 'keeperIfDark' when their outfield shirt is dark) that is not in either team's shirts or our keeper's top.",
+    "default": {
+      "pattern": "plain",
+      "shirt": "red",
+      "stripe": "white",
+      "shorts": "white",
+      "socks": "red"
+    },
+    "keeper": [
+      "black",
+      "lime",
+      "pink",
+      "sky"
     ],
-    "keeper": {
-      "usual": "#1f2937",
-      "ifDark": "#84cc16"
-    }
+    "keeperIfDark": [
+      "lime",
+      "sky",
+      "pink",
+      "white"
+    ]
   },
   "grid": {
     "cols": [

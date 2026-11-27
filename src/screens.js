@@ -302,14 +302,15 @@ function avatarHead(look, size = 56, id = `h-${look.hair}`, kit = 'us') {
 }
 
 // ---------- My team ----------
-// Every player can be changed, both teams can be named and the other team's
-// kit can be chosen: shirt style, colours, shorts and socks (Rich's
-// choices, 26th and 27th November 2026).
-// mode: 'both' from the menu, with a back button. 'us' or 'them' when a new
-// player sets up her team before the first game, with a tick to go on.
+// Every player can be changed, both teams can be named and both kits can be
+// chosen: shirt style, colours, shorts and socks (Rich's choices, 26th and
+// 27th November 2026). The two teams can't wear the same shirt colour.
+// mode: 'both' from the menu. 'us' or 'them' when a new player sets up her
+// team before the first game, with a tick to go on. Every mode has a back
+// button.
 const TEAM_LINES = { both: 'team.hello', us: 'team.meet', them: 'team.them' };
 const PATTERN_WORDS = { stripes: 'Stripes', hoops: 'Hoops', halves: 'Halves', sash: 'Sash', plain: 'Trim' };
-export function teamScreen({ team, kits, mode = 'both', onBack, onNext, onPlayer, onTeamName, onTheirName, onTheirKit }) {
+export function teamScreen({ team, kits, mode = 'both', onBack, onNext, onPlayer, onTeamName, onTheirName, onOurKit, onTheirKit }) {
   const nameField = (id, label, value, placeholder, onChange) => {
     const input = h('input', { type: 'text', id, maxlength: TEAM_NAME_MAX, autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', value, placeholder, 'aria-label': label });
     input.addEventListener('input', () => {
@@ -330,65 +331,96 @@ export function teamScreen({ team, kits, mode = 'both', onBack, onNext, onPlayer
       p.keeper ? h('span', { class: 'gk-badge' }, 'GK') : null,
       h('span', { class: 'team-player-name' }, p.name || ' ')
     );
+  const players = h('div', { class: 'team-players' });
+  const drawPlayers = () => players.replaceChildren(...team.squad.map(card));
+
+  // Both kits, as colour ids. Each tap saves and redraws both teams, so a
+  // colour taken by one team shows as taken on the other.
+  const ourKit = { ...team.ourKit };
+  const theirKit = { ...team.theirKit };
+  const colourOf = (id) => kits.colours.find((c) => c.id === id)?.colour || '#fff';
+  // A pattern needs a second colour that shows up on the shirt.
+  const contrast = (shirt) => (shirt === 'white' ? 'black' : 'white');
+  const swatch = (it) => h('span', { class: 'swatch', style: { background: it.colour } });
+  const rowLabel = (icon, word) => h('span', { class: 'kit-label' }, icon, h('span', { class: 'kit-word' }, word));
+
+  function kitBuilder(kit, other, save, preview) {
+    const rows = h('div', { class: 'kit-rows' });
+    const choose = (key, value) => {
+      kit[key] = value;
+      if (kit.pattern !== 'plain' && kit.stripe === kit.shirt) kit.stripe = contrast(kit.shirt);
+      save({ ...kit });
+      redraw();
+    };
+    const choiceRow = (key, items, label, render) =>
+      h(
+        'div',
+        { class: `kit-row kit-row-${key}` },
+        h('span', { class: 'kit-row-label' }, label),
+        h(
+          'div',
+          { class: 'choice-row', role: 'radiogroup', 'aria-label': label.textContent || key },
+          items.map((it) => {
+            // The other team's shirt colour can't be our shirt colour too.
+            const taken = key === 'shirt' && it.id === other.shirt;
+            return h(
+              'button',
+              { class: `choice${taken ? ' is-taken' : ''}`, type: 'button', role: 'radio', disabled: taken || null, 'aria-checked': String(kit[key] === it.id), 'aria-label': taken ? `${it.label}, the other team has this` : it.label, onclick: () => choose(key, it.id) },
+              render(it)
+            );
+          })
+        )
+      );
+    const draw = () => {
+      preview?.();
+      const sh = colourOf(kit.shirt);
+      const st = colourOf(kit.stripe === kit.shirt ? contrast(kit.shirt) : kit.stripe);
+      rows.replaceChildren(
+        ...[
+          choiceRow('pattern', kits.patterns, rowLabel(shirtIcon(kit.pattern, sh, st), 'Style'), (it) => shirtIcon(it.id, sh, st)),
+          choiceRow('shirt', kits.colours, rowLabel(shirtIcon('plain', sh, sh), 'Shirt'), swatch),
+          kit.pattern === 'plain' ? null : choiceRow('stripe', kits.colours, rowLabel(shirtIcon(kit.pattern, '#fff', st), PATTERN_WORDS[kit.pattern]), swatch),
+          choiceRow('shorts', kits.colours, rowLabel(shortsIcon(colourOf(kit.shorts)), 'Shorts'), swatch),
+          choiceRow('socks', kits.colours, rowLabel(sockIcon(colourOf(kit.socks)), 'Socks'), swatch),
+        ].filter(Boolean)
+      );
+    };
+    return { rows, draw };
+  }
+
+  const themPreview = h('div', { class: 'them-preview' });
+  const ourBuilder = kitBuilder(ourKit, theirKit, (k) => onOurKit?.(k), drawPlayers);
+  const theirBuilder = kitBuilder(theirKit, ourKit, (k) => onTheirKit(k), () =>
+    themPreview.replaceChildren(avatarSvg({ skin: 's5', hair: 'short', hairColour: 'h1' }, { size: 64, idSuffix: 'them', kit: 'them' }))
+  );
+  function redraw() {
+    ourBuilder.draw();
+    theirBuilder.draw();
+  }
+  redraw();
+
   const ours = h(
     'div',
     { class: 'team-card' },
     nameField('team-name', 'Our team’s name', team.name, 'Our team', onTeamName),
-    h('div', { class: 'team-players' }, team.squad.map(card))
+    players,
+    h('p', { class: 'kit-title' }, 'Our kit'),
+    ourBuilder.rows
   );
-
-  // The other team's kit, as colour ids. Each tap saves and redraws.
-  const kit = { ...team.theirKit };
-  const colourOf = (id) => kits.colours.find((c) => c.id === id)?.colour || '#fff';
-  const themPreview = h('div', { class: 'them-preview' });
-  const kitRows = h('div', { class: 'kit-rows' });
-  // A pattern needs a second colour that shows up on the shirt.
-  const contrast = (shirt) => (shirt === 'white' ? 'black' : 'white');
-  const choose = (key, value) => {
-    kit[key] = value;
-    if (kit.pattern !== 'plain' && kit.stripe === kit.shirt) kit.stripe = contrast(kit.shirt);
-    onTheirKit({ ...kit });
-    drawKit();
-  };
-  const choiceRow = (key, items, label, render) =>
-    h(
-      'div',
-      { class: `kit-row kit-row-${key}` },
-      h('span', { class: 'kit-row-label' }, label),
-      h(
-        'div',
-        { class: 'choice-row', role: 'radiogroup', 'aria-label': label.textContent || key },
-        items.map((it) => h('button', { class: 'choice', type: 'button', role: 'radio', 'aria-checked': String(kit[key] === it.id), 'aria-label': it.label, onclick: () => choose(key, it.id) }, render(it)))
-      )
-    );
-  const swatch = (it) => h('span', { class: 'swatch', style: { background: it.colour } });
-  const rowLabel = (icon, word) => h('span', { class: 'kit-label' }, icon, h('span', { class: 'kit-word' }, word));
-  function drawKit() {
-    themPreview.replaceChildren(avatarSvg({ skin: 's5', hair: 'short', hairColour: 'h1' }, { size: 64, idSuffix: 'them', kit: 'them' }));
-    const sh = colourOf(kit.shirt);
-    const st = colourOf(kit.stripe === kit.shirt ? contrast(kit.shirt) : kit.stripe);
-    const rows = [
-      choiceRow('pattern', kits.patterns, rowLabel(shirtIcon(kit.pattern, sh, st), 'Style'), (it) => shirtIcon(it.id, sh, st)),
-      choiceRow('shirt', kits.colours, rowLabel(shirtIcon('plain', sh, sh), 'Shirt'), swatch),
-      kit.pattern === 'plain' ? null : choiceRow('stripe', kits.colours, rowLabel(shirtIcon(kit.pattern, '#fff', st), PATTERN_WORDS[kit.pattern]), swatch),
-      choiceRow('shorts', kits.colours, rowLabel(shortsIcon(colourOf(kit.shorts)), 'Shorts'), swatch),
-      choiceRow('socks', kits.colours, rowLabel(sockIcon(colourOf(kit.socks)), 'Socks'), swatch),
-    ];
-    kitRows.replaceChildren(...rows.filter(Boolean));
-  }
-  drawKit();
   const theirs = h(
     'div',
     { class: 'team-card them' },
     h('div', { class: 'them-top' }, themPreview, nameField('their-name', 'The other team’s name', team.theirName, 'The other team', onTheirName)),
-    kitRows
+    theirBuilder.rows
   );
 
+  const backBtn = h('button', { class: 'icon-btn back-btn', type: 'button', 'aria-label': 'Back', onclick: onBack }, backIcon());
   const top =
     mode === 'both'
-      ? h('header', { class: 'menu-top' }, h('button', { class: 'icon-btn back-btn', type: 'button', 'aria-label': 'Back', onclick: onBack }, backIcon()), againButton())
-      : h('header', { class: 'menu-top team-step-top' }, h('h1', { class: 'team-step-title' }, mode === 'us' ? 'Your team' : 'The other team'), againButton());
+      ? h('header', { class: 'menu-top' }, backBtn, againButton())
+      : h('header', { class: 'menu-top team-step-top' }, backBtn, h('h1', { class: 'team-step-title' }, mode === 'us' ? 'Your team' : 'The other team'), againButton());
   const nextBtn = mode === 'both' ? null : h('button', { class: 'ready-btn is-glow', type: 'button', 'aria-label': 'Next', onclick: onNext }, tickIcon());
+  if (nextBtn) pointOnce(nextBtn, `team-${mode}`);
   const el = h(
     'section',
     { class: `screen team team-${mode}` },
@@ -396,7 +428,6 @@ export function teamScreen({ team, kits, mode = 'both', onBack, onNext, onPlayer
     mode !== 'them' ? ours : null,
     mode === 'both' ? h('div', { class: 'team-vs' }, 'v') : null,
     mode !== 'us' ? theirs : null,
-    h('p', { class: 'small team-note' }, 'Grown-ups: first names or nicknames, and made-up team names, please. They stay on this phone.'),
     nextBtn ? h('div', { class: 'setup-bottom' }, nextBtn) : null
   );
   el.begin = () => narrator.say([TEAM_LINES[mode]]);
