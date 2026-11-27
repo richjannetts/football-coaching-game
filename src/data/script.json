@@ -803,17 +803,17 @@
     },
     {
       "id": "c6.clear",
-      "text": "We clear it up the pitch.",
-      "cue": "The ball goes up the pitch."
+      "text": "We clear it up the pitch, but they win it back.",
+      "cue": "The ball goes up the pitch and their player gets it."
     },
     {
       "id": "c6.shot",
-      "text": "Their player gets it, a long way out, and shoots...",
-      "cue": "Their player kicks the ball from far away."
+      "text": "They pass it forward into our half. Their player runs on to it and shoots...",
+      "cue": "Their player runs with the ball to the edge of our penalty box and shoots."
     },
     {
       "id": "c6.theirGoal",
-      "text": "What a shot! It flies into the top corner. Nobody could have stopped that one.",
+      "text": "What a shot! Right into the top corner. Nobody could have stopped that one.",
       "cue": "The ball goes into our goal. The score is one each."
     },
     {
