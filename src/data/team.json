@@ -142,6 +142,12 @@
         "x": 0.4,
         "y": 24.5,
         "optional": true
+      },
+      {
+        "id": "corner-right",
+        "x": 29.4,
+        "y": 39.4,
+        "optional": true
       }
     ]
   },
@@ -729,6 +735,185 @@
           "hint": "shape.keeper"
         }
       ]
+    },
+    "ourCorner": {
+      "label": "Our corner",
+      "tolerance": 2,
+      "spots": [
+        {
+          "role": "taker",
+          "at": "corner-right",
+          "hint": "shape.c8.taker"
+        },
+        {
+          "role": "near",
+          "at": [
+            3,
+            10
+          ],
+          "zone": {
+            "x": [
+              17,
+              24
+            ],
+            "y": [
+              33,
+              40
+            ]
+          },
+          "hint": "shape.c8.near"
+        },
+        {
+          "role": "edge",
+          "at": [
+            2,
+            8
+          ],
+          "zone": {
+            "x": [
+              9,
+              21
+            ],
+            "y": [
+              27,
+              32.5
+            ]
+          },
+          "hint": "shape.c8.edge"
+        },
+        {
+          "role": "stay",
+          "at": [
+            2,
+            5
+          ],
+          "zone": {
+            "x": [
+              9,
+              21
+            ],
+            "y": [
+              14.5,
+              22
+            ]
+          },
+          "hint": "shape.c8.stay"
+        },
+        {
+          "role": "keeper",
+          "at": [
+            2,
+            0
+          ],
+          "zone": {
+            "x": [
+              13,
+              17
+            ],
+            "y": [
+              0,
+              2
+            ]
+          },
+          "hint": "shape.keeper"
+        }
+      ]
+    },
+    "theirCorner": {
+      "label": "Their corner",
+      "tolerance": 2,
+      "spots": [
+        {
+          "role": "keeper",
+          "at": [
+            2,
+            0
+          ],
+          "zone": {
+            "x": [
+              13,
+              17
+            ],
+            "y": [
+              0,
+              2
+            ]
+          },
+          "hint": "shape.keeper"
+        },
+        {
+          "role": "post",
+          "at": [
+            1,
+            1
+          ],
+          "zone": {
+            "x": [
+              6,
+              13
+            ],
+            "y": [
+              1.5,
+              5
+            ]
+          },
+          "hint": "shape.c9.post"
+        },
+        {
+          "role": "guard",
+          "at": [
+            1,
+            2
+          ],
+          "zone": {
+            "x": [
+              3,
+              13
+            ],
+            "y": [
+              5.5,
+              11
+            ]
+          },
+          "hint": "shape.c9.guards"
+        },
+        {
+          "role": "guard",
+          "at": [
+            3,
+            2
+          ],
+          "zone": {
+            "x": [
+              16,
+              27
+            ],
+            "y": [
+              4,
+              11
+            ]
+          },
+          "hint": "shape.c9.guards"
+        },
+        {
+          "role": "up",
+          "at": [
+            2,
+            5
+          ],
+          "zone": {
+            "x": [
+              9,
+              21
+            ],
+            "y": [
+              14.5,
+              22
+            ]
+          },
+          "hint": "shape.c9.up"
+        }
+      ]
     }
   },
   "opponents": {
@@ -863,6 +1048,50 @@
         17.5,
         17.5
       ]
+    ],
+    "ourCorner": [
+      [
+        15,
+        39
+      ],
+      [
+        24,
+        37
+      ],
+      [
+        12.5,
+        35.5
+      ],
+      [
+        17,
+        33
+      ],
+      [
+        19,
+        26
+      ]
+    ],
+    "theirCorner": [
+      [
+        15,
+        38.5
+      ],
+      [
+        0.4,
+        0.4
+      ],
+      [
+        12,
+        9.25
+      ],
+      [
+        19.5,
+        10.5
+      ],
+      [
+        12,
+        24
+      ]
     ]
   },
   "opponentKeeper": {
@@ -871,6 +1100,8 @@
     "ourGoalKick": 0,
     "theirGoalKick": 0,
     "ourKickIn": 0,
-    "theirKickIn": 0
+    "theirKickIn": 0,
+    "ourCorner": 0,
+    "theirCorner": 0
   }
 }

@@ -136,10 +136,16 @@ Keep content out of the code so it can be swapped later.
 - Level 3 tells this (their players walk back). Level 4 tests it: all of ours in our own half.
 - Not confirmed yet, so not tested: exactly when they may cross (as the ball is kicked, or once it is received), and whether the keeper may dribble it out.
 
+## The rule: 5v5 corners (FA, under-7 to under-11)
+
+- The ball sits still in the corner. One of our players takes it (level 8 tests this).
+- The other team stands at least five yards from the ball until it is kicked (level 9 tests this, with a dashed helper ring).
+- Not confirmed yet, so not tested: whether a goal can be scored straight from a corner.
+
 ## Match 1
 
-The full match is storyboarded in `docs/match-1-storyboard.md` (agreed by Rich, 27th November 2026): ten levels, kick-off to full time. Levels 1 to 7 are built (the first half, then half-time and the second-half kick-off). A match still being built has `complete: false` in `levels.json`, so its shiny waits for full time. The scoreboard shows the score once a level sets it (`stage.setScore`).
+The full match is storyboarded in `docs/match-1-storyboard.md` (agreed by Rich, 27th November 2026): ten levels, kick-off to full time. Levels 1 to 9 are built (the first half, half-time, the second-half kick-off and both corners). A match still being built has `complete: false` in `levels.json`, so its shiny waits for full time. The scoreboard shows the score once a level sets it (`stage.setScore`).
 
 ## Not in scope yet
 
-A coach editor, sharing a team code, corners and penalties (levels 8 to 10, next), recorded voice, polished artwork.
+A coach editor, sharing a team code, the penalty (level 10, next) and the full-time page, recorded voice, polished artwork.

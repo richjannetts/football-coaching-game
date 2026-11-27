@@ -283,6 +283,85 @@
           }
         }
       ]
+    },
+    "8": {
+      "teaches": "inOurTeam",
+      "question": "Our corner. Who stays back?",
+      "bonus": "quiz.bonus",
+      "ask": "quiz.c8.ask",
+      "right": "quiz.c8.right",
+      "reveal": "quiz.c8.reveal",
+      "answer": 0,
+      "options": [
+        {
+          "label": "One friend back",
+          "line": "quiz.c8.a",
+          "picture": {
+            "us": [[29.4, 39.4], [21, 36], [15, 29], [15, 18], [15, 1.5]],
+            "them": [[15, 39], [24, 37]],
+            "ball": [29.4, 39.4]
+          }
+        },
+        {
+          "label": "Everyone up",
+          "line": "quiz.c8.b",
+          "picture": {
+            "us": [[29.4, 39.4], [21, 36], [15, 29], [11, 34], [15, 1.5]],
+            "them": [[15, 39], [24, 37]],
+            "ball": [29.4, 39.4]
+          }
+        },
+        {
+          "label": "Lots back home",
+          "line": "quiz.c8.c",
+          "picture": {
+            "us": [[29.4, 39.4], [9, 12], [21, 12], [15, 8], [15, 1.5]],
+            "them": [[15, 39], [24, 37]],
+            "ball": [29.4, 39.4]
+          }
+        }
+      ]
+    },
+    "9": {
+      "teaches": "theRuleSays",
+      "question": "Their corner. How close can we stand?",
+      "bonus": "quiz.bonus",
+      "ask": "quiz.c9.ask",
+      "right": "quiz.c9.right",
+      "reveal": "quiz.c9.reveal",
+      "answer": 2,
+      "options": [
+        {
+          "label": "Right next to the ball",
+          "line": "quiz.c9.a",
+          "picture": {
+            "us": [[1.8, 2], [9, 7.5], [21, 7.5], [15, 18], [15, 1.5]],
+            "them": [[0.4, 0.4], [12, 9.25], [19.5, 10.5]],
+            "ball": [0.4, 0.4],
+            "ring": true
+          }
+        },
+        {
+          "label": "One inside the ring",
+          "line": "quiz.c9.b",
+          "picture": {
+            "us": [[9, 4], [3, 3], [21, 7.5], [15, 18], [15, 1.5]],
+            "them": [[0.4, 0.4], [12, 9.25], [19.5, 10.5]],
+            "ball": [0.4, 0.4],
+            "ring": true
+          }
+        },
+        {
+          "label": "Everyone outside the ring",
+          "line": "quiz.c9.c",
+          "picture": {
+            "us": [[9, 4], [9, 7.5], [21, 7.5], [15, 18], [15, 1.5]],
+            "them": [[0.4, 0.4], [12, 9.25], [19.5, 10.5]],
+            "ball": [0.4, 0.4],
+            "ring": true
+          }
+        }
+      ]
     }
   }
 }

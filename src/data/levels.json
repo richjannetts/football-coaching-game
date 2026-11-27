@@ -1,7 +1,7 @@
 {
   "note": "The level path on the menu. Levels are grouped into matches, and each match starts with a flag. To add a level, add its number to a match (or add a new match) and add the level itself in src/main.js. A match still being built has 'complete' set to false, so its shiny sticker waits for full time. 'soon' is how many locked places to draw after the last level, to show more are coming.",
   "matches": [
-    { "id": "m1", "label": "Match 1", "levels": [1, 2, 3, 4, 5, 6, 7], "complete": false }
+    { "id": "m1", "label": "Match 1", "levels": [1, 2, 3, 4, 5, 6, 7, 8, 9], "complete": false }
   ],
   "soon": 3,
   "soonLabel": "More soon"
