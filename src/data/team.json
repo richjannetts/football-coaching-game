@@ -620,6 +620,7 @@
     },
     "ourKickIn": {
       "label": "Our kick-in",
+      "note": "Jobs, not spots (Rich's choice, 27th November 2026): anywhere that does the job counts. One on the ball; one close for a short pass (3 to 10 yards from the ball); one further away and not behind, for a longer pass (10 to 25 yards from the ball, and not back near our goal); one stays back between the ball and our goal; the keeper in goal. 'at' is still the example place used for hints.",
       "tolerance": 2,
       "spots": [
         {
@@ -631,19 +632,16 @@
           "role": "close",
           "at": [
             1,
-            5
+            6
           ],
-          "zone": {
-            "x": [
-              0,
-              11
-            ],
-            "y": [
-              14.5,
-              30
+          "hint": "shape.c5.close",
+          "job": {
+            "near": "kick-in-left",
+            "yards": [
+              3,
+              10
             ]
-          },
-          "hint": "shape.c5.close"
+          }
         },
         {
           "role": "inside",
@@ -651,17 +649,24 @@
             2,
             7
           ],
-          "zone": {
-            "x": [
-              12,
-              24
+          "hint": "shape.c5.inside",
+          "job": {
+            "near": "kick-in-left",
+            "yards": [
+              10,
+              25
             ],
-            "y": [
-              18,
-              30
-            ]
-          },
-          "hint": "shape.c5.inside"
+            "box": {
+              "x": [
+                0,
+                30
+              ],
+              "y": [
+                14.5,
+                40
+              ]
+            }
+          }
         },
         {
           "role": "back",
@@ -669,17 +674,19 @@
             2,
             2
           ],
-          "zone": {
-            "x": [
-              9,
-              21
-            ],
-            "y": [
-              7.5,
-              11
-            ]
-          },
-          "hint": "shape.back"
+          "hint": "shape.c5.back",
+          "job": {
+            "box": {
+              "x": [
+                6,
+                24
+              ],
+              "y": [
+                3,
+                13
+              ]
+            }
+          }
         },
         {
           "role": "keeper",
@@ -703,6 +710,7 @@
     },
     "theirKickIn": {
       "label": "Their kick-in",
+      "note": "Jobs, not spots (Rich's choice, 27th November 2026): anywhere that does the job counts. Each of their three nearby players has one of ours goal side of her (between her and our goal) and no more than 6 yards away; our back player stays in the middle; the keeper in goal. 'mark' is that player of theirs, from opponents.theirKickIn. 'at' is still the example place used for hints.",
       "tolerance": 2,
       "spots": [
         {
@@ -711,17 +719,14 @@
             3,
             2
           ],
-          "zone": {
-            "x": [
-              17,
-              27
+          "hint": "shape.c6.line",
+          "job": {
+            "mark": [
+              25,
+              8
             ],
-            "y": [
-              4,
-              11
-            ]
-          },
-          "hint": "shape.c6.line"
+            "markYards": 6
+          }
         },
         {
           "role": "up",
@@ -729,17 +734,14 @@
             3,
             5
           ],
-          "zone": {
-            "x": [
-              17,
-              27
-            ],
-            "y": [
-              14.5,
+          "hint": "shape.c6.up",
+          "job": {
+            "mark": [
+              23.5,
               21
-            ]
-          },
-          "hint": "shape.c6.up"
+            ],
+            "markYards": 6
+          }
         },
         {
           "role": "inside",
@@ -747,17 +749,14 @@
             2,
             4
           ],
-          "zone": {
-            "x": [
-              9,
-              19
+          "hint": "shape.c6.inside",
+          "job": {
+            "mark": [
+              17.5,
+              17.5
             ],
-            "y": [
-              11,
-              18
-            ]
-          },
-          "hint": "shape.c6.inside"
+            "markYards": 6
+          }
         },
         {
           "role": "back",
@@ -765,17 +764,19 @@
             2,
             2
           ],
-          "zone": {
-            "x": [
-              9,
-              21
-            ],
-            "y": [
-              7.5,
-              11
-            ]
-          },
-          "hint": "shape.back"
+          "hint": "shape.back",
+          "job": {
+            "box": {
+              "x": [
+                9,
+                21
+              ],
+              "y": [
+                3,
+                13
+              ]
+            }
+          }
         },
         {
           "role": "keeper",

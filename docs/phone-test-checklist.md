@@ -202,3 +202,9 @@ These replace the "Replays and difficulty" checks above about the path and the n
 - [ ] After the cup, a yellow "New cup" button starts Round 1 again against a new team, and the cup at the end of the cup run is gold.
 - [ ] Easy (Round 1): after a wrong line-up, yellow circles flash for a moment where players should go. Not before the first try, and not in the semi-final or final.
 - [ ] An existing phone that had already finished Match 1 opens on the semi-final, not Round 1.
+
+## Kick-ins: jobs, not spots (added 27th November 2026)
+
+- [ ] Our kick-in: try two different set-ups that both have someone close (short pass), someone further away (longer pass), someone back and the keeper. Both count as right.
+- [ ] Our kick-in: with nobody close to the kicker, the help says a friend comes close for a short pass.
+- [ ] Their kick-in: standing between each of their nearby players and our goal counts, in a few different places. Standing beside one of them but nearer their goal does not.
