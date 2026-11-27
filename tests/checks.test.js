@@ -256,9 +256,24 @@ test('rule, their goal kick: unlike a centre kick, there is no ring to keep out 
   assert.equal(checkRule({ kind: 'theirGoalKick', players, ruleSet, centre, halfway }).ok, true);
 });
 
-test('rule, our goal kick: the rule is for the other team, so our layout cannot break it', () => {
+test('rule, our goal kick: the coach shape is all in our own half (club rule)', () => {
   const players = shapeOf('ourGoalKick');
   assert.equal(checkRule({ kind: 'ourGoalKick', players, ruleSet, centre, halfway }).ok, true);
+});
+
+test('rule, our goal kick: a player in their half breaks the club rule', () => {
+  const players = shapeOf('ourGoalKick');
+  players[4] = { x: 15, y: 26 };
+  const r = checkRule({ kind: 'ourGoalKick', players, ruleSet, centre, halfway });
+  assert.equal(r.ok, false);
+  assert.equal(r.problems[0].line, 'rule.goalKickOurs');
+});
+
+test('rule, our goal kick: the FA rule alone does not stop us going up', () => {
+  const faOnly = resolveRuleSet('fa-2026-27-5v5', [fa]);
+  const players = shapeOf('ourGoalKick');
+  players[4] = { x: 15, y: 26 };
+  assert.equal(checkRule({ kind: 'ourGoalKick', players, ruleSet: faOnly, centre, halfway }).ok, true);
 });
 
 test('shape, our goal kick: spread wide with the keeper in goal passes', () => {

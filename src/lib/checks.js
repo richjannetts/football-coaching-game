@@ -17,9 +17,19 @@ export function checkRule({ kind, players, ruleSet, centre, halfway }) {
   const problems = [];
 
   // Goal kicks: the retreat line. At their goal kick we all go back into
-  // our own half until the ball is in play. At ours, the rule is for the
-  // other team, so nothing about our players can break it.
-  if (kind === 'ourGoalKick') return { ok: true, problems };
+  // our own half until the ball is in play. Rich's club also keeps both
+  // teams in their own half at our goal kick (27th November 2026).
+  if (kind === 'ourGoalKick') {
+    // A local rule, so it may be missing from a rule set: missing means no.
+    if (ruleSet.rules['goalKick.bothTeamsOwnHalf']?.value === true) {
+      const bad = players
+        .map((p, i) => ({ p, i }))
+        .filter(({ p }) => p.y >= halfway)
+        .map(({ i }) => i);
+      if (bad.length) problems.push({ type: 'ownHalf', line: 'rule.goalKickOurs', players: bad });
+    }
+    return { ok: problems.length === 0, problems };
+  }
   if (kind === 'theirGoalKick') {
     if (ruleValue(ruleSet, 'goalKick.retreatLine') === 'halfway') {
       const bad = players
