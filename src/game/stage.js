@@ -9,6 +9,7 @@ import { stickerCard } from '../lib/stickers.js';
 import { createQuiz } from './quiz.js';
 import * as narrator from '../lib/narrator.js';
 import * as sfx from '../lib/sfx.js';
+import { pointOnce } from '../lib/firstTap.js';
 import { burst, burstFrom } from '../lib/confetti.js';
 import { team, pitchSize, benchSpots, keeperAt } from './content.js';
 import { buildSpots } from '../lib/geometry.js';
@@ -17,7 +18,6 @@ import { myTeam } from '../lib/teamState.js';
 export const ABORT = Symbol('left the chapter');
 
 // Confetti in our kit colours, with white and gold for sparkle.
-const CONFETTI = [team.kit.us.shirt, team.kit.us.stripe, '#ffffff', '#facc15', team.kit.keeper.shirt];
 
 const THEIR_LOOKS = [
   { skin: 's5', hair: 'short', hairColour: 'h1' },
@@ -40,6 +40,8 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
 
   // Who is playing: both team names with a dot of each kit colour.
   const mine = myTeam(profile);
+  // Confetti in our kit colours, with white and gold for sparkle.
+  const CONFETTI = [mine.kit.us.shirt, mine.kit.us.stripe, '#ffffff', '#facc15', mine.kit.keeper.shirt];
   const scoreV = h('span', { class: 'scoreboard-v' }, 'v');
   const scoreboard = h(
     'div',
@@ -166,7 +168,10 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
     if (busy) stage.placement.disable();
   };
 
-  stage.showReady = (show) => readyBtn.classList.toggle('is-hidden', !show);
+  stage.showReady = (show) => {
+    readyBtn.classList.toggle('is-hidden', !show);
+    if (show) pointOnce(readyBtn, 'ready');
+  };
   stage.glowReady = (on) => readyBtn.classList.toggle('is-glow', on);
 
   stage.clearWhy = () => {

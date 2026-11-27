@@ -146,22 +146,34 @@ const storyPages = (part) =>
       ]
     : [{ line: 'story.ready', scene: 'ready' }];
 
-function goStory(part = 'start') {
+// Every step has a back button that goes one step back (Rich asked, 27th
+// November 2026): story, her player, her team-mates, the other team, and
+// the last story page.
+function goStory(part = 'start', atEnd = false) {
   tellNames();
+  const pages = storyPages(part);
   const el = storyScreen({
-    pages: storyPages(part),
+    pages,
+    startAt: atEnd ? pages.length - 1 : 0,
     team: teams.myTeam(profile),
     profile,
     coach: COACH,
-    onDone: () => (part === 'start' ? goSetup(() => goTeam(true, 'us')) : goMenu(true)),
+    onBack: part === 'start' ? null : () => goTeam(true, 'them'),
+    onDone: () => (part === 'start' ? firstSetup() : goMenu(true)),
   });
   show(el);
   el.begin(); // called from a tap, so sound can start
 }
 
-function goSetup(then) {
+// Her own player, on the first run: back goes to the last story page.
+function firstSetup() {
+  goSetup(() => goTeam(true, 'us'), () => goStory('start', true));
+}
+
+function goSetup(then, back) {
   const el = setupScreen({
     profile,
+    onBack: back,
     onDone: (next) => {
       profile = next;
       store.save('profile', profile);
@@ -179,11 +191,13 @@ function goSetup(then) {
 function goTeam(speak = true, mode = 'both') {
   const el = teamScreen({
     team: teams.myTeam(profile),
-    kits: teams.theirKitOptions,
+    kits: teams.kitOptions,
     mode,
     onBack: () => {
       tellNames();
-      goMenu(false);
+      if (mode === 'us') firstSetup();
+      else if (mode === 'them') goTeam(true, 'us');
+      else goMenu(false);
     },
     onNext: () => {
       tellNames();
@@ -192,11 +206,12 @@ function goTeam(speak = true, mode = 'both') {
     },
     onPlayer: (i) => {
       const p = teams.myTeam(profile).squad[i];
-      if (p.you) return goSetup(() => goTeam(false, mode));
+      if (p.you) return goSetup(() => goTeam(false, mode), () => goTeam(false, mode));
       const setup = setupScreen({
         profile: p,
         who: 'friend',
         kit: p.keeper ? 'keeper' : 'us',
+        onBack: () => goTeam(false, mode),
         onDone: (next) => {
           teams.savePlayer(i, next);
           goTeam(false, mode);
@@ -208,6 +223,7 @@ function goTeam(speak = true, mode = 'both') {
     onTeamName: teams.saveTeamName,
     onTheirName: teams.saveTheirName,
     onTheirKit: teams.saveTheirKit,
+    onOurKit: teams.saveOurKit,
   });
   show(el);
   if (speak) el.begin();
@@ -265,7 +281,7 @@ function goGrownUps() {
     grownUpsScreen({
       version: VERSION,
       onBack: () => goMenu(false),
-      onEditPlayer: () => goSetup(),
+      onEditPlayer: () => goSetup(null, goGrownUps),
       showWords: !!store.load('showWords'),
       onToggleWords: (on) => store.save('showWords', on),
       sounds: sfx.isEnabled(),

@@ -9,6 +9,7 @@ import { missingStep } from './lib/profile.js';
 import { menuDotsIcon, installIcon, shirtIcon, shortsIcon, sockIcon } from './lib/icons.js';
 import { ballIcon, bonusStickerSvg, titleLogo, titleScene, lockIcon, bookIcon, homeIcon, nextIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
 import * as narrator from './lib/narrator.js';
+import { pointOnce } from './lib/firstTap.js';
 import looks from './data/looks.json';
 
 import { NAME_MAX, TEAM_NAME_MAX, cleanName, cleanTeamName } from './lib/myteam.js';
@@ -104,12 +105,14 @@ export function welcomeScreen({ onAgree }) {
 export function startScreen({ profile, onStart }) {
   const scene = h('div', { class: 'title-art' }, titleScene());
   if (profile) scene.append(h('div', { class: 'title-player' }, avatarSvg(profile, { size: 78, idSuffix: 'start' })));
+  const playBtn = h('button', { class: 'play-btn', type: 'button', 'aria-label': 'Play', onclick: onStart }, ballIcon(true), h('span', { class: 'play-label' }, 'PLAY'));
+  pointOnce(playBtn, 'play', { above: true });
   return h(
     'section',
     { class: 'screen start' },
     h('div', { class: 'title-block' }, titleLogo(), h('p', { class: 'title-sub' }, 'Football puzzles')),
     scene,
-    h('button', { class: 'play-btn', type: 'button', 'aria-label': 'Play', onclick: onStart }, ballIcon(true), h('span', { class: 'play-label' }, 'PLAY')),
+    playBtn,
     h('p', { class: 'small start-note' }, 'Turn the sound up.')
   );
 }
@@ -120,16 +123,28 @@ export function startScreen({ profile, onStart }) {
 // spoken line. Tap the arrow for the next page. Each line starts inside the
 // tap, so sound is allowed to play.
 // pages: [{ line, scene }] where scene is a name for storyScene().
-export function storyScreen({ pages, team, profile, coach, onDone }) {
-  let at = 0;
+// startAt: the page to open on (the last page, when she comes back to it).
+// onBack: where the back button goes from the first page. Without it the
+// first page has no back button.
+export function storyScreen({ pages, team, profile, coach, onDone, onBack, startAt = 0 }) {
+  let at = Math.min(Math.max(0, startAt), pages.length - 1);
   const art = h('div', { class: 'story-art' });
   const dots = h('div', { class: 'dots story-dots', 'aria-hidden': 'true' }, pages.length > 1 ? pages.map(() => h('i', {})) : []);
   const nextBtn = h('button', { class: 'ready-btn is-glow story-next', type: 'button', 'aria-label': 'Next' }, nextIcon());
+  pointOnce(nextBtn, 'story');
+  const backBtn = h('button', { class: 'icon-btn back-btn', type: 'button', 'aria-label': 'Back' }, backIcon());
   const show = () => {
     art.replaceChildren(storyScene(pages[at].scene, { team, profile, coach }));
     [...dots.children].forEach((d, i) => d.classList.toggle('on', i === at));
+    backBtn.classList.toggle('is-hidden', at === 0 && !onBack);
     narrator.say([pages[at].line]);
   };
+  backBtn.addEventListener('click', () => {
+    if (at > 0) {
+      at -= 1;
+      show();
+    } else onBack?.();
+  });
   let lastTap = 0;
   nextBtn.addEventListener('click', () => {
     const now = Date.now();
@@ -139,7 +154,7 @@ export function storyScreen({ pages, team, profile, coach, onDone }) {
     at += 1;
     show();
   });
-  const el = h('section', { class: 'screen story' }, h('header', { class: 'menu-top story-top' }, h('span', {}), againButton()), art, dots, h('div', { class: 'setup-bottom' }, nextBtn));
+  const el = h('section', { class: 'screen story' }, h('header', { class: 'menu-top story-top' }, backBtn, againButton()), art, dots, h('div', { class: 'setup-bottom' }, nextBtn));
   el.begin = show;
   return el;
 }
@@ -151,7 +166,10 @@ function storyScene(name, { team, profile, coach }) {
   const coachFig = () => figure(coach.look, { size: 62, kit: coach.kit, pattern: 'coach', idSuffix: 'story-coach' }, 'is-coach');
   const mates = team.squad.filter((p) => !p.you).map((p, i) => figure(p, { size: 50, kit: p.keeper ? 'keeper' : 'us', idSuffix: `story${i}` }));
   const grass = (...kids) => h('div', { class: 'story-grass' }, ...kids);
-  if (name === 'morning') return h('div', { class: 'title-art story-pic' }, titleScene());
+  // Big words on the first page, for more of a match-day feeling (Rich
+  // asked, 27th November 2026). Decoration only: the voice says it too.
+  if (name === 'morning')
+    return h('div', { class: 'title-art story-pic story-morning' }, titleScene(), h('div', { class: 'game-day', 'aria-hidden': 'true' }, h('span', { class: 'game-day-top' }, 'It’s'), h('span', { class: 'game-day-big' }, 'GAME DAY!')));
   if (name === 'coach') return h('div', { class: 'story-pic story-panel' }, grass(coachFig(), ...mates.slice(0, 2), empty(false), ...mates.slice(2)));
   if (name === 'you') return h('div', { class: 'story-pic story-panel' }, grass(empty(true)));
   // 'ready': the whole team with her in the middle, Coach and a ball.
@@ -167,7 +185,7 @@ const SETUP_LINES = {
   you: { hello: 'setup.hello', name: 'setup.name', skin: 'setup.skin', hairColour: 'setup.hairColour', hair: 'setup.hair', done: 'setup.done' },
   friend: { hello: 'setup.friendHello', name: 'setup.friendName', skin: 'setup.skin', hairColour: 'setup.hairColour', hair: 'setup.hair', done: 'setup.friendDone' },
 };
-export function setupScreen({ profile, onDone, who = 'you', kit = 'us' }) {
+export function setupScreen({ profile, onDone, onBack, who = 'you', kit = 'us' }) {
   const STEP_LINES = SETUP_LINES[who];
   // A new player starts with nothing chosen. Done only works once the name,
   // skin colour, hair colour and hair style are all chosen (Rich's choice
@@ -180,7 +198,6 @@ export function setupScreen({ profile, onDone, who = 'you', kit = 'us' }) {
     doneBtn.classList.toggle('is-waiting', !!missingStep(state));
   };
 
-  const nameNote = h('p', { class: 'small name-note' }, 'First name or nickname only, please. Not a full name.');
   const nameInput = h('input', {
     type: 'text',
     id: 'player-name',
@@ -189,12 +206,9 @@ export function setupScreen({ profile, onDone, who = 'you', kit = 'us' }) {
     autocapitalize: 'words',
     spellcheck: 'false',
     value: state.name,
-    'aria-describedby': 'name-help',
   });
   nameInput.addEventListener('input', () => {
-    const cleaned = cleanName(nameInput.value);
-    nameNote.classList.toggle('is-warning', /\s/.test(nameInput.value.trim()) || nameInput.value.length > NAME_MAX);
-    state.name = cleaned;
+    state.name = cleanName(nameInput.value);
     drawPreview();
   });
 
@@ -202,8 +216,7 @@ export function setupScreen({ profile, onDone, who = 'you', kit = 'us' }) {
     'div',
     { class: 'name-box grown-up-box' },
     h('label', { for: 'player-name' }, who === 'you' ? 'Type your name (a grown-up can help)' : 'Type this player’s name (a grown-up can help)'),
-    nameInput,
-    h('span', { id: 'name-help' }, nameNote)
+    nameInput
   );
   // When the name is done (Return, or tapping away), move on to skin colour.
   let namePrompted = false;
@@ -256,6 +269,8 @@ export function setupScreen({ profile, onDone, who = 'you', kit = 'us' }) {
     [nameBox, skinRow, hairRow, colourRow, doneBtn].forEach((r) => r.classList.remove('is-glow'));
     const step = Object.keys(STEP_LINES).find((k) => k !== 'hello' && STEP_LINES[k] === lineId);
     ({ name: nameBox, skin: skinRow, hair: hairRow, hairColour: colourRow, done: doneBtn })[step]?.classList.add('is-glow');
+    // The first time everything is chosen, point at the tick.
+    if (step === 'done') pointOnce(doneBtn, 'setup-done');
   }
   // Redraw hair buttons with the chosen skin so they match.
   skinRow.addEventListener('click', () => hairRow.querySelectorAll('.choice').forEach((b, i) => b.replaceChildren(avatarHead({ ...shown(), hair: looks.hair[i].id }))));
@@ -279,7 +294,7 @@ export function setupScreen({ profile, onDone, who = 'you', kit = 'us' }) {
   const el = h(
     'section',
     { class: 'screen setup' },
-    h('div', { class: 'setup-top' }, preview, againButton()),
+    h('div', { class: 'setup-top' }, onBack ? h('button', { class: 'icon-btn back-btn', type: 'button', 'aria-label': 'Back', onclick: onBack }, backIcon()) : null, preview, againButton()),
     nameBox,
     skinRow,
     colourRow,
@@ -461,6 +476,8 @@ export function menuScreen({ profile, progress, team, levels, album, updateReady
       n.kind === 'soon' ? lockIcon() : String(n.level),
       n.bonus ? h('span', { class: 'node-bonus' }, bonusStickerSvg(n.level, true)) : null
     );
+    // The very first time on the path, point at level 1.
+    if (n.state === 'now' && n.level === 1) pointOnce(b, 'path', { above: true });
     b.addEventListener('click', () => {
       if (locked) shake(b);
       if (n.kind === 'soon') onSoon?.();

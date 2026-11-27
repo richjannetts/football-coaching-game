@@ -568,6 +568,24 @@ h2 {
   }
 }
 
+/* Above a button, pointing down: for wide buttons and ones near the edge. */
+.tap-here.is-above {
+  left: 50%;
+  top: auto;
+  bottom: calc(100% + 6px);
+  translate: -50% 0;
+  flex-direction: column-reverse;
+  animation-name: tap-nudge-down;
+}
+.tap-here.is-above .tap-here-hand {
+  rotate: -90deg;
+}
+@keyframes tap-nudge-down {
+  50% {
+    transform: translateY(8px);
+  }
+}
+
 /* Make room for the pointer so it stays clear of the screen edge. */
 .end-buttons:has(.has-pointer) {
   padding-right: 72px;
@@ -1143,7 +1161,7 @@ h2 {
   place-items: center;
   font: 400 5rem var(--font-display);
   letter-spacing: 2px;
-  color: var(--accent);
+  color: #fff; /* not yellow: yellow only ever means "tap me next" */
   -webkit-text-stroke: 3px var(--navy);
   paint-order: stroke fill;
   text-shadow: 0 6px 0 var(--navy);
@@ -2617,4 +2635,78 @@ button.chip:active {
   .story-pic {
     max-width: min(460px, calc((var(--app-h, 100vh) - 80px) * 1.6));
   }
+}
+
+/* ---------- Story: back button and the "GAME DAY!" title ----------
+   The back button keeps its place on the first page, so the speaker button
+   never jumps across. "GAME DAY!" sits over the top of the first picture
+   (Rich asked for more oomph, 27th November 2026). */
+.story-top .back-btn.is-hidden {
+  display: inline-flex !important;
+  visibility: hidden;
+}
+.story-morning {
+  position: relative;
+}
+.game-day {
+  position: absolute;
+  left: 50%;
+  top: -8%;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  rotate: -5deg;
+  animation: game-day-in 0.7s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+.game-day-top {
+  font: 400 1.2rem/1 var(--font-display);
+  color: var(--navy);
+  background: #fff;
+  padding: 4px 14px 6px;
+  border-radius: 999px;
+  box-shadow: 0 4px 0 var(--lip);
+  margin-bottom: -6px;
+  z-index: 1;
+}
+.game-day-big {
+  font: 400 clamp(2.6rem, 13vw, 3.6rem)/1 var(--font-display);
+  color: #fff; /* not yellow: yellow only ever means "tap me next" */
+  -webkit-text-stroke: 3px var(--navy);
+  paint-order: stroke fill;
+  text-shadow: 0 6px 0 var(--navy), 0 12px 18px rgba(10, 26, 60, 0.35);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+@keyframes game-day-in {
+  from {
+    scale: 0.3;
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-day {
+    animation: none;
+  }
+}
+
+/* ---------- My team: our kit ---------- */
+.kit-title {
+  margin: 10px 0 2px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+/* The other team's shirt colour: shown, but can't be picked. */
+.kit-row .choice.is-taken {
+  opacity: 0.35;
+  position: relative;
+}
+.kit-row .choice.is-taken::after {
+  content: '';
+  position: absolute;
+  inset: 20% 48%;
+  background: var(--ink);
+  rotate: 45deg;
+  border-radius: 2px;
 }
