@@ -94,6 +94,13 @@ export function spotDistance(p, target) {
   const places = [target, ...(target.also || [])];
   return Math.min(...places.map((q) => distance(p, q)));
 }
+// A shape spot can have a zone: a box on the pitch where anywhere counts
+// (Rich asked for "the right area is fine", 27th November 2026). The spot
+// itself is still the ideal place, used for hints and to break ties.
+const EDGE = 0.01; // yards of slack, so a dot on the zone's edge counts
+export function inZone(p, zone) {
+  return p.x >= zone.x[0] - EDGE && p.x <= zone.x[1] + EDGE && p.y >= zone.y[0] - EDGE && p.y <= zone.y[1] + EDGE;
+}
 const nearestPlace = (p, target) => [target, ...(target.also || [])].reduce((a, b) => (distance(p, b) < distance(p, a) ? b : a));
 
 // Pair players with shape spots so that as many spots as possible are
@@ -117,7 +124,8 @@ export function matchShape(players, targets, tolerance, fits = () => true) {
     for (let i = 0; i < players.length; i++) {
       if (used[i] || !fits(i, targets[t])) continue;
       const d = spotDistance(players[i], targets[t]);
-      if (d > tolerance) continue;
+      const fitsSpot = targets[t].zone ? inZone(players[i], targets[t].zone) : d <= tolerance;
+      if (!fitsSpot) continue;
       used[i] = true;
       assign[t] = i;
       walk(t + 1, count + 1, total + d);
@@ -137,7 +145,7 @@ export function matchShape(players, targets, tolerance, fits = () => true) {
 // Returns { ok, roles, emptySpots, strayPlayers, problems }.
 // roles[i] is the role of shape spot i and which player filled it.
 export function checkShape({ players, shape, grid, keepers = [] }) {
-  const targets = shape.spots.map((s) => ({ ...resolveAt(s.at, grid), also: (s.also || []).map((a) => resolveAt(a, grid)), role: s.role, hint: s.hint }));
+  const targets = shape.spots.map((s) => ({ ...resolveAt(s.at, grid), also: (s.also || []).map((a) => resolveAt(a, grid)), role: s.role, hint: s.hint, zone: s.zone || null }));
   const isKeeper = (i) => keepers.includes(i);
   const fits = (i, t) => !keepers.length || isKeeper(i) === (t.role === 'keeper');
   const assign = matchShape(players, targets, shape.tolerance, fits);
@@ -147,7 +155,8 @@ export function checkShape({ players, shape, grid, keepers = [] }) {
   // A filled spot reports where the player actually stands (the nearest
   // of its places), so the story plays out from there.
   const roles = targets.map((t, i) => {
-    const at = assign[i] >= 0 ? nearestPlace(players[assign[i]], t) : t;
+    // In a zone, the player's own position is the place.
+    const at = assign[i] < 0 ? t : t.zone ? players[assign[i]] : nearestPlace(players[assign[i]], t);
     return { role: t.role, x: at.x, y: at.y, player: assign[i] };
   });
 

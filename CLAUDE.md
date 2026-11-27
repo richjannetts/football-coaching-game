@@ -110,7 +110,7 @@ Added at Rich's request, 26th November 2026, so others can play on their own pho
 Keep content out of the code so it can be swapped later.
 
 - `src/data/rules/`: one file per rule set (body, season, format, age groups). Each rule has a value, source and last-checked date. A local file can extend a parent.
-- `src/data/team.json`: the starting team name and player names (made up), kit colours, the other team's kit choices (shirt styles and colours), and the coach's shapes, as spots on a grid. A shape spot can list `also`: other spots that count as right (the back player, Rich's choice, 27th November 2026).
+- `src/data/team.json`: the starting team name and player names (made up), kit colours, the other team's kit choices (shirt styles and colours), and the coach's shapes, as spots on an evenly spaced grid. Each shape spot has an ideal dot (`at`) and a `zone`: a box in yards where anywhere counts, so the child only needs the right area (Rich's choice, 27th November 2026).
 - The child can change every player's name and look, both team names and the other team's kit (shirt style, shirt colours, shorts and socks) on the "My team" screen. Her changes are saved on the phone and laid over `team.json` by `src/lib/myteam.js`. Our own kit colours are not changeable yet.
 - `src/data/levels.json`: the levels on the path, grouped into matches, and how many locked "more soon" places to draw after the last one.
 - `src/data/stickers.json`: the album pages and every sticker, in the order they are won. Nothing extra is saved for stickers: they follow from her progress.
@@ -138,7 +138,7 @@ Keep content out of the code so it can be swapped later.
 
 ## Match 1
 
-The full match is storyboarded in `docs/match-1-storyboard.md` (agreed by Rich, 27th November 2026): ten levels, kick-off to full time. Levels 1 to 4 are built. The scoreboard shows the score once a level sets it (`stage.setScore`).
+The full match is storyboarded in `docs/match-1-storyboard.md` (agreed by Rich, 27th November 2026): ten levels, kick-off to full time. Levels 1 to 6 (the first half) are built. A match still being built has `complete: false` in `levels.json`, so its shiny waits for full time. The scoreboard shows the score once a level sets it (`stage.setScore`).
 
 ## Not in scope yet
 
