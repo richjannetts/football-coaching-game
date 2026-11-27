@@ -14,8 +14,8 @@ const RETREAT = [
   [15, 38.5],
   [9, 23],
   [21, 23],
-  [15, 27],
-  [15, 32],
+  [19, 28.5],
+  [11, 31],
 ];
 const BALL = { x: 15, y: 2.8 }; // the goal kick, just in front of our keeper
 
@@ -61,7 +61,7 @@ export async function chapter3(stage) {
   const targets = [
     { kind: 'friend', x: wideL.x, y: wideL.y, role: wideL },
     { kind: 'friend', x: wideR.x, y: wideR.y, role: wideR },
-    { kind: 'long', x: 15, y: 28, drawR: 30 },
+    { kind: 'long', x: 15, y: 35, drawR: 30 },
   ];
   await stage.play(['c3.passAsk']);
   stage.setBusy(false);
@@ -101,16 +101,16 @@ export async function chapter3(stage) {
     return Promise.all([pitch.moveTo(keeper.el, { x: 15, y: 1.5 }, 300), pitch.moveBall(meet, 800)]);
   }
 
-  // A long kick lands with their player in the middle.
+  // A long kick sails over everyone and their keeper catches it.
   async function longKick() {
-    const catcher = them[3];
-    await pitch.moveBall({ x: 15, y: 26.2 }, 1000, 'ease-out');
-    await pitch.moveTo(catcher, { x: 15, y: 26.8 }, 300);
+    const catcher = them[0];
+    await pitch.moveBall({ x: 15, y: 36.6 }, 1100, 'ease-out');
+    await pitch.moveTo(catcher, { x: 15, y: 37.2 }, 300);
     stage.jump([catcher]);
-    const cross = pitch.showCross({ x: 15, y: 26.2 });
+    const cross = pitch.showCross({ x: 15, y: 36.6 });
     await wait(hold(1600));
     cross.remove();
-    await Promise.all([pitch.moveBall(BALL, 700), pitch.moveTo(catcher, { x: RETREAT[3][0], y: RETREAT[3][1] }, 700)]);
+    await Promise.all([pitch.moveBall(BALL, 700), pitch.moveTo(catcher, { x: RETREAT[0][0], y: RETREAT[0][1] }, 700)]);
   }
 
   // Our friend takes it up the side, passes inside, and our front player

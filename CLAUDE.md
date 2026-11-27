@@ -130,6 +130,16 @@ Keep content out of the code so it can be swapped later.
 - There is no centre circle in 5v5. Draw a dashed five-yard ring as a helper and say it is a helper.
 - Not confirmed for 5v5, so do not test the child on them: which team kicks off after a goal, and whether the kicker can touch the ball twice. Level 2's story has them restart after our goal, at Rich's request. It is told, never tested.
 
+## The rule: 5v5 goal kicks (FA retreat line, under-7 to under-11)
+
+- At a goal kick, the other team goes back into its own half until the ball is kicked. In 5v5 the retreat line is the halfway line.
+- Level 3 tells this (their players walk back). Level 4 tests it: all of ours in our own half.
+- Not confirmed yet, so not tested: exactly when they may cross (as the ball is kicked, or once it is received), and whether the keeper may dribble it out.
+
+## Match 1
+
+The full match is storyboarded in `docs/match-1-storyboard.md` (agreed by Rich, 27th November 2026): ten levels, kick-off to full time. Levels 1 to 4 are built. The scoreboard shows the score once a level sets it (`stage.setScore`).
+
 ## Not in scope yet
 
-A coach editor, sharing a team code, goal kicks, kick-ins, recorded voice, polished artwork.
+A coach editor, sharing a team code, kick-ins, corners, penalties (waiting for Rich's club rule set), recorded voice, polished artwork.
