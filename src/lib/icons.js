@@ -1,5 +1,6 @@
 // Simple icons drawn in code.
 import { s } from './svg.js';
+import { footballSvg } from './ball.js';
 
 const icon = (...children) => s('svg', { viewBox: '0 0 48 48', class: 'icon', 'aria-hidden': 'true' }, ...children);
 
@@ -13,14 +14,17 @@ export const speakerIcon = () =>
 
 export const tickIcon = () => icon(s('path', { d: 'M10 25 L20 35 L38 13', class: 'icon-stroke icon-thick' }));
 
-export const ballIcon = (filled = true) =>
-  s(
-    'svg',
-    { viewBox: '0 0 48 48', class: `icon football${filled ? '' : ' is-empty'}`, 'aria-hidden': 'true' },
-    s('circle', { cx: 24, cy: 24, r: 20, class: 'football-shape' }),
-    s('path', { d: 'M24 15 L32 21 L29 31 L19 31 L16 21 Z', class: 'football-patch' }),
-    s('path', { d: 'M24 15 V5 M32 21 L42 17 M29 31 L35 40 M19 31 L13 40 M16 21 L6 17', class: 'football-seam' })
-  );
+export function ballIcon(filled = true) {
+  const svg = s('svg', { viewBox: '0 0 48 48', class: `icon football${filled ? '' : ' is-empty'}`, 'aria-hidden': 'true' });
+  if (!filled) {
+    svg.append(s('circle', { cx: 24, cy: 24, r: 20, class: 'football-shape' }));
+    return svg;
+  }
+  const ball = footballSvg(21);
+  ball.setAttribute('transform', 'translate(24 24)');
+  svg.append(ball);
+  return svg;
+}
 
 export const nextIcon = () => icon(s('path', { d: 'M12 24 H36 M26 13 L37 24 L26 35', class: 'icon-stroke icon-thick' }));
 
@@ -105,8 +109,8 @@ export function quizPicture(pic, length = 40, width = 30) {
   svg.append(
     s('rect', { x: 0, y: 0, width, height: length, rx: 1.5, class: 'quiz-grass' }),
     s('line', { x1: 0, y1: length / 2, x2: width, y2: length / 2, class: 'quiz-line' }),
-    s('rect', { x: width / 2 - 2, y: -0.8, width: 4, height: 0.8, class: 'quiz-goal' }),
-    s('rect', { x: width / 2 - 2, y: length, width: 4, height: 0.8, class: 'quiz-goal' })
+    s('rect', { x: width / 2 - 3, y: -1.2, width: 6, height: 1.2, class: 'quiz-goal' }),
+    s('rect', { x: width / 2 - 3, y: length, width: 6, height: 1.2, class: 'quiz-goal' })
   );
   if (pic.ring) svg.append(s('circle', { cx: pic.ball[0], cy: Y(pic.ball[1]), r: 5, class: 'quiz-ring' }));
   (pic.them || []).forEach(([x, y]) => svg.append(s('circle', { cx: x, cy: Y(y), r: 1.6, class: 'quiz-them' })));
@@ -120,7 +124,11 @@ export function quizPicture(pic, length = 40, width = 30) {
       s('polygon', { points: `${x2},${Y(y2)} ${head.join(' ')}`, class: 'quiz-arrow-head' })
     );
   }
-  if (pic.ball) svg.append(s('circle', { cx: pic.ball[0], cy: Y(pic.ball[1]), r: 0.9, class: 'quiz-ball' }));
+  if (pic.ball) {
+    const ball = footballSvg(2, { cls: 'quiz-ball' });
+    ball.setAttribute('transform', `translate(${pic.ball[0]} ${Y(pic.ball[1])})`);
+    svg.append(ball);
+  }
   return svg;
 }
 
@@ -223,12 +231,7 @@ export function titleScene() {
   // A ball flying into the top corner, with speed lines.
   g.append(
     s('path', { d: 'M70 168 Q120 90 176 86', class: 'ts-trail' }),
-    s(
-      'g',
-      { class: 'ts-ball' },
-      s('circle', { cx: 0, cy: 0, r: 9, fill: '#fff', stroke: '#1f2937', 'stroke-width': 1.5 }),
-      s('path', { d: 'M0 -4 L3.8 -1.2 L2.4 3.2 L-2.4 3.2 L-3.8 -1.2 Z', fill: '#1f2937' })
-    )
+    footballSvg(11, { cls: 'ts-ball' })
   );
   svg.append(defs, g);
   return svg;
@@ -254,3 +257,33 @@ export const menuDotsIcon = () => icon(s('circle', { cx: 24, cy: 11, r: 4, class
 // A phone with a download arrow, for "Install app".
 export const installIcon = () =>
   icon(s('rect', { x: 13, y: 5, width: 22, height: 38, rx: 4, class: 'icon-stroke' }), s('path', { d: 'M24 13 V29 M17 23 L24 30 L31 23', class: 'icon-stroke' }));
+
+// A little shirt, for choosing the other team's shirt style. Drawn in the
+// colours she has picked, so she sees what she will get.
+let shirtCount = 0;
+export function shirtIcon(pattern, shirt, stripe) {
+  const id = `shirt-icon-${++shirtCount}`;
+  const body = 'M14 6 L20 4 Q24 8 28 4 L34 6 L44 14 L38 22 L34 19 L34 44 L14 44 L14 19 L10 22 L4 14 Z';
+  const f = { fill: stripe };
+  const parts = {
+    stripes: [16, 22, 28].map((x) => s('rect', { x, y: 0, width: 4, height: 48, ...f })),
+    hoops: [14, 24, 34].map((y) => s('rect', { x: 0, y, width: 48, height: 5, ...f })),
+    halves: [s('rect', { x: 24, y: 0, width: 24, height: 48, ...f })],
+    sash: [s('path', { d: 'M8 8 L16 4 L44 40 L44 48 L36 48 Z', ...f })],
+    plain: [s('path', { d: 'M20 4 Q24 10 28 4', stroke: stripe, 'stroke-width': 3, fill: 'none' })],
+  };
+  return s(
+    'svg',
+    { viewBox: '0 0 48 48', class: 'shirt-icon', 'aria-hidden': 'true' },
+    s('defs', {}, s('clipPath', { id }, s('path', { d: body }))),
+    s('path', { d: body, fill: shirt }),
+    s('g', { 'clip-path': `url(#${id})` }, ...(parts[pattern] || parts.plain)),
+    s('path', { d: body, fill: 'none', stroke: '#12305c', 'stroke-width': 2, 'stroke-linejoin': 'round' })
+  );
+}
+
+// Shorts and a sock, to show which row of colours is which.
+export const shortsIcon = (colour = '#fff') =>
+  s('svg', { viewBox: '0 0 48 48', class: 'kit-part-icon', 'aria-hidden': 'true' }, s('path', { d: 'M8 10 H40 L44 40 H28 L24 24 L20 40 H4 Z', fill: colour, stroke: '#12305c', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }));
+export const sockIcon = (colour = '#fff') =>
+  s('svg', { viewBox: '0 0 48 48', class: 'kit-part-icon', 'aria-hidden': 'true' }, s('path', { d: 'M16 4 H30 V28 L40 34 Q44 38 40 42 Q36 46 28 44 L14 38 Q10 36 12 32 L16 26 Z', fill: colour, stroke: '#12305c', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }));

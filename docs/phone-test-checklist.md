@@ -96,13 +96,29 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - Turn the phone sideways: players stay upright and the bench players do not hide each other.
 - The GK badge is readable on both keepers.
 
+## First run: story and team setup
+
+- [ ] In Grown-ups, tap "Delete everything" to start as a new player.
+- [ ] After the grown-ups note, three story pages play, each with a picture and the voice. Tap the green arrow to turn each page.
+- [ ] On the third page a yellow space with a question mark glows. The arrow then opens the make-your-player screen.
+- [ ] After her player, "Your team" shows her team-mates. Tap one to change her, then tap the tick.
+- [ ] "The other team" comes next. Choose a shirt style, shirt colour, second colour, shorts and socks. The little player changes each time.
+- [ ] The last story page shows her with the team and Coach. The arrow goes to the path.
+- [ ] Turn the phone sideways on a story page. The picture and the arrow do not overlap.
+
+## Pitch
+
+- [ ] The ball looks like a real black and white football. Ask your daughter what it is.
+- [ ] The goals look a bit bigger, with a net.
+- [ ] Level 1 and level 2: put the back player one dot in front of the penalty box line. It counts as right. On the line also counts.
+
 ## My team
 
 - [ ] On the menu, tap the white button with five faces and the team name. The team screen opens and the voice explains it.
 - [ ] Tap a team-mate. Change her name and look, then tap the tick. She shows the new name and look on the team screen.
 - [ ] Type a new name for our team and for the other team. Numbers and symbols do not go in.
-- [ ] Tap a colour for the other team. The little player next to the colours changes kit.
-- [ ] Play a level. Each of our players has her name under her feet, the keeper has her name and the GK badge, and the other team wears the colour you chose.
+- [ ] Change the other team's shirt style, colours, shorts and socks. The little player changes kit each time.
+- [ ] Play a level. Each of our players has her name under her feet, the keeper has her name and the GK badge, and the other team wears the kit you chose.
 - [ ] The dark strip above the pitch shows both team names.
 - [ ] Turn the phone sideways in a level. Names on the bench hide until you pick a player up. Check that still feels all right.
 - [ ] Give one player a long name (9 letters or more). On the pitch it is cut short with three dots. Check it does not bump into her neighbour.
@@ -120,7 +136,8 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 ## Sticker album
 
 - [ ] On the path, tap the book button at the bottom right. The album opens on your team's page, and the voice explains it.
-- [ ] Your own player is sticker 1. The other spaces are grey with a number.
+- [ ] A new player starts with an empty album: every space is grey with a number.
+- [ ] The first bonus question she gets right wins her own player, sticker 1.
 - [ ] Swipe sideways, or tap the arrows, to turn the pages: your team, club colours, world colours, kit bag, shinies. The dots show which page you are on.
 - [ ] Finish a level: a football medal spins in. The voice says "Level one done", not "sticker".
 - [ ] Get the bonus question right: a new sticker pops up beside the medal and the voice says you have won a sticker. It is in the album afterwards.

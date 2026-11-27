@@ -12,7 +12,7 @@ import stickers from './data/stickers.json';
 import { buildAlbum, newShinies } from './lib/album.js';
 import { quizFor } from './lib/quiz.js';
 import { detectPlatform } from './lib/platform.js';
-import { installScreen, welcomeScreen, startScreen, setupScreen, menuScreen, teamScreen, albumScreen, gateScreen, grownUpsScreen } from './screens.js';
+import { installScreen, welcomeScreen, startScreen, storyScreen, setupScreen, menuScreen, teamScreen, albumScreen, gateScreen, grownUpsScreen } from './screens.js';
 import * as teams from './lib/teamState.js';
 
 
@@ -110,7 +110,7 @@ function boot() {
       welcomeScreen({
         onAgree: () => {
           store.save('agreed', true);
-          goSetup();
+          goStory();
         },
       })
     );
@@ -120,9 +120,37 @@ function boot() {
   show(
     startScreen({
       profile,
-      onStart: () => (profile ? goMenu(true) : goSetup()),
+      onStart: () => (profile ? goMenu(true) : goStory()),
     })
   );
+}
+
+// ---- A new player's first run ----
+// A short story, then she makes her player, meets her team-mates, sets up
+// the other team, and a last story page takes her to the path (Rich asked
+// for a lead-in and for both teams to be set up first, 27th November 2026).
+// Everything here can be changed later from the My team button.
+const COACH = stickers.pages.flatMap((p) => p.stickers || []).find((st) => st.kind === 'coach');
+const storyPages = (part) =>
+  part === 'start'
+    ? [
+        { line: 'story.morning', scene: 'morning' },
+        { line: 'story.coach', scene: 'coach' },
+        { line: 'story.you', scene: 'you' },
+      ]
+    : [{ line: 'story.ready', scene: 'ready' }];
+
+function goStory(part = 'start') {
+  tellNames();
+  const el = storyScreen({
+    pages: storyPages(part),
+    team: teams.myTeam(profile),
+    profile,
+    coach: COACH,
+    onDone: () => (part === 'start' ? goSetup(() => goTeam(true, 'us')) : goMenu(true)),
+  });
+  show(el);
+  el.begin(); // called from a tap, so sound can start
 }
 
 function goSetup(then) {
@@ -141,24 +169,31 @@ function goSetup(then) {
 }
 
 // The team screen. Tapping a player opens the same setup screen as her own.
-function goTeam(speak = true) {
+// mode 'both' comes from the menu. 'us' then 'them' are the first-run steps.
+function goTeam(speak = true, mode = 'both') {
   const el = teamScreen({
     team: teams.myTeam(profile),
-    kits: teams.theirKits,
+    kits: teams.theirKitOptions,
+    mode,
     onBack: () => {
       tellNames();
       goMenu(false);
     },
+    onNext: () => {
+      tellNames();
+      if (mode === 'us') goTeam(true, 'them');
+      else goStory('end');
+    },
     onPlayer: (i) => {
       const p = teams.myTeam(profile).squad[i];
-      if (p.you) return goSetup(() => goTeam(false));
+      if (p.you) return goSetup(() => goTeam(false, mode));
       const setup = setupScreen({
         profile: p,
         who: 'friend',
         kit: p.keeper ? 'keeper' : 'us',
         onDone: (next) => {
           teams.savePlayer(i, next);
-          goTeam(false);
+          goTeam(false, mode);
         },
       });
       show(setup);

@@ -33,8 +33,38 @@
     },
     {
       "id": "team.hello",
-      "text": "This is your team! Tap a player to change her name or her look. You can name both teams, and pick a colour for the other team.",
-      "cue": "Our five players stand in a row with their names. The other team's colours are underneath."
+      "text": "This is your team! Tap a player to change her name or her look. You can name both teams, and choose the other team's kit.",
+      "cue": "Our five players stand in a row with their names. The other team's kit choices are underneath."
+    },
+    {
+      "id": "story.morning",
+      "text": "It's Saturday morning. Hooray, it's match day!",
+      "cue": "A sunny football pitch with a goal, and a ball flying into the net."
+    },
+    {
+      "id": "story.coach",
+      "text": "{team} have a big game today. Coach needs one more player, someone who knows where to stand.",
+      "cue": "Coach and four team-mates stand on the grass, next to an empty space with a question mark."
+    },
+    {
+      "id": "story.you",
+      "text": "That's you! First, let's make your player.",
+      "cue": "The empty space glows yellow."
+    },
+    {
+      "id": "team.meet",
+      "text": "Meet your team-mates! Tap a player to change her name or her look. You can give your team a name too. Tap the tick when you're ready.",
+      "cue": "Our five players stand in a row with their names, under our team's name."
+    },
+    {
+      "id": "team.them",
+      "text": "Now, who are you playing today? Give the other team a name, then choose their shirt, their colours, their shorts and their socks. Tap the tick when you're ready.",
+      "cue": "A player from the other team, with rows of shirts and colours to choose from."
+    },
+    {
+      "id": "story.ready",
+      "text": "Brilliant, {name}! Everyone is ready. Let's go to the pitch!",
+      "cue": "Your player stands with the whole team and Coach, next to a football."
     },
     {
       "id": "setup.friendHello",
@@ -173,7 +203,7 @@
     },
     {
       "id": "shape.back",
-      "text": "In our team, our back player stands on the line of our penalty box, in the middle.",
+      "text": "In our team, our back player stands in the middle, on the line of our penalty box or just in front of it.",
       "cue": "The players in the wrong place have a red ring."
     },
     {

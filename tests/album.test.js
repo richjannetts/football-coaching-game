@@ -12,30 +12,36 @@ const mine = resolveTeam(team, looks, null, { name: 'Star', skin: 's3', hair: 'p
 const album = (progress) => buildAlbum(data, { squad: mine.squad, teamName: mine.name, progress, levels });
 const all = (a) => a.pages.flatMap((p) => p.stickers);
 
-test('album: a new player has just her own sticker, number 1', () => {
-  const a = album({});
-  assert.equal(a.count, 1);
-  const got = all(a).filter((x) => x.earned);
+test('album: a new player starts with no stickers', () => {
+  assert.equal(album({}).count, 0);
+});
+
+test('album: the first sticker she wins is her own player, number 1', () => {
+  const got = all(album({ ch1: true, bonus1: true })).filter((x) => x.earned);
+  assert.equal(got.length, 1);
   assert.equal(got[0].no, 1);
   assert.equal(got[0].name, 'Star');
 });
 
 test('album: passing a level alone wins no sticker', () => {
-  assert.equal(album({ ch1: true }).count, 1);
+  assert.equal(album({ ch1: true }).count, 0);
 });
 
 test('album: each right bonus answer wins the next sticker in order', () => {
   const one = album({ ch1: true, bonus1: true });
-  assert.deepEqual(all(one).filter((x) => x.earned).map((x) => x.no), [1, 2]);
+  assert.deepEqual(all(one).filter((x) => x.earned).map((x) => x.no), [1]);
+  const two = album({ ch1: true, bonus1: true, ch2: true, bonus2: true });
+  assert.deepEqual(all(two).filter((x) => x.earned && x.kind !== 'shiny').map((x) => x.no), [1, 2]);
   // The order does not depend on which level the answer came from.
   const other = album({ ch2: true, bonus2: true });
-  assert.deepEqual(all(other).filter((x) => x.earned).map((x) => x.no), [1, 2]);
+  assert.deepEqual(all(other).filter((x) => x.earned).map((x) => x.no), [1]);
 });
 
 test('album: the next prize is the first sticker not yet won', () => {
-  assert.equal(album({}).next.no, 2);
-  assert.equal(album({ bonus1: true }).next.no, 3);
-  assert.equal(album({}).next.name, mine.squad[1].name);
+  assert.equal(album({}).next.no, 1);
+  assert.equal(album({}).next.name, 'Star');
+  assert.equal(album({ bonus1: true }).next.no, 2);
+  assert.equal(album({ bonus1: true }).next.name, mine.squad[1].name);
 });
 
 test('album: finishing every level of a match gives its shiny', () => {

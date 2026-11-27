@@ -42,7 +42,7 @@ export function createStage({ profile, onHome, showWords = false }) {
     { class: 'scoreboard', 'aria-label': `${mine.name} against ${mine.theirName}` },
     h('span', { class: 'scoreboard-side' }, h('span', { class: 'kit-dot', style: { background: mine.kit.us.shirt, borderColor: mine.kit.us.stripe } }), h('span', { class: 'scoreboard-name' }, mine.name)),
     h('span', { class: 'scoreboard-v' }, 'v'),
-    h('span', { class: 'scoreboard-side' }, h('span', { class: 'scoreboard-name' }, mine.theirName), h('span', { class: 'kit-dot', style: { background: mine.kit.them.shirt } }))
+    h('span', { class: 'scoreboard-side' }, h('span', { class: 'scoreboard-name' }, mine.theirName), h('span', { class: 'kit-dot', style: { background: mine.kit.them.shirt, borderColor: mine.kit.them.stripe } }))
   );
 
   const el = h(

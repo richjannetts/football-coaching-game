@@ -34,6 +34,8 @@ The "Saturday morning" look (Rich's choice, 26th November 2026). Colours and fon
 - Yellow always means "tap me next". Purple only ever means the bonus.
 - Buttons are chunky: a thick bottom edge, and they sink when pressed.
 - Two fonts, kept in `src/fonts/` with their licences: Titan One for the logo and banners, Fredoka for everything she reads. Fredoka's a and g are the shapes children learn at school.
+- One football drawing (`src/lib/ball.js`) is used everywhere: pitch, bonus pictures, title and stickers. A classic black and white ball, because Rich's daughter did not recognise a plain dot.
+- Goals are drawn half as wide again as true scale, so they look right next to the players. The rules still use the real goal size.
 - Players on the pitch are mini copies of the full player, drawn by the same code in `src/lib/avatar.js`, so any look carries across. They stay upright in landscape. A keeper has a round GK badge by her shoulder.
 - Each of our players has her name on a small plate under her feet. Long names are cut short there. In landscape, names on the bench wait until a player is picked up, because the bench is a column.
 - A small scoreboard above the pitch shows both team names with a dot of each kit colour.
@@ -82,11 +84,13 @@ Added at Rich's request, 26th November 2026, so others can play on their own pho
 
 ## How it should feel
 
+- A new player's first run (Rich's choice, 27th November 2026): a short story (three picture pages), then she makes her player, meets her team-mates, sets up the other team, and one last story page takes her to the path. All of it can be changed later on the "My team" screen.
+
 - Every instruction is spoken and shown in pictures. Words on screen are off by default (Rich's choice, 26th November 2026), switch on in the grown-ups area, and come on by themselves if the phone has no voice. Many 6 year olds cannot read fluently. The one exception is the bonus question: its question and answer labels are always shown, big and bold, as well as spoken (Rich's choice, 26th November 2026).
 - A wrong answer gets a friendly whistle, a picture of why, a hint, and another go straight away. Hints step up: nudge, show, do it together.
 - A wrong answer never loses the match or concedes a goal.
 - Praise effort, not cleverness.
-- No timer pressure, no streaks, no daily rewards. Stickers collected are a record of progress. Passing a level moves her up the path. Her own player is sticker 1 from the start, and finishing every level of a match gives a shiny sticker.
+- No timer pressure, no streaks, no daily rewards. Stickers collected are a record of progress. Passing a level moves her up the path. The first sticker she wins is her own player (sticker 1, Rich's choice, 27th November 2026), and finishing every level of a match gives a shiny sticker.
 - Each level ends with one bonus question on what it taught, with three picture answers. Right wins the next sticker in the album, once for each level. Wrong is never called wrong: the right picture glows and the voice explains it. She can try again next time she plays the level.
 - A correct line-up starts the play. Goals come from a passing move, so the message is "we were ready", not "stand here and score".
 - Explainer animations have no tappable extras. Touch is off while one plays.
@@ -106,8 +110,8 @@ Added at Rich's request, 26th November 2026, so others can play on their own pho
 Keep content out of the code so it can be swapped later.
 
 - `src/data/rules/`: one file per rule set (body, season, format, age groups). Each rule has a value, source and last-checked date. A local file can extend a parent.
-- `src/data/team.json`: the starting team name and player names (made up), kit colours, the colours she can pick for the other team, and the coach's shapes, as spots on a grid.
-- The child can change every player's name and look, both team names and the other team's colour on the "My team" screen. Her changes are saved on the phone and laid over `team.json` by `src/lib/myteam.js`. Our own kit colours are not changeable yet.
+- `src/data/team.json`: the starting team name and player names (made up), kit colours, the other team's kit choices (shirt styles and colours), and the coach's shapes, as spots on a grid. A shape spot can list `also`: other spots that count as right (the back player, Rich's choice, 27th November 2026).
+- The child can change every player's name and look, both team names and the other team's kit (shirt style, shirt colours, shorts and socks) on the "My team" screen. Her changes are saved on the phone and laid over `team.json` by `src/lib/myteam.js`. Our own kit colours are not changeable yet.
 - `src/data/levels.json`: the levels on the path, grouped into matches, and how many locked "more soon" places to draw after the last one.
 - `src/data/stickers.json`: the album pages and every sticker, in the order they are won. Nothing extra is saved for stickers: they follow from her progress.
 - `src/data/script.json`: every spoken line as `{ id, text, cue }`.

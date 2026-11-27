@@ -13,7 +13,7 @@ export const myTeam = (profile) => resolveTeam(teamData, looks, saved, profile);
 // Kit colours by name: 'us', 'keeper', 'them' or 'theirKeeper'.
 export const kitFor = (name) => myTeam(null).kit[name] || teamData.kit.us;
 
-export const theirKits = teamData.theirKits;
+export const theirKitOptions = teamData.theirKit;
 
 function keep(next) {
   saved = next;
@@ -22,7 +22,8 @@ function keep(next) {
 export const savePlayer = (index, look) => keep(withPlayer(saved, index, look));
 export const saveTeamName = (name) => keep({ ...(saved || {}), name: cleanTeamName(name).trim() });
 export const saveTheirName = (name) => keep({ ...(saved || {}), theirName: cleanTeamName(name).trim() });
-export const saveTheirKit = (id) => keep({ ...(saved || {}), theirKit: id });
+// kit: { pattern, shirt, stripe, shorts, socks }, as colour ids.
+export const saveTheirKit = (kit) => keep({ ...(saved || {}), theirKit: { ...kit } });
 export const forgetTeam = () => {
   saved = null;
 };

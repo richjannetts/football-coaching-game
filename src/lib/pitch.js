@@ -7,6 +7,7 @@ import team from '../data/team.json';
 import { s, motion } from './svg.js';
 import { tokenSvg } from './avatar.js';
 import { distance } from './geometry.js';
+import { footballSvg } from './ball.js';
 
 const U = 10; // drawing units per yard
 
@@ -62,8 +63,31 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
     s('line', { x1: 0, y1: L / 2, x2: W, y2: L / 2, class: 'line' }),
     s('circle', { cx: W / 2, cy: L / 2, r: 4, class: 'centre-mark' })
   );
-  const theirGoal = s('rect', { x: W / 2 - gw / 2, y: -16, width: gw, height: 16, class: 'goal goal-theirs' });
-  const ourGoal = s('rect', { x: W / 2 - gw / 2, y: L, width: gw, height: 16, class: 'goal goal-ours' });
+  // The goals are drawn a little bigger than true size (Rich asked, 27th
+  // November 2026), so they look right next to the mini players. The
+  // game's rules still use the real 4 yard goal.
+  const GOAL_DRAW = 1.5; // times the real width
+  const gdw = gw * GOAL_DRAW;
+  const gd = 26; // depth of the net, in drawing units
+  const goal = (side) => {
+    const sign = side === 'theirs' ? -1 : 1;
+    const y0 = side === 'theirs' ? -gd : L;
+    const x0 = W / 2 - gdw / 2;
+    const g = s('g', { class: `goal goal-${side}` });
+    g.append(s('rect', { x: x0, y: y0, width: gdw, height: gd, class: 'goal-net' }));
+    const mesh = [];
+    for (let x = x0 + 7.5; x < x0 + gdw - 2; x += 7.5) mesh.push(`M${x} ${y0} V${y0 + gd}`);
+    for (let y = y0 + 6.5; y < y0 + gd - 1; y += 6.5) mesh.push(`M${x0} ${y} H${x0 + gdw}`);
+    g.append(s('path', { d: mesh.join(' '), class: 'goal-mesh' }));
+    // Posts and crossbar: open on the goal line side.
+    const line = side === 'theirs' ? 0 : L;
+    const back = line + sign * gd;
+    g.append(s('path', { d: `M${x0} ${line} V${back} H${x0 + gdw} V${line}`, class: 'goal-frame' }));
+    g.append(s('path', { d: `M${x0 - 2} ${line} H${x0 + gdw + 2}`, class: 'goal-line-posts' }));
+    return g;
+  };
+  const theirGoal = goal('theirs');
+  const ourGoal = goal('ours');
   lines.append(theirGoal, ourGoal);
   if (penaltyArea) {
     const pw = penaltyArea.width * U;
@@ -85,7 +109,8 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
   const themLayer = mk('them');
   const usLayer = mk('us');
   const ballLayer = mk('ball');
-  const ball = s('g', { class: 'ball' }, s('circle', { r: 7, class: 'ball-shape' }), s('circle', { r: 2.6, class: 'ball-patch' }));
+  // The ball, big enough to read as a football at a glance.
+  const ball = footballSvg(10, { cls: 'ball', shadow: true });
   ballLayer.append(ball);
   const marks = mk('marks'); // crosses and other overlays
 

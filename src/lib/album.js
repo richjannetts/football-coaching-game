@@ -1,7 +1,7 @@
 // The sticker album, worked out from what is saved. Nothing extra is
 // stored: the stickers she has follow from her progress.
-//   - Her own player is in the album from the start.
 //   - Each bonus question answered right wins the next sticker, in order.
+//     The first one is her own player (Rich's choice, 27th November 2026).
 //   - Finishing every level of a match gives that match's shiny.
 // No imports, so it is easy to test.
 
@@ -26,8 +26,6 @@ export function buildAlbum(data, { squad, teamName, progress = {}, levels }) {
       }
       if (st.kind === 'shiny') {
         out.earned = levels.matches[st.match].levels.every((n) => progress[`ch${n}`]);
-      } else if (st.kind === 'player' && player.you) {
-        out.earned = true; // her own player: hers from the start
       } else {
         out.earned = wonSoFar < wins;
         wonSoFar += 1;
