@@ -86,6 +86,37 @@
       "source": "Exactly when the other team may cross the line (as the ball is kicked, or once a player receives it) waits for Rich's club rule set. Told as 'wait until their keeper has passed it', never tested.",
       "confidence": "unconfirmed",
       "lastChecked": "2026-11-27"
+    },
+    "kickIn.type": {
+      "value": "passOrDribble",
+      "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 15 'Pass or dribble-in', U7 to U10; also FA Standard Code of Rules 2026-27, Section 30, Rule 20 (sideline restarts: pass in or dribble in). No throw-ins.",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-27"
+    },
+    "kickIn.fromWhereItWentOut": {
+      "value": true,
+      "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 15 'Pass or dribble-in', U7 to U10; also FA Standard Code of Rules 2026-27, Section 30, Rule 20 (sideline restarts: pass in or dribble in): 'The ball must be stationary on the touchline at the point where it left the pitch'.",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-27"
+    },
+    "kickIn.opponentDistance": {
+      "value": 5,
+      "unit": "yards",
+      "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 15 'Pass or dribble-in', U7 to U10; also FA Standard Code of Rules 2026-27, Section 30, Rule 20 (sideline restarts: pass in or dribble in): 'All opponents must stand at least 5 yards from the point on the touchline'.",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-27"
+    },
+    "kickIn.canScoreDirect": {
+      "value": false,
+      "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 15 'Pass or dribble-in', U7 to U10; also FA Standard Code of Rules 2026-27, Section 30, Rule 20 (sideline restarts: pass in or dribble in): 'A goal cannot be scored directly from a pass-in.'",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-27"
+    },
+    "kickIn.kickerTouchTwice": {
+      "value": true,
+      "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 15 'Pass or dribble-in', U7 to U10; also FA Standard Code of Rules 2026-27, Section 30, Rule 20 (sideline restarts: pass in or dribble in): 'A kicker taking a pass-in may choose to touch the ball again'.",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-27"
     }
   }
 }

@@ -248,6 +248,13 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
     retreat.classList.toggle('is-hidden', !visible);
   }
 
+  // Move the helper ring to a ball that is not on the centre mark.
+  function setRingAt(p) {
+    const v = toView(p);
+    ring.setAttribute('cx', v.x);
+    ring.setAttribute('cy', v.y);
+  }
+
   function setRing(visible, glow = false) {
     ring.classList.toggle('is-hidden', !visible);
     ring.classList.toggle('is-glow', glow);
@@ -284,6 +291,7 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea }
     showCross,
     setWhy,
     setRetreat,
+    setRingAt,
     setRing,
     layout,
     destroy,

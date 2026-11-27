@@ -10,11 +10,29 @@ import { ruleValue } from './rules.js';
 const ON_SPOT = 0.75; // yards. How close counts as "on" the centre mark.
 
 // kind: "ours" (we take the centre kick), "theirs" (they take it),
-// "ourGoalKick" or "theirGoalKick".
+// "ourGoalKick", "theirGoalKick", "ourKickIn" or "theirKickIn".
+// ball: where a kick-in is taken, on the side line.
 // players: array of { x, y } in yards. halfway: the y of the halfway line.
 // Returns { ok, problems: [{ type, line, players: [index] }] }.
-export function checkRule({ kind, players, ruleSet, centre, halfway }) {
+export function checkRule({ kind, players, ruleSet, centre, halfway, ball }) {
   const problems = [];
+
+  // Kick-ins (FA pass-in or dribble-in): the ball sits still on the side
+  // line where it went out. One of us takes it at our kick-in; at theirs
+  // we stay at least five yards from the ball.
+  if (kind === 'ourKickIn') {
+    if (!players.some((p) => distance(p, ball) <= ON_SPOT)) problems.push({ type: 'onBall', line: 'rule.kickInOnBall', players: [] });
+    return { ok: problems.length === 0, problems };
+  }
+  if (kind === 'theirKickIn') {
+    const yards = ruleValue(ruleSet, 'kickIn.opponentDistance');
+    const tooClose = players
+      .map((p, i) => ({ p, i }))
+      .filter(({ p }) => distance(p, ball) < yards)
+      .map(({ i }) => i);
+    if (tooClose.length) problems.push({ type: 'ring', line: 'rule.kickInRing', players: tooClose });
+    return { ok: problems.length === 0, problems };
+  }
 
   // Goal kicks: the retreat line. At their goal kick we all go back into
   // our own half until the ball is in play. Rich's club also keeps both

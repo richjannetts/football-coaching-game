@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { checkRule, checkShape } from '../src/lib/checks.js';
 import { resolveRuleSet } from '../src/lib/rules.js';
-import { resolveAt } from '../src/lib/geometry.js';
+import { resolveAt, buildSpots } from '../src/lib/geometry.js';
 import { readJson } from './helpers.js';
 
 const fa = readJson('src/data/rules/fa-2026-27-5v5.json');
@@ -312,4 +312,63 @@ test('goal kicks: the other team starts where the story needs them', () => {
   assert.equal(theirs.length, 5);
   assert.deepEqual(theirs[team.opponentKeeper.theirGoalKick], [15, 38.5]);
   assert.equal(team.opponents.ourGoalKick.length, 5);
+});
+
+// ---------- Kick-ins (levels 5 and 6) ----------
+// FA pass-in or dribble-in: the ball sits on the side line where it went
+// out, and the other team stands five yards back.
+
+const LEFT = { x: 0.4, y: 24.5 };
+const RIGHT = { x: 29.6, y: 14 };
+const resolveShape = (key) => team.shapes[key].spots.map((s) => resolveAt(s.at, grid));
+
+test('rule, our kick-in: the coach shape has one of us on the ball', () => {
+  const r = checkRule({ kind: 'ourKickIn', players: resolveShape('ourKickIn'), ruleSet, centre, halfway, ball: LEFT });
+  assert.equal(r.ok, true);
+});
+
+test('rule, our kick-in: nobody on the ball breaks the rule', () => {
+  const players = resolveShape('ourKickIn');
+  players[0] = at(0, 5);
+  const r = checkRule({ kind: 'ourKickIn', players, ruleSet, centre, halfway, ball: LEFT });
+  assert.equal(r.ok, false);
+  assert.equal(r.problems[0].line, 'rule.kickInOnBall');
+});
+
+test('rule, their kick-in: the coach shape keeps five yards from the ball', () => {
+  const r = checkRule({ kind: 'theirKickIn', players: resolveShape('theirKickIn'), ruleSet, centre, halfway, ball: RIGHT });
+  assert.equal(r.ok, true);
+});
+
+test('rule, their kick-in: a player inside five yards breaks the rule, and only she is ringed', () => {
+  const players = resolveShape('theirKickIn');
+  players[1] = at(4, 3); // 26, 14: under four yards from the ball
+  const r = checkRule({ kind: 'theirKickIn', players, ruleSet, centre, halfway, ball: RIGHT });
+  assert.equal(r.ok, false);
+  assert.equal(r.problems[0].line, 'rule.kickInRing');
+  assert.deepEqual(r.problems[0].players, [1]);
+});
+
+test('rule, their kick-in: unlike a goal kick, we may stand in their half', () => {
+  const players = resolveShape('theirKickIn');
+  players[1] = at(3, 5);
+  assert.equal(checkRule({ kind: 'theirKickIn', players, ruleSet, centre, halfway, ball: RIGHT }).ok, true);
+});
+
+test('shape, kick-ins: the coach shapes pass, and the other team starts five yards away', () => {
+  for (const key of ['ourKickIn', 'theirKickIn']) {
+    assert.equal(checkShape({ players: resolveShape(key), shape: team.shapes[key], grid }).ok, true, key);
+  }
+  const keeper = team.opponentKeeper.ourKickIn;
+  team.opponents.ourKickIn.forEach(([x, y], i) => {
+    if (i !== keeper) assert.ok(Math.hypot(x - LEFT.x, y - LEFT.y) >= 5, `their player ${i} is too close`);
+  });
+});
+
+test('the kick-in spot on the side line only appears when a level asks for it', () => {
+  const plain = buildSpots(grid);
+  const withKickIn = buildSpots(grid, ['kick-in-left']);
+  assert.equal(plain.some((s) => s.id === 'kick-in-left'), false);
+  assert.equal(withKickIn.some((s) => s.id === 'kick-in-left'), true);
+  assert.equal(withKickIn.find((s) => s.id === 'kick-in-left').optional, undefined);
 });
