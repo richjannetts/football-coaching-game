@@ -12,8 +12,8 @@ Agreed with Rich on 27th November 2026. The visual version is a published page f
 | 6 | Their kick-in. They score a great shot before half-time, told not tested | 1-1 | Built |
 | - | Half-time: drinks and a team talk, told at the start of level 7 | 1-1 | Built |
 | 7 | Second-half centre kick (who kicks off is told, never tested) | 1-1 | Built |
-| 8 | Our corner (to check). Hits the post | 1-1 | Planned |
-| 9 | Their corner (to check). Our keeper catches it and starts a break | 1-1 | Planned |
+| 8 | Our corner (FA 5v5: five yards). Hits the post | 1-1 | Built |
+| 9 | Their corner (FA 5v5: five yards). Our keeper catches it and starts a break, and our front player is tripped: a penalty | 1-1 | Built |
 | 10 | Our penalty in the last minute (to check). She scores | 2-1 | Planned |
 | - | Full-time page: handshakes, effort praised, match shiny | 2-1 | Planned |
 

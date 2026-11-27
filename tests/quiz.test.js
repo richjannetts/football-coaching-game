@@ -120,3 +120,22 @@ test('quiz, level 7: only the right picture has our front player just outside th
     assert.equal(legal && d < 7 && x === 15, i === q.answer, `option ${i}: ${o.label}`);
   });
 });
+
+test('quiz, level 8: only the right picture keeps exactly one friend back near halfway', () => {
+  const q = quizFor(quiz, 8);
+  q.options.forEach((o, i) => {
+    const outfield = o.picture.us.slice(0, -1);
+    const back = outfield.filter(([, y]) => y <= 22);
+    const one = back.length === 1 && back[0][1] >= 14;
+    assert.equal(one, i === q.answer, `option ${i}: ${o.label}`);
+  });
+});
+
+test('quiz, level 9: only the right picture keeps five yards from the corner', () => {
+  const q = quizFor(quiz, 9);
+  q.options.forEach((o, i) => {
+    const [x, y] = o.picture.ball;
+    const result = checkRule({ kind: 'theirCorner', players: toPlayers(o.picture), ruleSet, centre, halfway: 20, ball: { x, y } });
+    assert.equal(result.ok, i === q.answer, `option ${i}: ${o.label}`);
+  });
+});

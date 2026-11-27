@@ -117,6 +117,25 @@
       "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 15 'Pass or dribble-in', U7 to U10; also FA Standard Code of Rules 2026-27, Section 30, Rule 20 (sideline restarts: pass in or dribble in): 'A kicker taking a pass-in may choose to touch the ball again'.",
       "confidence": "confirmed",
       "lastChecked": "2026-11-27"
+    },
+    "corner.opponentDistance": {
+      "value": 5,
+      "unit": "yards",
+      "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 17 'Corner kicks': 'The defending players must remain at least 5 yards from the ball until it is in play'.",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-27"
+    },
+    "corner.kickerTouchTwice": {
+      "value": false,
+      "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 17 'Corner kicks': 'The player taking the corner may not touch the ball again until it has touched another player.'",
+      "confidence": "confirmed",
+      "lastChecked": "2026-11-27"
+    },
+    "corner.canScoreDirect": {
+      "value": null,
+      "source": "FA Mini-Soccer and Youth Futsal Handbook (August 2025), Law 17 'Corner kicks' does not say. Do not test the child on it.",
+      "confidence": "unconfirmed",
+      "lastChecked": "2026-11-27"
     }
   }
 }

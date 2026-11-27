@@ -376,6 +376,64 @@ test('the kick-in spot on the side line only appears when a level asks for it', 
   assert.equal(withKickIn.find((s) => s.id === 'kick-in-left').optional, undefined);
 });
 
+// ---------- Corners (levels 8 and 9) ----------
+// FA 5v5: the ball sits in the corner, and the other team stands five
+// yards back until it is kicked.
+
+const OUR_CORNER = { x: 29.4, y: 39.4 };
+const THEIR_CORNER = { x: 0.4, y: 0.4 };
+const cornerSpots = buildSpots(grid, ['corner-right']);
+const resolveCorner = (key) => team.shapes[key].spots.map((s) => resolveAt(s.at, grid));
+
+test('rule, our corner: the coach shape has one of us on the ball', () => {
+  const r = checkRule({ kind: 'ourCorner', players: resolveCorner('ourCorner'), ruleSet, centre, halfway, ball: OUR_CORNER });
+  assert.equal(r.ok, true);
+});
+
+test('rule, our corner: nobody in the corner breaks the rule', () => {
+  const players = resolveCorner('ourCorner');
+  players[0] = { x: 21, y: 32.5 };
+  const r = checkRule({ kind: 'ourCorner', players, ruleSet, centre, halfway, ball: OUR_CORNER });
+  assert.equal(r.ok, false);
+  assert.equal(r.problems[0].line, 'rule.cornerOnBall');
+});
+
+test('rule, their corner: the coach shape keeps five yards from the ball', () => {
+  const r = checkRule({ kind: 'theirCorner', players: resolveCorner('theirCorner'), ruleSet, centre, halfway, ball: THEIR_CORNER });
+  assert.equal(r.ok, true);
+});
+
+test('rule, their corner: a player inside five yards breaks the rule, and only she is ringed', () => {
+  const players = resolveCorner('theirCorner');
+  players[1] = { x: grid.cols[0], y: grid.rows[1] }; // 3, 4: under five yards from the corner
+  const r = checkRule({ kind: 'theirCorner', players, ruleSet, centre, halfway, ball: THEIR_CORNER });
+  assert.equal(r.ok, false);
+  assert.equal(r.problems[0].line, 'rule.cornerRing');
+  assert.deepEqual(r.problems[0].players, [1]);
+});
+
+test('shape, corners: the coach shapes pass, and the other team starts five yards away', () => {
+  for (const key of ['ourCorner', 'theirCorner']) {
+    assert.equal(checkShape({ players: resolveCorner(key), shape: team.shapes[key], grid }).ok, true, key);
+  }
+  const keeper = team.opponentKeeper.ourCorner;
+  team.opponents.ourCorner.forEach(([x, y], i) => {
+    if (i !== keeper) assert.ok(Math.hypot(x - OUR_CORNER.x, y - OUR_CORNER.y) >= 5, `their player ${i} is too close`);
+  });
+});
+
+test('shape, our corner: putting the stay-back friend up in their box does not pass', () => {
+  const players = resolveCorner('ourCorner');
+  const stay = team.shapes.ourCorner.spots.findIndex((s) => s.role === 'stay');
+  players[stay] = { x: 9, y: 36 };
+  assert.equal(checkShape({ players, shape: team.shapes.ourCorner, grid }).ok, false);
+});
+
+test('the corner spot only appears when a level asks for it', () => {
+  assert.equal(buildSpots(grid).some((s) => s.id === 'corner-right'), false);
+  assert.equal(cornerSpots.some((s) => s.id === 'corner-right'), true);
+});
+
 // ---------- Zones: anywhere in the right area counts ----------
 
 test('zones: a friend one dot wider still counts at our centre kick', () => {

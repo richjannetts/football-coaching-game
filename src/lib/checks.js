@@ -10,8 +10,9 @@ import { ruleValue } from './rules.js';
 const ON_SPOT = 0.75; // yards. How close counts as "on" the centre mark.
 
 // kind: "ours" (we take the centre kick), "theirs" (they take it),
-// "ourGoalKick", "theirGoalKick", "ourKickIn" or "theirKickIn".
-// ball: where a kick-in is taken, on the side line.
+// "ourGoalKick", "theirGoalKick", "ourKickIn", "theirKickIn", "ourCorner"
+// or "theirCorner".
+// ball: where a kick-in or corner is taken.
 // players: array of { x, y } in yards. halfway: the y of the halfway line.
 // Returns { ok, problems: [{ type, line, players: [index] }] }.
 export function checkRule({ kind, players, ruleSet, centre, halfway, ball }) {
@@ -20,17 +21,20 @@ export function checkRule({ kind, players, ruleSet, centre, halfway, ball }) {
   // Kick-ins (FA pass-in or dribble-in): the ball sits still on the side
   // line where it went out. One of us takes it at our kick-in; at theirs
   // we stay at least five yards from the ball.
-  if (kind === 'ourKickIn') {
-    if (!players.some((p) => distance(p, ball) <= ON_SPOT)) problems.push({ type: 'onBall', line: 'rule.kickInOnBall', players: [] });
+  // Corners work the same way, from the corner of the pitch.
+  if (kind === 'ourKickIn' || kind === 'ourCorner') {
+    const line = kind === 'ourKickIn' ? 'rule.kickInOnBall' : 'rule.cornerOnBall';
+    if (!players.some((p) => distance(p, ball) <= ON_SPOT)) problems.push({ type: 'onBall', line, players: [] });
     return { ok: problems.length === 0, problems };
   }
-  if (kind === 'theirKickIn') {
-    const yards = ruleValue(ruleSet, 'kickIn.opponentDistance');
+  if (kind === 'theirKickIn' || kind === 'theirCorner') {
+    const corner = kind === 'theirCorner';
+    const yards = ruleValue(ruleSet, corner ? 'corner.opponentDistance' : 'kickIn.opponentDistance');
     const tooClose = players
       .map((p, i) => ({ p, i }))
       .filter(({ p }) => distance(p, ball) < yards)
       .map(({ i }) => i);
-    if (tooClose.length) problems.push({ type: 'ring', line: 'rule.kickInRing', players: tooClose });
+    if (tooClose.length) problems.push({ type: 'ring', line: corner ? 'rule.cornerRing' : 'rule.kickInRing', players: tooClose });
     return { ok: problems.length === 0, problems };
   }
 

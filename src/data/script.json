@@ -667,6 +667,16 @@
       "cue": "The ring turns red. The player inside it has a red ring."
     },
     {
+      "id": "rule.cornerOnBall",
+      "text": "The rule says: one of us takes the corner, with the ball still in the corner of the pitch.",
+      "cue": "The ball glows."
+    },
+    {
+      "id": "rule.cornerRing",
+      "text": "The rule says: stay about five metres away from the ball until the corner is kicked. That's five big grown-up steps. Keep outside the dotted ring.",
+      "cue": "The ring turns red. The player inside it has a red ring."
+    },
+    {
       "id": "shape.c5.taker",
       "text": "In our team, one player stands on the ball, on the side line, to take the kick-in.",
       "cue": "The ball glows."
@@ -694,6 +704,41 @@
     {
       "id": "shape.c6.inside",
       "text": "In our team, a friend stands inside, between their middle player and our goal.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c8.taker",
+      "text": "In our team, one player stands on the ball, in the corner, to take it.",
+      "cue": "The ball glows."
+    },
+    {
+      "id": "shape.c8.near",
+      "text": "In our team, a friend comes in close to the near post, for a short pass.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c8.edge",
+      "text": "In our team, a friend waits on the edge of their penalty box, ready for a shot.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c8.stay",
+      "text": "In our team, one friend stays back near halfway, in case they break away.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c9.post",
+      "text": "In our team, a friend stands by our near post, to help our keeper.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c9.guards",
+      "text": "In our team, two friends stand in our penalty box, one on each side, between their players and our goal.",
+      "cue": "The players in the wrong place have a red ring."
+    },
+    {
+      "id": "shape.c9.up",
+      "text": "In our team, our front player waits up near halfway, ready to race away.",
       "cue": "The players in the wrong place have a red ring."
     },
     {
@@ -942,6 +987,136 @@
       "cue": "A gold football medal with a 7 on it spins in."
     },
     {
+      "id": "c8.intro1",
+      "text": "It's our corner!",
+      "cue": "The ball rolls into the corner of the pitch."
+    },
+    {
+      "id": "c8.intro2",
+      "text": "The rule says: put the ball still in the corner. One of us kicks it from there.",
+      "cue": "The ball does a little hop in the corner."
+    },
+    {
+      "id": "c8.intro3",
+      "text": "{them} have to stand five big steps away from the ball.",
+      "cue": "A dotted ring glows round the ball."
+    },
+    {
+      "id": "c8.place",
+      "text": "Spots! Put our five players where they go for our corner. Remember, one friend stays back.",
+      "cue": "Our players at the side gently bounce."
+    },
+    {
+      "id": "c8.passAsk",
+      "text": "Where should our corner go? Tap a place.",
+      "cue": "Glowing circles on our friends, and one on their player."
+    },
+    {
+      "id": "c8.passGood",
+      "text": "A pass to {mate|a friend}. Lovely!",
+      "cue": "The ball rolls to a friend."
+    },
+    {
+      "id": "c8.passThem",
+      "text": "Oh! Their player got there first. Look for a friend.",
+      "cue": "The ball goes to their player. A red cross shows it didn't work."
+    },
+    {
+      "id": "c8.passShow",
+      "text": "Look. Our friends are glowing. Tap one.",
+      "cue": "Only our friends glow."
+    },
+    {
+      "id": "c8.passTogether",
+      "text": "Let's do it together. A short pass to {mate|our friend by the post}.",
+      "cue": "The ball rolls to the friend near the post."
+    },
+    {
+      "id": "c8.move1",
+      "text": "She passes it to {runner|a friend}, who has a clear shot...",
+      "cue": "Our friends pass the ball to the edge of the box."
+    },
+    {
+      "id": "c8.post",
+      "text": "Ooh! It hits the post!",
+      "cue": "The ball bounces off the post."
+    },
+    {
+      "id": "c8.break",
+      "text": "Their keeper grabs it and throws it out. They race towards our goal.",
+      "cue": "Their player runs with the ball into our half."
+    },
+    {
+      "id": "c8.block",
+      "text": "{defender|Our friend} stayed back, so she was ready. She blocks the shot!",
+      "cue": "Our friend stops the ball. It rolls out past our goal."
+    },
+    {
+      "id": "c8.theirCorner",
+      "text": "It went out over our goal line off us, so it's a corner to them. That's the next level.",
+      "cue": "The ball sits in the corner by our goal."
+    },
+    {
+      "id": "c8.end",
+      "text": "Level eight done! So close! On Saturday, keep trying, and keep one friend back.",
+      "cue": "A gold football medal with an 8 on it spins in."
+    },
+    {
+      "id": "c9.intro1",
+      "text": "Now it's their corner, by our goal.",
+      "cue": "Their kicker glows in the corner."
+    },
+    {
+      "id": "c9.intro2",
+      "text": "The rule says: we stay five big steps away from the ball until it's kicked. The dotted ring helps us see.",
+      "cue": "The dotted ring round the ball glows."
+    },
+    {
+      "id": "c9.place",
+      "text": "Spots! Where do we stand for their corner? Help our keeper.",
+      "cue": "Our players at the side gently bounce."
+    },
+    {
+      "id": "c9.cross",
+      "text": "They kick it into our box...",
+      "cue": "The ball curls in towards our goal."
+    },
+    {
+      "id": "c9.catch",
+      "text": "Our keeper catches it! Safe hands.",
+      "cue": "Our keeper jumps and holds the ball."
+    },
+    {
+      "id": "c9.roll",
+      "text": "She rolls it out to {mate|a friend}, quick as a flash.",
+      "cue": "Our keeper rolls the ball to a friend at the side."
+    },
+    {
+      "id": "c9.up",
+      "text": "A big pass up to {runner|our front player}, who was waiting near halfway.",
+      "cue": "The ball goes up the pitch to our front player."
+    },
+    {
+      "id": "c9.race",
+      "text": "She races away towards their goal!",
+      "cue": "Our front player runs with the ball into their penalty box."
+    },
+    {
+      "id": "c9.trip",
+      "text": "Oh! She is tripped in their penalty box.",
+      "cue": "Their player trips our front player. She gets straight back up."
+    },
+    {
+      "id": "c9.penalty",
+      "text": "The referee blows the whistle. It's a penalty to us! That's the next level.",
+      "cue": "The ball sits in their penalty box."
+    },
+    {
+      "id": "c9.end",
+      "text": "Level nine done! On Saturday, help our keeper at corners, and be ready to run.",
+      "cue": "A gold football medal with a 9 on it spins in."
+    },
+    {
       "id": "quiz.c7.ask",
       "text": "When they take the centre kick, where does our front player wait? Tap the right picture.",
       "cue": "Three little pitches. Their kicker is on the ball, with the helper ring round it."
@@ -969,6 +1144,66 @@
     {
       "id": "quiz.c7.reveal",
       "text": "Good try. In our team, our front player waits just outside the ring, in the middle, like this one, ready to chase. You can try for the sticker again next time you play level seven.",
+      "cue": "The right picture glows. The other two pictures fade."
+    },
+    {
+      "id": "quiz.c8.ask",
+      "text": "At our corner, who stays back? Tap the right picture.",
+      "cue": "Three little pitches. Our player is on the ball in the corner."
+    },
+    {
+      "id": "quiz.c8.a",
+      "text": "One friend back near halfway?",
+      "cue": "The first picture glows."
+    },
+    {
+      "id": "quiz.c8.b",
+      "text": "Everyone up by their goal?",
+      "cue": "The middle picture glows."
+    },
+    {
+      "id": "quiz.c8.c",
+      "text": "Lots of friends back home?",
+      "cue": "The last picture glows."
+    },
+    {
+      "id": "quiz.c8.right",
+      "text": "That's right! In our team, one friend stays back near halfway, in case they break away. Well done, {name}!",
+      "cue": "The right picture has a green edge."
+    },
+    {
+      "id": "quiz.c8.reveal",
+      "text": "Good try. In our team, one friend stays back near halfway, like this one, in case they break away. You can try for the sticker again next time you play level eight.",
+      "cue": "The right picture glows. The other two pictures fade."
+    },
+    {
+      "id": "quiz.c9.ask",
+      "text": "At their corner, how close can we stand to the ball? Tap the right picture.",
+      "cue": "Three little pitches. Their kicker is in the corner, with the dotted ring round the ball."
+    },
+    {
+      "id": "quiz.c9.a",
+      "text": "Right next to the ball?",
+      "cue": "The first picture glows."
+    },
+    {
+      "id": "quiz.c9.b",
+      "text": "One of us inside the ring?",
+      "cue": "The middle picture glows."
+    },
+    {
+      "id": "quiz.c9.c",
+      "text": "Everyone outside the ring?",
+      "cue": "The last picture glows."
+    },
+    {
+      "id": "quiz.c9.right",
+      "text": "That's right! The rule says: stay five big steps away until the corner is kicked. Well done, {name}!",
+      "cue": "The right picture has a green edge."
+    },
+    {
+      "id": "quiz.c9.reveal",
+      "text": "Good try. The rule says: stay five big steps away until the corner is kicked, like this one. Everyone is outside the ring. You can try for the sticker again next time you play level nine.",
       "cue": "The right picture glows. The other two pictures fade."
     }
   ]
