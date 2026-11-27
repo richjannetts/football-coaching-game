@@ -127,7 +127,8 @@ export function startScreen({ profile, onStart }) {
 // startAt: the page to open on (the last page, when she comes back to it).
 // onBack: where the back button goes from the first page. Without it the
 // first page has no back button.
-export function storyScreen({ pages, team, profile, coach, onDone, onBack, startAt = 0 }) {
+// album: the sticker album as it stands, for the sticker book page.
+export function storyScreen({ pages, team, profile, coach, album = null, onDone, onBack, startAt = 0 }) {
   let at = Math.min(Math.max(0, startAt), pages.length - 1);
   const art = h('div', { class: 'story-art' });
   const dots = h('div', { class: 'dots story-dots', 'aria-hidden': 'true' }, pages.length > 1 ? pages.map(() => h('i', {})) : []);
@@ -135,7 +136,7 @@ export function storyScreen({ pages, team, profile, coach, onDone, onBack, start
   pointOnce(nextBtn, 'story');
   const backBtn = h('button', { class: 'icon-btn back-btn', type: 'button', 'aria-label': 'Back' }, backIcon());
   const show = () => {
-    art.replaceChildren(storyScene(pages[at].scene, { team, profile, coach }));
+    art.replaceChildren(storyScene(pages[at].scene, { team, profile, coach, album }));
     [...dots.children].forEach((d, i) => d.classList.toggle('on', i === at));
     backBtn.classList.toggle('is-hidden', at === 0 && !onBack);
     narrator.say([pages[at].line]);
@@ -161,7 +162,7 @@ export function storyScreen({ pages, team, profile, coach, onDone, onBack, start
 }
 
 // The pictures for the story pages, drawn from the real team.
-function storyScene(name, { team, profile, coach }) {
+function storyScene(name, { team, profile, coach, album }) {
   const figure = (look, opts, cls = '') => h('span', { class: `story-figure ${cls}` }, avatarSvg(look, opts));
   const empty = (big) => h('span', { class: `story-figure story-empty${big ? ' is-big' : ''}` }, h('span', { class: 'story-q' }, '?'));
   const coachFig = () => figure(coach.look, { size: 62, kit: coach.kit, pattern: 'coach', idSuffix: 'story-coach' }, 'is-coach');
@@ -173,6 +174,25 @@ function storyScene(name, { team, profile, coach }) {
     return h('div', { class: 'title-art story-pic story-morning' }, titleScene(), h('div', { class: 'game-day', 'aria-hidden': 'true' }, h('span', { class: 'game-day-top' }, 'It’s'), h('span', { class: 'game-day-big' }, 'GAME DAY!')));
   if (name === 'coach') return h('div', { class: 'story-pic story-panel' }, grass(coachFig(), ...mates.slice(0, 2), empty(false), ...mates.slice(2)));
   if (name === 'you') return h('div', { class: 'story-pic story-panel' }, grass(empty(true)));
+  // 'stickers': her sticker book, open at the first page (Rich asked for a
+  // bigger deal to be made of it, 27th November 2026). Sticker 1 is her own
+  // player, shown as the one she will win first. The rest are empty spaces.
+  if (name === 'stickers' && album) {
+    const page = album.pages[0];
+    const slots = page.stickers.slice(0, 3).map((st, j) =>
+      j === 0 ? h('span', { class: 'slot got r0 story-first' }, stickerCard({ ...st, earned: true })) : h('span', { class: 'slot' }, emptyCard(st))
+    );
+    return h(
+      'div',
+      { class: 'story-pic story-panel story-book' },
+      h(
+        'article',
+        { class: 'paper' },
+        h('div', { class: 'paper-band', style: { background: page.colour } }, h('span', { class: 'paper-title' }, page.title), h('span', { class: 'paper-page' }, 'page 1')),
+        h('div', { class: 'paper-grid' }, slots)
+      )
+    );
+  }
   // 'ready': the whole team with her in the middle, Coach and a ball.
   const me = profile ? figure(profile, { size: 62, idSuffix: 'story-me' }, 'is-you') : empty(false);
   const ball = h('span', { class: 'story-ball' }, ballIcon(true));
@@ -519,6 +539,10 @@ export function menuScreen({ profile, progress, team, levels, album, updateReady
     you
   );
   const scroller = h('div', { class: 'path-scroll' }, map);
+  // Once she has a sticker, point at her sticker book the first time
+  // (Rich asked for a bigger deal to be made of it, 27th November 2026).
+  const bookBtn = h('button', { class: 'icon-btn album-btn', type: 'button', 'aria-label': 'Sticker album', onclick: onAlbum }, bookIcon());
+  if (album.count > 0) pointOnce(bookBtn, 'album', { above: true });
   // Open with her own level in view, a little below the middle.
   const showHere = () => {
     scroller.scrollTop = Math.max(0, here.y - scroller.clientHeight * 0.6);
@@ -557,7 +581,7 @@ export function menuScreen({ profile, progress, team, levels, album, updateReady
     onNewMatch ? newMatchButton(onNewMatch) : null,
     updateReady ? h('button', { class: 'update-btn', type: 'button', onclick: onUpdate }, 'Grown-ups: a new version is ready. Tap to update.') : null,
     h('button', { class: 'text-btn grown-ups-btn', type: 'button', onclick: onGrownUps }, 'Grown-ups'),
-    h('button', { class: 'icon-btn album-btn', type: 'button', 'aria-label': 'Sticker album', onclick: onAlbum }, bookIcon())
+    bookBtn
   );
 }
 

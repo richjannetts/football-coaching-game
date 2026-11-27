@@ -2,7 +2,9 @@
 // The child places all five players, then taps the tick.
 // First the rule is checked ("The rule says"), then our shape ("In our team").
 // A wrong answer gets a friendly whistle and another go straight away. The
-// first wrong try only says "have another look" (Rich, 27th November 2026).
+// first wrong try only gives a gentle nudge: "not quite", and which player
+// or part of the pitch to think about, with no reasons or glowing spots
+// (Rich, 27th November 2026). The players to look at give a little hop.
 // After that the help steps up: a picture of why, then the glowing spots,
 // then we do one together. How soon each step comes depends on the
 // difficulty (src/data/difficulty.json). On Difficult, a first wrong try
@@ -13,11 +15,14 @@ import { nearestSpot } from '../lib/geometry.js';
 import { ruleSet, team } from './content.js';
 import { wait, motion } from '../lib/svg.js';
 import { helpFor, consequenceFor } from '../lib/difficulty.js';
+import { nudgeFor } from '../lib/nudge.js';
 import difficulty from '../data/difficulty.json';
 
 // ball: where the restart is taken from, for kick-ins (defaults to the centre mark).
 // area: their penalty box in yards, for the penalty.
-export function runLineup(stage, { kind, shapeKey, promptIds, ball, area }) {
+// coachIds: a line or two of positive game advice after a right line-up,
+// such as "be first to the ball" (Rich, 27th November 2026).
+export function runLineup(stage, { kind, shapeKey, promptIds, ball, area, coachIds = [] }) {
   const { pitch, placement, mode } = stage;
   const cfg = mode.cfg;
   const shape = team.shapes[shapeKey];
@@ -82,7 +87,9 @@ export function runLineup(stage, { kind, shapeKey, promptIds, ball, area }) {
         stage.jump(stage.players.map((p) => p.el));
         stage.confetti(pitch.svg, 40);
         const roles = fit.roles.map((r) => ({ ...r, el: stage.players[r.player].el }));
-        const spoken = stage.play(['sfx.cheer', attempts ? 'good.lineupEffort' : 'good.lineup']);
+        // The coaching tip comes with a little "ready" jump, as its picture.
+        const ready = Object.fromEntries(coachIds.map((id) => [id, () => stage.jump(stage.players.map((p) => p.el))]));
+        const spoken = stage.play(['sfx.cheer', attempts ? 'good.lineupEffort' : 'good.lineup', ...coachIds], ready);
         resolve({ roles, attempts, spoken });
         return;
       }
@@ -92,19 +99,22 @@ export function runLineup(stage, { kind, shapeKey, promptIds, ball, area }) {
       const help = helpFor(cfg, attempts);
       const lose = consequenceFor({ cfg, rules: difficulty.consequences, enabled: mode.consequences, level: mode.level, kind, attempts, goalsAgainst: mode.goals.them });
 
-      // The first wrong try: no reasons and no hints yet, just another look.
+      // The rule comes first: it is the same for every team.
+      const problem = rule.ok ? fit.problems[0] : rule.problems[0];
+
+      // The first wrong try: no reasons and no hints yet. A gentle nudge
+      // names who or where to think about, and those players hop.
       if (help.nudgeOnly) {
-        lastFeedback = ['hint.lookAgain'];
+        const nudge = nudgeFor(problem, { fromRule: !rule.ok, kind });
+        lastFeedback = [nudge];
         if (lose) {
           loseThenRetry(lose);
           return;
         }
-        stage.say(['sfx.whistle', 'hint.lookAgain']);
+        stage.say(['sfx.whistle', nudge], { [nudge]: () => stage.bounce(problem?.players || []) });
         return;
       }
 
-      // The rule comes first: it is the same for every team.
-      const problem = rule.ok ? fit.problems[0] : rule.problems[0];
       problem.players.forEach((i) => stage.players[i].el.classList.add('is-wrong'));
       stage.shake(problem.players);
       pitch.setWhy(problem.type);

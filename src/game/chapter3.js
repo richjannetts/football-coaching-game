@@ -48,6 +48,7 @@ export async function chapter3(stage) {
     kind: 'ourGoalKick',
     shapeKey: 'ourGoalKick',
     promptIds: ['c3.place', 'place.how', 'place.ready'],
+    coachIds: ['coach.c3'],
   });
   await solved.spoken;
 

@@ -176,5 +176,14 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - [ ] A kick-in or corner on the other side of the pitch works: players can be placed and the moves play out properly.
 - [ ] Difficult: no dots, and a player lands where the finger lets go, in portrait and landscape.
 - [ ] Difficult: a first wrong line-up at their centre kick lets them score once, kindly. The scoreboard and the voice give the right score afterwards.
-- [ ] Easy: the first wrong line-up only says "Not quite. Have another look".
+- [ ] Easy: the first wrong line-up says "Not quite" and names one player or area to think about. The players to look at hop. No spots glow yet.
 - [ ] Grown-ups: switching off "Difficult matches" stops the conceding. "Stop this match" goes back to her own path, stickers kept.
+
+## Play-test fixes (added 27th November 2026)
+
+- [ ] New player: the last story pages show her sticker book with her own sticker glowing, and the voice explains bonus questions win stickers.
+- [ ] A right bonus answer: "New sticker!", then the album page appears and the sticker flies into its numbered space. Check portrait and landscape.
+- [ ] Back on the path with a sticker for the first time: a "Tap here!" pointer shows the book, and the voice says to tap it.
+- [ ] Level 3: the glowing spots show one friend inside to one side and our front player on the other side, like the other team at level 4.
+- [ ] After each right line-up, a short coaching tip is spoken (for example level 6: get to their pass first, or tackle).
+- [ ] Levels 6 and 9: the voice calls the ring a helper and says five big steps.
