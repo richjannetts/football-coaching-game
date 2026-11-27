@@ -2138,3 +2138,285 @@ button.chip:active {
     padding-left: 16px;
   }
 }
+
+/* ---------- Sticker album ----------
+   Cream paper pages with numbered spaces. Stickers sit a little wonky, as
+   they always did. */
+.card {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.card-name {
+  font: 400 14px var(--font-display);
+  fill: #fff;
+  letter-spacing: 1px;
+}
+.card-num {
+  font: 400 12px var(--font-display);
+  fill: var(--accent-ink);
+}
+.card-num-disc {
+  fill: var(--accent);
+  stroke: #fff;
+  stroke-width: 2.5;
+}
+.slot-edge {
+  fill: #f1e6cc;
+  stroke: #c9b68a;
+  stroke-width: 3;
+  stroke-dasharray: 8 7;
+}
+.slot-shape {
+  fill: #dccba4;
+}
+.slot-line {
+  fill: none;
+  stroke: #c9b68a;
+  stroke-width: 4;
+  stroke-linejoin: round;
+  stroke-dasharray: 7 6;
+}
+.slot-num {
+  font: 400 22px var(--font-display);
+  fill: #b39f73;
+}
+.album {
+  padding-left: 0;
+  padding-right: 0;
+  gap: 10px;
+  overflow: hidden;
+}
+.album-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 var(--edge-right) 0 var(--edge-left);
+}
+.album-tag {
+  margin: 0;
+  font: 400 1.15rem/1 var(--font-display);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--blue);
+  padding: 10px 16px;
+  border-radius: 14px;
+  rotate: -3deg;
+  box-shadow: 0 5px 0 var(--blue-lip);
+  white-space: nowrap;
+}
+.album-pages {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.album-pages::-webkit-scrollbar {
+  display: none;
+}
+.album-page {
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 26px 16px 18px;
+  overflow-y: auto;
+}
+.paper {
+  width: min(100%, 350px);
+  padding: 0 14px 14px;
+  background: #fff8e8;
+  color: var(--ink);
+  border-radius: 16px;
+  box-shadow: 5px 4px 0 #efe2c2, 10px 8px 0 #dccba4, 10px 20px 22px rgba(10, 26, 60, 0.2);
+}
+.paper-band {
+  margin: 0 -14px;
+  min-height: 50px;
+  border-radius: 16px 16px 0 0;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  font: 400 1.3rem/1.1 var(--font-display);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.paper-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.paper-page {
+  margin-left: auto;
+  flex: none;
+  font: 500 0.85rem var(--font);
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.9;
+}
+.paper-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 90px));
+  gap: 12px 16px;
+  justify-content: center;
+  margin-top: 16px;
+  min-height: 120px;
+}
+.slot.got {
+  filter: drop-shadow(0 3px 2px rgba(60, 40, 0, 0.3));
+}
+.slot.r0 {
+  rotate: -4deg;
+}
+.slot.r1 {
+  rotate: 3deg;
+}
+.slot.r2 {
+  rotate: -2deg;
+}
+.paper-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  font: 400 1.1rem/1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+.paper-bar .bar {
+  flex: 1;
+  height: 14px;
+  border-radius: 7px;
+  background: #eadcb8;
+  overflow: hidden;
+}
+.paper-bar .bar i {
+  display: block;
+  height: 100%;
+  border-radius: 7px;
+  background: var(--green);
+}
+.paper-bar b {
+  font-weight: 400;
+}
+.album-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 0 var(--edge-right) 0 var(--edge-left);
+}
+.album-nav .flip .icon {
+  transform: scaleX(-1);
+}
+.album-nav .is-faded {
+  opacity: 0.4;
+}
+.dots {
+  display: flex;
+  gap: 8px;
+}
+.dots i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--lip);
+}
+.dots i.on {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .album {
+    gap: 4px;
+  }
+  .album-top {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--edge-top);
+    pointer-events: none;
+  }
+  .album-top > * {
+    pointer-events: auto;
+  }
+  .album-tag {
+    display: none;
+  }
+  .album-page {
+    padding: 0 110px;
+    align-items: flex-start;
+  }
+  .paper {
+    width: min(100%, 600px);
+  }
+  .paper-band {
+    min-height: 36px;
+    font-size: 1.05rem;
+  }
+  .paper-grid {
+    grid-template-columns: repeat(6, minmax(0, 78px));
+    gap: 10px;
+    margin-top: 10px;
+    min-height: 0;
+  }
+  .paper-bar {
+    margin-top: 10px;
+  }
+  .album-nav .icon-btn {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+/* The album on the menu: a little sticker with her count, and a book. */
+.chip-stk {
+  width: 32px;
+  flex: none;
+  rotate: -5deg;
+  filter: drop-shadow(0 2px 1px rgba(10, 26, 60, 0.25));
+}
+.menu .album-btn {
+  position: absolute;
+  right: var(--edge-right);
+  bottom: var(--edge-bottom);
+}
+
+/* A sticker won at the end of a level pops up beside the medal. */
+.end-prize {
+  position: absolute;
+  left: calc(100% - 16px);
+  top: 50%;
+  width: 84px;
+  margin-top: -54px;
+  rotate: 5deg;
+  filter: drop-shadow(0 4px 3px rgba(10, 26, 60, 0.3));
+  animation: sticker-in 0.9s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+.end-prize.is-shiny {
+  left: auto;
+  right: calc(100% - 16px);
+  rotate: -5deg;
+}
+.end-card.has-quiz .end-prize {
+  width: 74px;
+  margin-top: -47px;
+}
+.end-card.has-quiz .end-prize {
+  left: calc(100% + 4px);
+}
+.end-card.has-quiz .end-prize.is-shiny {
+  left: auto;
+  right: calc(100% + 4px);
+}

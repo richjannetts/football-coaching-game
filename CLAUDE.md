@@ -38,7 +38,7 @@ The "Saturday morning" look (Rich's choice, 26th November 2026). Colours and fon
 - Each of our players has her name on a small plate under her feet. Long names are cut short there. In landscape, names on the bench wait until a player is picked up, because the bench is a column.
 - A small scoreboard above the pitch shows both team names with a dot of each kit colour.
 - The menu is a level path that scrolls (`src/lib/path.js`, drawn in `src/screens.js`). Finished levels are green, the one to play next is yellow and glows, the rest are white and locked. Her player stands beside her level and walks up one place when she passes a level for the first time. Levels are grouped into matches, each starting with a flag.
-- Still to build: a sticker album.
+- The sticker album (`src/lib/album.js`, `src/lib/stickers.js`) has cream paper pages with numbered spaces, opened from the book button or the sticker count on the path. Page order (Rich's choice, 26th November 2026): our team with the coach, club colours, world colours, kit bag, shinies. Club and world colours are made-up kits with made-up names: colours and patterns only. Never a badge, a sponsor, a real club or a country name.
 
 ## Commands
 
@@ -86,8 +86,8 @@ Added at Rich's request, 26th November 2026, so others can play on their own pho
 - A wrong answer gets a friendly whistle, a picture of why, a hint, and another go straight away. Hints step up: nudge, show, do it together.
 - A wrong answer never loses the match or concedes a goal.
 - Praise effort, not cleverness.
-- No timer pressure, no streaks, no daily rewards. Football stickers collected are a record of progress.
-- Each level ends with one bonus question on what it taught, with three picture answers. Right earns a bonus sticker. Wrong is never called wrong: the right picture glows and the voice explains it. She can try again next time she plays the level.
+- No timer pressure, no streaks, no daily rewards. Stickers collected are a record of progress. Passing a level moves her up the path. Her own player is sticker 1 from the start, and finishing every level of a match gives a shiny sticker.
+- Each level ends with one bonus question on what it taught, with three picture answers. Right wins the next sticker in the album, once for each level. Wrong is never called wrong: the right picture glows and the voice explains it. She can try again next time she plays the level.
 - A correct line-up starts the play. Goals come from a passing move, so the message is "we were ready", not "stand here and score".
 - Explainer animations have no tappable extras. Touch is off while one plays.
 - Capable girl players. Not pink by default.
@@ -109,6 +109,7 @@ Keep content out of the code so it can be swapped later.
 - `src/data/team.json`: the starting team name and player names (made up), kit colours, the colours she can pick for the other team, and the coach's shapes, as spots on a grid.
 - The child can change every player's name and look, both team names and the other team's colour on the "My team" screen. Her changes are saved on the phone and laid over `team.json` by `src/lib/myteam.js`. Our own kit colours are not changeable yet.
 - `src/data/levels.json`: the levels on the path, grouped into matches, and how many locked "more soon" places to draw after the last one.
+- `src/data/stickers.json`: the album pages and every sticker, in the order they are won. Nothing extra is saved for stickers: they follow from her progress.
 - `src/data/script.json`: every spoken line as `{ id, text, cue }`.
 - `src/data/quiz.json`: the bonus question for each level: words on screen, the three pictures, which one is right, and the script lines it speaks.
 - `public/voices/<pack>/<id>.mp3`: one file per line. `public/voices/packs.json` names the active pack.

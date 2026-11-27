@@ -4,7 +4,8 @@
 import { h } from '../lib/svg.js';
 import { createPitch } from '../lib/pitch.js';
 import { createPlacement } from '../lib/placement.js';
-import { homeIcon, speakerIcon, tickIcon, stickerSvg, bonusStickerSvg, nextIcon, tapHere } from '../lib/icons.js';
+import { homeIcon, speakerIcon, tickIcon, stickerSvg, nextIcon, tapHere } from '../lib/icons.js';
+import { stickerCard } from '../lib/stickers.js';
 import { createQuiz } from './quiz.js';
 import * as narrator from '../lib/narrator.js';
 import * as sfx from '../lib/sfx.js';
@@ -249,17 +250,13 @@ export function createStage({ profile, onHome, showWords = false }) {
       stage.cancelPick = () => pitch.svg.removeEventListener('pointerup', handler);
     });
 
-  // The end of a level: the football sticker, then the bonus question.
-  // The next-level button appears once the question is answered.
-  stage.showEnd = ({ level, earned, bonus, total, nextLabel, onNext, question, onBonus, firstTime = false }) => {
-    const tally = h('div', { class: 'end-tally' });
-    const drawTally = () => {
-      const got = earned.filter(Boolean).length + bonus.filter(Boolean).length;
-      tally.setAttribute('aria-label', `${got} of ${total * 2} football stickers`);
-      tally.replaceChildren(...earned.flatMap((e, i) => [stickerSvg(i + 1, e), bonusStickerSvg(i + 1, bonus[i])]));
-    };
-    drawTally();
+  // The end of a level: a medal for passing it, then the bonus question.
+  // A right answer wins the next album sticker (prize). Finishing a match
+  // gives a shiny sticker (shiny). The next button appears once the
+  // question is answered.
+  stage.showEnd = ({ level, nextLabel, onNext, question, onBonus, firstTime = false, prize = null, shiny = null }) => {
     const award = h('div', { class: 'end-sticker' }, h('div', { class: 'end-rays' }), stickerSvg(level, true));
+    if (shiny) award.append(h('div', { class: 'end-prize is-shiny' }, stickerCard(shiny)));
     const nextBtn = onNext
       ? h('button', { class: 'icon-btn big is-glow', type: 'button', 'aria-label': nextLabel || 'Next level', onclick: () => (stage.leave(), onNext()) }, nextIcon())
       : null;
@@ -283,13 +280,16 @@ export function createStage({ profile, onHome, showWords = false }) {
         say: stage.say,
         onShow: () => endCard.classList.add('has-quiz'),
         thenLines: pointLine ? [pointLine] : [],
+        rightLines: prize ? ['end.sticker'] : [],
         onAnswer: (right) => {
           if (right) {
-            bonus = bonus.map((b, i) => b || i === level - 1);
-            const won = h('div', { class: 'end-bonus' }, bonusStickerSvg(level, true));
-            award.append(won);
-            requestAnimationFrame(() => stage.confetti(won, 36));
-            drawTally();
+            if (prize) {
+              const won = h('div', { class: 'end-prize' }, stickerCard(prize));
+              award.append(won);
+              requestAnimationFrame(() => stage.confetti(won, 36));
+            } else {
+              requestAnimationFrame(() => stage.confetti(award, 24));
+            }
             onBonus?.();
           }
           nextBtn?.classList.remove('is-hidden');
@@ -299,9 +299,9 @@ export function createStage({ profile, onHome, showWords = false }) {
     } else {
       point();
     }
-    endCard.replaceChildren(h('div', { class: 'end-main' }, h('div', { class: 'end-award' }, award, tally), quiz ? quiz.el : null), buttons);
+    endCard.replaceChildren(h('div', { class: 'end-main' }, h('div', { class: 'end-award' }, award), quiz ? quiz.el : null), buttons);
     endCard.classList.remove('is-hidden');
-    // The new sticker arrives with a burst of confetti.
+    // The medal arrives with a burst of confetti.
     requestAnimationFrame(() => stage.confetti(award, 56));
     return { startQuiz: () => (quiz ? quiz.start() : pointLine ? stage.play([pointLine]) : Promise.resolve()) };
   };

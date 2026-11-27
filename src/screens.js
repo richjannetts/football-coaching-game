@@ -3,10 +3,11 @@
 
 import { h, s, motion } from './lib/svg.js';
 import { buildPath } from './lib/path.js';
+import { stickerCard, emptyCard } from './lib/stickers.js';
 import { avatarSvg } from './lib/avatar.js';
 import { missingStep } from './lib/profile.js';
 import { menuDotsIcon, installIcon } from './lib/icons.js';
-import { ballIcon, bonusStickerSvg, titleLogo, titleScene, lockIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
+import { ballIcon, bonusStickerSvg, titleLogo, titleScene, lockIcon, bookIcon, homeIcon, nextIcon, shareIcon, plusSquareIcon, tickIcon, backIcon, speakerIcon } from './lib/icons.js';
 import * as narrator from './lib/narrator.js';
 import looks from './data/looks.json';
 
@@ -323,10 +324,8 @@ export function teamScreen({ team, kits, onBack, onPlayer, onTeamName, onTheirNa
 // Levels are grouped into matches, each starting with a flag (Rich's
 // choice, 26th November 2026). movedFrom: the level she has just passed,
 // so her player can be seen walking up from it.
-export function menuScreen({ profile, progress, team, levels, updateReady, movedFrom = null, onChapter, onSoon, onGrownUps, onUpdate, onTeam }) {
+export function menuScreen({ profile, progress, team, levels, album, updateReady, movedFrom = null, onChapter, onSoon, onGrownUps, onUpdate, onTeam, onAlbum }) {
   const path = buildPath(levels, progress);
-  const real = path.nodes.filter((n) => n.kind === 'level');
-  const count = real.filter((n) => n.state === 'done').length + real.filter((n) => n.bonus).length;
 
   const trail = s(
     'svg',
@@ -406,12 +405,60 @@ export function menuScreen({ profile, progress, team, levels, updateReady, moved
         h('span', { class: 'chip-face' }, avatarHead(profile, 44, 'chip')),
         h('span', { class: 'chip-name' }, profile.name)
       ),
-      h('div', { class: 'chip chip-count', 'aria-label': `${count} of ${real.length * 2} football stickers` }, ballIcon(true), `${count} / ${real.length * 2}`),
+      h('button', { class: 'chip chip-count', type: 'button', 'aria-label': `Sticker album: ${album.count} stickers`, onclick: onAlbum }, h('span', { class: 'chip-stk' }, stickerCard(album.pages[0].stickers[0])), String(album.count)),
       againButton()
     ),
     updateReady ? h('button', { class: 'update-btn', type: 'button', onclick: onUpdate }, 'Grown-ups: a new version is ready. Tap to update.') : null,
-    h('button', { class: 'text-btn grown-ups-btn', type: 'button', onclick: onGrownUps }, 'Grown-ups')
+    h('button', { class: 'text-btn grown-ups-btn', type: 'button', onclick: onGrownUps }, 'Grown-ups'),
+    h('button', { class: 'icon-btn album-btn', type: 'button', 'aria-label': 'Sticker album', onclick: onAlbum }, bookIcon())
   );
+}
+
+// ---------- Sticker album ----------
+// Pages of numbered spaces, like the football sticker books parents
+// remember. Swipe sideways or tap the arrows to turn the page.
+export function albumScreen({ album, onBack }) {
+  const pages = album.pages.map((pg, i) =>
+    h(
+      'article',
+      { class: 'paper', 'aria-label': `${pg.title}, page ${i + 1}` },
+      h('div', { class: 'paper-band', style: { background: pg.colour } }, h('span', { class: 'paper-title' }, pg.title), h('span', { class: 'paper-page' }, `page ${i + 1}`)),
+      h('div', { class: 'paper-grid' }, pg.stickers.map((st, j) => h('span', { class: st.earned ? `slot got r${j % 3}` : 'slot' }, st.earned ? stickerCard(st) : emptyCard(st)))),
+      h('div', { class: 'paper-bar' }, h('div', { class: 'bar' }, h('i', { style: { width: `${(100 * pg.got) / pg.stickers.length}%` } })), h('b', {}, `${pg.got} / ${pg.stickers.length}`))
+    )
+  );
+  const scroller = h('div', { class: 'album-pages' }, pages.map((p) => h('div', { class: 'album-page' }, p)));
+  const dots = h('div', { class: 'dots', 'aria-hidden': 'true' }, pages.map(() => h('i', {})));
+  const prev = h('button', { class: 'icon-btn flip', type: 'button', 'aria-label': 'Page before', onclick: () => go(at - 1) }, nextIcon());
+  const next = h('button', { class: 'icon-btn', type: 'button', 'aria-label': 'Next page', onclick: () => go(at + 1) }, nextIcon());
+  let at = 0;
+  const update = () => {
+    [...dots.children].forEach((d, i) => d.classList.toggle('on', i === at));
+    prev.classList.toggle('is-faded', at === 0);
+    next.classList.toggle('is-faded', at === pages.length - 1);
+  };
+  function go(i) {
+    at = Math.max(0, Math.min(pages.length - 1, i));
+    scroller.scrollTo({ left: at * scroller.clientWidth, behavior: motion(300) > 1 ? 'smooth' : 'auto' });
+    update();
+  }
+  scroller.addEventListener('scroll', () => {
+    const now = Math.round(scroller.scrollLeft / Math.max(1, scroller.clientWidth));
+    if (now !== at) {
+      at = Math.max(0, Math.min(pages.length - 1, now));
+      update();
+    }
+  });
+  update();
+  const el = h(
+    'section',
+    { class: 'screen album' },
+    h('header', { class: 'album-top' }, h('button', { class: 'icon-btn', type: 'button', 'aria-label': 'Home', onclick: onBack }, homeIcon()), h('h1', { class: 'album-tag' }, 'Sticker album'), againButton()),
+    scroller,
+    h('footer', { class: 'album-nav' }, prev, dots, next)
+  );
+  el.begin = () => narrator.say(['album.hello']);
+  return el;
 }
 
 // ---------- Grown-ups gate ----------

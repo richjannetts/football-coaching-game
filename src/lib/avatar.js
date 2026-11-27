@@ -19,7 +19,9 @@ export function lookVars(look) {
 
 function applyVars(el, look, kitName = 'us') {
   const v = lookVars(look);
-  const kit = kitFor(kitName);
+  // A kit is usually named ('us', 'keeper', 'them'). Album stickers pass
+  // their own colours instead.
+  const kit = typeof kitName === 'object' && kitName ? kitName : kitFor(kitName);
   el.style.setProperty('--skin', v.skin);
   el.style.setProperty('--hair', v.hair);
   el.style.setProperty('--shirt', kit.shirt);
@@ -35,7 +37,7 @@ const layer = (name, ...children) => s('g', { 'data-layer': name }, ...children)
 // The player's body parts, front view, in a 100 by 150 box. Used at full
 // size on the setup screen and menu, and shrunk for the mini players on
 // the pitch, so the two always match.
-function avatarParts(v, clipId) {
+function avatarParts(v, clipId, pattern = 'stripes') {
   return [
     s('defs', {}, s('clipPath', { id: clipId }, s('path', { d: 'M28 62 Q50 54 72 62 L78 100 L22 100 Z' }))),
     layer('hair-back', hairBack(v.hairStyle)),
@@ -47,7 +49,7 @@ function avatarParts(v, clipId) {
     layer(
       'shirt',
       s('path', { d: 'M28 62 Q50 54 72 62 L78 100 L22 100 Z', fill: 'var(--shirt)' }),
-      s('g', { 'clip-path': `url(#${clipId})`, 'data-layer': 'shirt-stripes' }, [30, 42, 54, 66].map((x) => s('rect', { x, y: 50, width: 6, height: 60, fill: 'var(--stripe)' }))),
+      s('g', { 'clip-path': `url(#${clipId})`, 'data-layer': 'shirt-stripes' }, shirtPattern(pattern)),
       s('path', { d: 'M16 66 Q22 60 30 61 L28 76 L17 76 Z M84 66 Q78 60 70 61 L72 76 L83 76 Z', fill: 'var(--shirt)' })
     ),
     layer('neck', s('rect', { x: 45, y: 50, width: 10, height: 10, fill: 'var(--skin)' })),
@@ -63,11 +65,49 @@ function avatarParts(v, clipId) {
   ];
 }
 
+// What goes on the shirt. Our own kit is striped. The other patterns are
+// for the made-up kits in the sticker album, and the coach's jacket.
+function shirtPattern(pattern) {
+  const f = { fill: 'var(--stripe)' };
+  switch (pattern) {
+    case 'hoops':
+      return [64, 76, 88].map((y) => s('rect', { x: 18, y, width: 64, height: 6, ...f }));
+    case 'halves':
+      return s('rect', { x: 50, y: 50, width: 32, height: 60, ...f });
+    case 'sash':
+      return s('path', { d: 'M24 58 L37 54 L80 90 L80 104 L66 104 Z', ...f });
+    case 'band':
+      return s('rect', { x: 18, y: 71, width: 64, height: 10, ...f });
+    case 'plain':
+      return s('path', { d: 'M42 57 Q50 66 58 57', stroke: 'var(--stripe)', 'stroke-width': 3.5, fill: 'none', 'stroke-linecap': 'round' });
+    case 'coach':
+      // A zipped jacket with a whistle on a cord.
+      return [
+        s('rect', { x: 48.8, y: 54, width: 2.4, height: 50, ...f }),
+        s('path', { d: 'M40 57 L50 68 L60 57', stroke: 'var(--stripe)', 'stroke-width': 3, fill: 'none', 'stroke-linejoin': 'round' }),
+        s('path', { d: 'M42 58 Q46 80 60 82', stroke: '#f8fafc', 'stroke-width': 1.6, fill: 'none' }),
+        s('rect', { x: 58, y: 79, width: 10, height: 6.5, rx: 2.5, fill: '#e5e7eb', stroke: '#1f2937', 'stroke-width': 1 }),
+      ];
+    default:
+      return [30, 42, 54, 66].map((x) => s('rect', { x, y: 50, width: 6, height: 60, ...f }));
+  }
+}
+
 // Front view, for the setup screen and menu. viewBox 0 0 100 150.
-export function avatarSvg(look, { size = 160, kit = 'us', idSuffix = 'a' } = {}) {
+export function avatarSvg(look, { size = 160, kit = 'us', idSuffix = 'a', pattern = 'stripes' } = {}) {
   const svg = s('svg', { viewBox: '0 0 100 150', width: size, height: size * 1.5, class: 'avatar', 'aria-hidden': 'true' });
   const v = applyVars(svg, look, kit);
-  svg.append(...avatarParts(v, `shirt-clip-${idSuffix}`));
+  svg.append(...avatarParts(v, `shirt-clip-${idSuffix}`, pattern));
+  return svg;
+}
+
+// Head and shoulders, to sit inside a sticker. Placed with x, y, width and
+// height inside the sticker's own drawing.
+let figureCount = 0;
+export function avatarFigure(look, { kit = 'us', pattern = 'stripes', x = 0, y = 0, width = 80, height = 88 } = {}) {
+  const svg = s('svg', { viewBox: '15 8 70 77', x, y, width, height, class: 'avatar' });
+  const v = applyVars(svg, look, kit);
+  svg.append(...avatarParts(v, `fig-clip-${++figureCount}`, pattern));
   return svg;
 }
 

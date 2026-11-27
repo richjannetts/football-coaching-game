@@ -116,3 +116,15 @@ Things only a real iPhone can show. Tick each one and note anything odd.
 - [ ] Drag the path up and down with a finger. It scrolls smoothly and does not drag the whole page.
 - [ ] Tap your face at the top left. The team screen opens.
 - [ ] Turn the phone sideways on the path. The buttons stay clear of the edges and the path still scrolls.
+
+## Sticker album
+
+- [ ] On the path, tap the book button at the bottom right. The album opens on your team's page, and the voice explains it.
+- [ ] Your own player is sticker 1. The other spaces are grey with a number.
+- [ ] Swipe sideways, or tap the arrows, to turn the pages: your team, club colours, world colours, kit bag, shinies. The dots show which page you are on.
+- [ ] Finish a level: a football medal spins in. The voice says "Level one done", not "sticker".
+- [ ] Get the bonus question right: a new sticker pops up beside the medal and the voice says you have won a sticker. It is in the album afterwards.
+- [ ] Get a bonus question right on a level where you have already won its sticker: you get the cheer, but no second sticker.
+- [ ] Finish level 2 with level 1 done: a shiny trophy sticker appears, and it is on the Shinies page.
+- [ ] Change a team-mate's name or look on the team screen. Her sticker changes too.
+- [ ] Turn the phone sideways in the album. All six stickers on a page fit in one row.
