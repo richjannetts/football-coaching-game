@@ -83,7 +83,7 @@ narrator.prepare(import.meta.env.BASE_URL);
 sfx.setEnabled(!store.load('soundsOff'));
 const tellNames = () => {
   const t = teams.myTeam(profile);
-  narrator.setVars({ name: profile?.name || '', team: t.name, them: t.theirName });
+  narrator.setVars({ name: profile?.name || '', team: t.name, them: t.theirName, colours: teams.ourKitWords(profile) });
 };
 tellNames();
 if (isInstalled()) store.askToKeepData();

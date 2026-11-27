@@ -4,7 +4,7 @@
     {
       "id": "setup.hello",
       "text": "Hello! Let's get you ready for match day.",
-      "cue": "Your player appears in our blue and yellow kit."
+      "cue": "Your player appears in our kit."
     },
     {
       "id": "setup.name",
@@ -138,7 +138,7 @@
     },
     {
       "id": "c1.intro1",
-      "text": "It's match day! We're {team}, in blue and yellow.",
+      "text": "It's match day! We're {team}, in {colours|blue and yellow}.",
       "cue": "Our five players stand at the side of the pitch."
     },
     {

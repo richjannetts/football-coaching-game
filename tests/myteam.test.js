@@ -140,3 +140,9 @@ test('data: starting names pass the name rule unchanged', () => {
   assert.equal(cleanTeamName(team.teamName), team.teamName);
   assert.equal(cleanTeamName(team.opponentName), team.opponentName);
 });
+
+test('kits: our kit in words for the voice', async () => {
+  const { kitWords } = await import('../src/lib/myteam.js');
+  assert.equal(kitWords(team, team.ourKit.default), 'blue and yellow');
+  assert.equal(kitWords(team, { ...team.ourKit.default, pattern: 'plain', shirt: 'green' }), 'green');
+});

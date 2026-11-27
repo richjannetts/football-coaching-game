@@ -4,7 +4,9 @@
 import teamData from '../data/team.json';
 import looks from '../data/looks.json';
 import * as store from './storage.js';
-import { resolveTeam, withPlayer, cleanTeamName, kitColourChoices } from './myteam.js';
+import { resolveTeam, withPlayer, cleanTeamName, kitColourChoices, kitWords } from './myteam.js';
+
+export const ourKitWords = (profile) => kitWords(teamData, myTeam(profile).ourKit);
 
 let saved = store.load('team', null);
 

@@ -111,6 +111,12 @@ export function resolveTeam(team, looks, saved, profile) {
   };
 }
 
+// Our kit in words, for the voice: "blue and yellow", or just "green".
+export function kitWords(team, kit) {
+  const label = (id) => (team.kitOptions.colours.find((c) => c.id === id)?.label || '').toLowerCase();
+  return kit.pattern === 'plain' || kit.stripe === kit.shirt ? label(kit.shirt) : `${label(kit.shirt)} and ${label(kit.stripe)}`;
+}
+
 // The saved record with one player changed. Only the fields we know are kept.
 export function withPlayer(saved, index, look) {
   const players = Array.isArray(saved?.players) ? [...saved.players] : [];
