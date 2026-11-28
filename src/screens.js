@@ -480,7 +480,8 @@ export function teamScreen({ team, kits, mode = 'both', onBack, onNext, onPlayer
 // clock: from buildClock(), for the round being played. round: that round.
 // cup: the rounds from ladder(). opponent: who we are playing, if a round
 // has started. nextButton: { kind: 'round' | 'cup', onTap } between rounds.
-export function menuScreen({ profile, team, album, updateReady, clock, round, cup, cupsWon = 0, opponent = null, movedFrom = null, nextButton = null, onChapter, onGrownUps, onUpdate, onTeam, onAlbum }) {
+// onBack: back to the Match day screen (28th November 2026).
+export function menuScreen({ profile, team, album, updateReady, clock, round, cup, cupsWon = 0, opponent = null, movedFrom = null, nextButton = null, onChapter, onGrownUps, onUpdate, onTeam, onAlbum, onBack = null }) {
   const path = buildCupPath(cup, clock, cupsWon);
 
   const trail = s(
@@ -569,6 +570,7 @@ export function menuScreen({ profile, team, album, updateReady, clock, round, cu
   const top = h(
     'header',
     { class: 'path-top' },
+    onBack ? h('button', { class: 'icon-btn back-btn', type: 'button', 'aria-label': 'Back', onclick: onBack }, backIcon()) : null,
     h(
       'button',
       { class: 'chip team-btn', type: 'button', 'aria-label': `My team: ${team.name}`, onclick: onTeam },

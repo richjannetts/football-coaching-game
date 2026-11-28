@@ -35,6 +35,7 @@ export async function runDrill(stage, drill, squad) {
   // tonight it is her own player, in the keeper top.
   if (drill.keeper) stage.players.forEach((p, i) => (p.keeper = i === parts[drill.keeper]));
   pitch.showSpots([]);
+  pitch.setRing(false); // no helper ring: this is not a kick-off
 
   const spotAt = (p) => nearestSpot(p, stage.spots).id;
   const indexOf = (part) => parts[part];

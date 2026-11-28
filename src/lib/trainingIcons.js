@@ -72,9 +72,9 @@ export function trainingDoor() {
       [228, 20],
       [104, 60],
     ].map(([cx, cy]) => s('circle', { cx, cy, r: 2, fill: '#fff', opacity: 0.8 })),
-    s('rect', { x: 262, y: 30, width: 7, height: 70, fill: '#cfd8e3' }),
-    s('ellipse', { cx: 265, cy: 30, rx: 17, ry: 8, fill: '#fff8c4' }),
-    [70, 130, 190].map((x) => s('path', { d: `M${x - 9} 124 L${x} 100 L${x + 9} 124 Z`, fill: ORANGE })),
-    ball(230, 114, 11)
+    s('rect', { x: 182, y: 30, width: 6, height: 70, fill: '#cfd8e3' }),
+    s('ellipse', { cx: 185, cy: 30, rx: 16, ry: 8, fill: '#fff8c4' }),
+    [214, 244].map((x) => s('path', { d: `M${x - 7} 112 L${x} 94 L${x + 7} 112 Z`, fill: ORANGE })),
+    ball(276, 106, 10)
   );
 }

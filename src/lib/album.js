@@ -20,7 +20,7 @@ export function buildAlbum(data, { squad, teamName, progress = {}, levels }) {
     const stickers = list.map((st) => {
       no += 1;
       const player = st.squad != null ? squad[st.squad] : null;
-      const out = { no, kind: st.kind, page: page.id, name: st.name || '', look: st.look || null, kit: st.kit || 'us', pattern: st.pattern || 'stripes', item: st.item || null, bg: st.bg || null, earned: false };
+      const out = { no, kind: st.kind, page: page.id, name: st.name || '', look: st.look || null, kit: st.kit || 'us', pattern: st.pattern || 'stripes', item: st.item || null, bg: st.bg || null, key: st.earnedBy || null, earned: false };
       if (player) out.look = player;
       if (st.kind === 'player') {
         out.name = player.name;
