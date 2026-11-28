@@ -1,0 +1,93 @@
+{
+  "note": "Training night (Rich's choice, 28th November 2026). The menu is grouped like the FA fundamentals Rich coaches: when we have the ball, when they have the ball, and goalkeeping, then 100 touches a day at home. A tile with \"built\": false shows as coming soon. Each mini-game is a few short puzzles on the match pitch (30 wide, 40 long, our goal along y = 0). Positions are [x, y] in yards. 'us' names our players: 'you' is her own player, 'mate' a friend. 'move' is the one she moves. 'ideal' is a good answer, used for the hints. Anywhere that does the job counts (src/lib/drillChecks.js). 'sticker' is the training ground sticker the mini-game wins the first time.",
+  "sections": [
+    {
+      "id": "attack",
+      "label": "When we have the ball",
+      "icon": "ball",
+      "tiles": [
+        { "id": "dribble", "label": "Dribble", "icon": "dribble", "built": false },
+        { "id": "pass", "label": "Pass", "icon": "pass", "built": true },
+        { "id": "shoot", "label": "Shoot", "icon": "shoot", "built": false }
+      ]
+    },
+    {
+      "id": "defend",
+      "label": "When they have the ball",
+      "icon": "shield",
+      "tiles": [
+        { "id": "tackle", "label": "Tackle", "icon": "tackle", "built": false },
+        { "id": "press", "label": "Press", "icon": "press", "built": false },
+        { "id": "intercept", "label": "Intercept", "icon": "intercept", "built": true }
+      ]
+    },
+    {
+      "id": "keeper",
+      "label": "Goalkeeping",
+      "icon": "gloves",
+      "tiles": [
+        { "id": "line", "label": "Get in line", "icon": "line", "built": true },
+        { "id": "save", "label": "Save it", "icon": "save", "built": false },
+        { "id": "playout", "label": "Play it out", "icon": "playout", "built": false }
+      ]
+    }
+  ],
+  "drills": {
+    "pass": {
+      "kind": "pass",
+      "intro": ["tr.pass.intro"],
+      "right": ["tr.pass.right"],
+      "nudge": { "blocked": "tr.pass.blocked", "far": "tr.pass.far", "near": "tr.pass.near" },
+      "show": "tr.pass.show",
+      "together": "tr.pass.together",
+      "tip": "tr.pass.tip",
+      "scenes": [
+        { "us": { "you": [15, 12], "mate": [15, 25] }, "them": [[15, 19]], "move": "mate", "ideal": [21.5, 19.5], "say": ["tr.pass.ask"] },
+        { "us": { "you": [8, 10], "mate": [15, 20] }, "them": [[11.5, 15], [20, 13]], "move": "mate", "ideal": [6.5, 20.5], "say": ["tr.pass.ask2"] },
+        { "us": { "you": [20, 22], "mate": [20, 32] }, "them": [[20, 27], [13, 25]], "move": "mate", "ideal": [25.5, 28.5], "say": ["tr.pass.ask2"] }
+      ]
+    },
+    "intercept": {
+      "kind": "intercept",
+      "intro": ["tr.int.intro"],
+      "right": ["tr.int.right"],
+      "nudge": { "offLine": "tr.int.miss" },
+      "show": "tr.int.show",
+      "together": "tr.int.together",
+      "tip": "tr.int.tip",
+      "scenes": [
+        { "us": { "you": [15, 10] }, "them": [[8, 24], [22, 16]], "move": "you", "ideal": [15.5, 19.5], "say": ["tr.int.ask"] },
+        { "us": { "you": [20, 14] }, "them": [[22, 28], [9, 21]], "move": "you", "ideal": [15.5, 24.5], "say": ["tr.int.ask2"] },
+        { "us": { "you": [15, 13] }, "them": [[15, 31], [6, 19], [24, 21]], "move": "you", "ideal": [10.5, 24.5], "say": ["tr.int.ask2"] }
+      ]
+    },
+    "line": {
+      "kind": "keeper",
+      "keeper": "you",
+      "intro": ["tr.gk.intro"],
+      "right": ["tr.gk.right"],
+      "nudge": { "offLine": "tr.gk.offLine", "back": "tr.gk.back", "far": "tr.gk.far" },
+      "show": "tr.gk.show",
+      "together": "tr.gk.together",
+      "tip": "tr.gk.tip",
+      "scenes": [
+        { "us": { "you": [8.5, 2.5] }, "them": [[15, 15]], "move": "you", "ideal": [15.5, 3.5], "say": ["tr.gk.ask"] },
+        { "us": { "you": [15.5, 3.5] }, "them": [[25, 13]], "move": "you", "ideal": [17.5, 3.5], "say": ["tr.gk.ask2"] },
+        { "us": { "you": [17.5, 3.5] }, "them": [[5, 10]], "move": "you", "ideal": [12.5, 3.5], "say": ["tr.gk.ask2"] }
+      ]
+    }
+  },
+  "touches": {
+    "note": "100 touches a day (Rich's winter chart). A grown-up sets how many touches and how many days with two dials. One ball a day on the chart. Stickers come from the total, never from days in a row: the first ball, half the chart, and a full chart. A missed day just stays blank.",
+    "touchOptions": [20, 30, 40, 50, 60, 70, 80, 90, 100, 120, 150, 200, 250, 300],
+    "dayOptions": [5, 7, 10, 14, 16, 20, 21, 25, 28, 30],
+    "start": { "touches": 100, "days": 14 },
+    "skills": [
+      { "id": "toeTaps", "label": "Toe taps" },
+      { "id": "insides", "label": "Inside, inside" },
+      { "id": "soleRolls", "label": "Sole rolls" },
+      { "id": "stepOvers", "label": "Step overs" },
+      { "id": "keepyUps", "label": "Keepy-ups" }
+    ]
+  }
+}
