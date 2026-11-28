@@ -1767,6 +1767,106 @@
       "cue": "Our keeper holds the ball up."
     },
     {
+      "id": "tr.shoot.intro",
+      "text": "Shooting! You've got the ball. Find the best place to shoot from.",
+      "cue": "Her player has the ball. Their keeper is in goal."
+    },
+    {
+      "id": "tr.shoot.ask",
+      "text": "Move to a good place to shoot. Not too far out, and not too close. Then tap the tick.",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.shoot.ask2",
+      "text": "Where's the best place to shoot from this time?",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.shoot.far",
+      "text": "Not quite. That's a long way out. Get a bit closer to their goal.",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.shoot.near",
+      "text": "Not quite. That's too close, their keeper can grab it. Take a few steps back out.",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.shoot.wide",
+      "text": "Not quite. That's out by the side. Come round, so you can see more of the goal.",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.shoot.blocked",
+      "text": "Not quite. Their player is in the way of your shot. Find some space.",
+      "cue": "Their player in the way hops."
+    },
+    {
+      "id": "tr.shoot.show",
+      "text": "Here's a good place. In front of the goal, not too far and not too close.",
+      "cue": "A yellow circle flashes on a good place."
+    },
+    {
+      "id": "tr.shoot.together",
+      "text": "Let's do it together. In front of the goal, with space to shoot.",
+      "cue": "Her player walks to a good place."
+    },
+    {
+      "id": "tr.shoot.right",
+      "text": "Yes! A great time to shoot. Shoot!",
+      "cue": "The ball goes past their keeper into the net."
+    },
+    {
+      "id": "tr.shoot.tip",
+      "text": "At training, shoot at the best time. Not too far out, and not too close.",
+      "cue": "Coach's tip."
+    },
+    {
+      "id": "tr.save.intro",
+      "text": "Saving! Tonight you're in goal, {name}. Everyone gets a turn.",
+      "cue": "Her player in the keeper top, in goal."
+    },
+    {
+      "id": "tr.save.ask",
+      "text": "Their player is going to shoot. The arrow shows where. Get in the way of the ball. Then tap the tick.",
+      "cue": "An arrow shows where the shot will go."
+    },
+    {
+      "id": "tr.save.ask2",
+      "text": "Here comes another shot. Where should you go?",
+      "cue": "An arrow shows where the shot will go."
+    },
+    {
+      "id": "tr.save.offLine",
+      "text": "Not quite. Follow the arrow. Stand right in the way of the ball.",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.save.far",
+      "text": "Not quite. That's a long way from your goal. Come back nearer to it.",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.save.show",
+      "text": "Here's a good place. Right on the arrow, near your goal.",
+      "cue": "A yellow circle flashes on a good place."
+    },
+    {
+      "id": "tr.save.together",
+      "text": "Let's do it together. Right in the way of the ball.",
+      "cue": "Her player walks onto the arrow."
+    },
+    {
+      "id": "tr.save.right",
+      "text": "Great save! You got right behind the ball.",
+      "cue": "The shot comes straight to her."
+    },
+    {
+      "id": "tr.save.tip",
+      "text": "Watch the ball all the way, and get your body behind it.",
+      "cue": "Coach's tip."
+    },
+    {
       "id": "tr.next",
       "text": "Here's another one.",
       "cue": "The players move to new places."

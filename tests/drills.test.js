@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { toSegment, checkPass, checkIntercept, checkKeeper, checkDrill, scenePositions } from '../src/lib/drillChecks.js';
+import { toSegment, checkPass, checkIntercept, checkKeeper, checkShoot, checkSave, checkDrill, scenePositions } from '../src/lib/drillChecks.js';
 import { readJson } from './helpers.js';
 
 const training = readJson('src/data/training.json');
@@ -39,6 +39,27 @@ test('keeper: in line with the ball, a step off her line', () => {
   assert.equal(checkKeeper({ keeper: { x: 15, y: 0.5 }, ball }).why, 'back');
   assert.equal(checkKeeper({ keeper: { x: 15, y: 9 }, ball }).why, 'far');
   assert.equal(checkKeeper({ keeper: { x: 11, y: 3 }, ball }).why, 'offLine');
+});
+
+test('shoot: not too far out, not too close, not too wide, and a clear shot', () => {
+  assert.equal(checkShoot({ me: { x: 15, y: 22 }, them: [] }).why, 'far');
+  assert.equal(checkShoot({ me: { x: 14, y: 37 }, them: [] }).why, 'near');
+  assert.equal(checkShoot({ me: { x: 26, y: 34 }, them: [] }).why, 'wide');
+  assert.deepEqual(checkShoot({ me: { x: 15, y: 31 }, them: [{ x: 15, y: 35, at: 2 }] }), { ok: false, why: 'blocked', who: 2 });
+  assert.equal(checkShoot({ me: { x: 15, y: 31 }, them: [{ x: 10, y: 28, at: 1 }] }).ok, true);
+});
+
+test('shoot: their keeper never counts as in the way', () => {
+  const scene = { us: { you: [15, 22] }, them: [[15, 39]], theirKeeper: 0 };
+  assert.equal(checkDrill('shoot', scenePositions('shoot', scene, { x: 15, y: 31 })).ok, true);
+});
+
+test('save: on the line of the shot, near her goal', () => {
+  const shooter = { x: 15, y: 12 };
+  const target = { x: 16.5, y: 0 };
+  assert.equal(checkSave({ keeper: { x: 16.5, y: 3.5 }, shooter, target }).ok, true);
+  assert.equal(checkSave({ keeper: { x: 11.5, y: 2.5 }, shooter, target }).why, 'offLine');
+  assert.equal(checkSave({ keeper: { x: 15.5, y: 8 }, shooter, target }).why, 'far');
 });
 
 // Every puzzle must start wrong (or there is nothing to do), and its good

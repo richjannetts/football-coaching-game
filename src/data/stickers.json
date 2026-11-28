@@ -61,6 +61,8 @@
         { "kind": "skill", "squad": 0, "name": "Pass", "earnedBy": "train_pass", "bg": ["#bff0cd", "#ffd028"] },
         { "kind": "skill", "squad": 0, "name": "Intercept", "earnedBy": "train_intercept", "bg": ["#ffd6d4", "#ffffff"] },
         { "kind": "skill", "squad": 0, "name": "Keeper", "kit": "keeper", "earnedBy": "train_line", "bg": ["#ffe1c2", "#c4eaff"] },
+        { "kind": "skill", "squad": 0, "name": "Shoot", "earnedBy": "train_shoot", "bg": ["#fff2a8", "#bff0cd"] },
+        { "kind": "skill", "squad": 0, "name": "Save it", "kit": "keeper", "earnedBy": "train_save", "bg": ["#c4eaff", "#ffe1c2"] },
         { "kind": "item", "item": "boots", "name": "Touches", "earnedBy": "touches1", "bg": ["#c4eaff", "#ffffff"] },
         { "kind": "item", "item": "bottle", "name": "Half way", "earnedBy": "touchesHalf", "bg": ["#bff0cd", "#c4eaff"] },
         { "kind": "item", "item": "ball", "name": "Chart done", "earnedBy": "touchesAll", "bg": ["#fff2a8", "#ffd028"] }
