@@ -41,7 +41,9 @@ const THEIR_LOOKS = [
 // null). halfTimeAfter / fullTimeAfter: this moment ends a half or the
 // match. goalLevels: where a Difficult mistake may give a goal this round.
 export const defaultMode = () => ({ level: 0, difficulty: 'easy', mirror: false, goals: { us: 0, them: 0 }, consequences: false, ending: 0, before: { us: 0, them: 0 }, next: undefined, minute: null, goal: null, halfTimeAfter: false, fullTimeAfter: false, goalLevels: null, onGoal: () => {} });
-export function createStage({ profile, onHome, showWords = false, spots: extraSpots = [], mode: given = {} }) {
+// training: a Training night mini-game, so the scoreboard says so
+// instead of showing a match.
+export function createStage({ profile, onHome, showWords = false, spots: extraSpots = [], mode: given = {}, training = false }) {
   const mode = { ...defaultMode(), ...given, goals: { ...defaultMode().goals, ...(given.goals || {}) }, before: { ...defaultMode().before, ...(given.before || {}) } };
   mode.cfg = difficulty.levels[mode.difficulty] || difficulty.levels.easy;
   // No dots on Difficult: players can go anywhere (an unseen one-yard grid).
@@ -67,6 +69,7 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
     h('span', { class: 'scoreboard-side' }, h('span', { class: 'scoreboard-name' }, mine.theirName), h('span', { class: 'kit-dot', style: { background: mine.kit.them.shirt, borderColor: mine.kit.them.stripe } }))
   );
 
+  if (training) scoreboard.replaceChildren(h('span', { class: 'scoreboard-name' }, 'Training night'));
   // The match clock: which minute of the match this moment is.
   if (mode.minute != null) scoreboard.append(h('span', { class: 'scoreboard-minute', 'aria-label': `${mode.minute} minutes` }, miniClock(mode.minute), `${mode.minute}'`));
 
@@ -343,8 +346,9 @@ export function createStage({ profile, onHome, showWords = false, spots: extraSp
   // gives a shiny sticker (shiny). The next button appears once the
   // question is answered.
   // prizePage: the album page the prize goes on, so it can be seen landing.
-  stage.showEnd = ({ level, nextLabel, onNext, question, onBonus, firstTime = false, prize = null, prizePage = null, shiny = null }) => {
-    const award = h('div', { class: 'end-sticker' }, h('div', { class: 'end-rays' }), stickerSvg(level, true));
+  // medal: a picture to show instead of the level's numbered medal.
+  stage.showEnd = ({ level, nextLabel, onNext, question, onBonus, firstTime = false, prize = null, prizePage = null, shiny = null, medal = null }) => {
+    const award = h('div', { class: 'end-sticker' }, h('div', { class: 'end-rays' }), medal || stickerSvg(level, true));
     if (shiny) award.append(h('div', { class: 'end-prize is-shiny' }, stickerCard(shiny)));
     const nextBtn = onNext
       ? h('button', { class: 'icon-btn big is-glow', type: 'button', 'aria-label': nextLabel || 'Next level', onclick: () => (stage.leave(), onNext()) }, nextIcon())
