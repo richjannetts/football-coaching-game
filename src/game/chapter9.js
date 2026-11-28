@@ -4,7 +4,8 @@
 // goal, a friend by the near post, two friends in our box between their
 // players and our goal, and our front player up near halfway. Our keeper
 // catches the cross, puts the ball down, dribbles out and passes up to our
-// front player (Rich, 28th November 2026: keep the keeper in the game). Our front player is tripped in
+// front player (Rich, 28th November 2026: keep the keeper in the game),
+// while our friend from the near post stays close to our goal. Our front player is tripped in
 // their box: a penalty to us, for level 10 (the storyboard Rich agreed,
 // 27th November 2026). In a cup round where this moment scores instead
 // (levels.json), she runs on and scores on the break.
@@ -53,14 +54,15 @@ export async function chapter9(stage) {
   const keeper = role('keeper')[0];
   const [guardL, guardR] = role('guard').sort((a, b) => a.x - b.x);
   const up = role('up')[0].el;
-  stage.callNames({ keeper: keeper.el, runner: up });
+  const cover = role('post')[0].el;
+  stage.callNames({ keeper: keeper.el, runner: up, back: cover });
 
   // In a round where this moment scores (the semi-final), she runs on and
   // scores on the break. Where the penalty comes next (the final), she is
   // tripped: a penalty to us.
   const scores = stage.mode.goal === 'us';
   const ending = scores ? ['c9.shoot', 'sfx.goal', 'c9.goal'] : ['c9.trip', 'sfx.whistle', ...stage.linked(10, 'c9.penalty')];
-  await stage.play(['sfx.whistle', 'sfx.kick', 'c9.cross', 'c9.catch', 'c9.roll', 'c9.up', 'c9.race', ...ending], {
+  await stage.play(['sfx.whistle', 'sfx.kick', 'c9.cross', 'c9.catch', 'c9.roll', 'c9.cover', 'c9.up', 'c9.race', ...ending], {
     'sfx.kick': () => pitch.setRing(false),
     'c9.cross': () => Promise.all([
       pitch.moveBall({ x: 11, y: 3.6 }, 1300, 'ease-out'),
@@ -80,6 +82,13 @@ export async function chapter9(stage) {
       pitch.moveTo(attackerR, { x: 16.5, y: 9 }, 2000),
       pitch.moveTo(guardR.el, { x: 25, y: 12 }, 1800),
     ]),
+    // When our keeper comes out with the ball, a defender stays close to
+    // our goal (Rich's coaching point, 28th November 2026).
+    'c9.cover': async () => {
+      await pitch.moveTo(cover, { x: 14, y: 3.5 }, 1200);
+      stage.jump([cover]);
+      await wait(hold(800));
+    },
     'c9.up': async () => {
       await pitch.moveTo(up, { x: 20, y: 22 }, 700);
       await pitch.moveBall({ x: 20.4, y: 22.6 }, 1100, 'ease-out');

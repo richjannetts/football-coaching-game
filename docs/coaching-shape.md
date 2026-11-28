@@ -61,3 +61,13 @@ Changed by Rich, 27th November 2026: our shape matches the one shown for the oth
 - Up just behind halfway, in the middle.
 - Middles either side, a little deeper (or level with Up).
 - Back on the penalty box line, keeper in goal.
+
+## Keeper coming out with the ball (Rich, 28th November 2026)
+
+- We like the keeper to come out with the ball now and then, after a save. Never from a pass back to her.
+- When she does, a defender stays close to our goal, just in case.
+- Level 9 shows this: the keeper catches their corner, dribbles out and passes up, and the friend from the near post drops into the middle of our goal.
+
+## Shooting (Rich, 28th November 2026)
+
+- Shoot at the best time: not too far out, but not too close either.

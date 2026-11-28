@@ -1362,6 +1362,11 @@
       "cue": "Our keeper puts the ball down and dribbles out of our box."
     },
     {
+      "id": "c9.cover",
+      "text": "Coach says: when our keeper comes out with the ball, a defender stays close to our goal. So {back|our friend} drops back, just in case.",
+      "cue": "Our friend from the near post steps into the middle of our goal."
+    },
+    {
       "id": "c9.up",
       "text": "Then she passes up to {runner|our front player}, who was waiting near halfway.",
       "cue": "Our keeper passes up the pitch to our front player."
