@@ -9,6 +9,8 @@
 //   - Save it: the keeper stands on the line of their shot (shown by an
 //     arrow), near her goal.
 //   - Shoot: move her player, with the ball, to a good place to shoot.
+//   - Dribble: move her player, with the ball, forward into space.
+//   - Press: the one of ours nearest the ball goes to it, goal side.
 // Anywhere that does the job counts. All distances are in yards, on the
 // same pitch as the match (30 wide, 40 long, our goal along y = 0).
 // No imports, so it is easy to test.
@@ -40,6 +42,14 @@ export const LIMITS = {
   // no defender on the line of the shot.
   shoot: { max: 13, min: 5, angle: 0.8, clear: 2 },
   save: { near: 1.6, minY: 0.5, maxY: 6 }, // on the line of the shot, near her goal
+  // Dribble forward, into space: at least 2 yards up the pitch, no more
+  // than 12 in one go, ending 3 yards from their players, and not going
+  // through one of them on the way.
+  dribble: { forward: 2, max: 12, space: 3, clear: 2 },
+  // Press: the player nearest the ball goes, gets close (within 3 yards)
+  // and stays goal side (between the ball and our goal). A player counts
+  // as moved if she is a yard or more from where she started.
+  press: { moved: 0.9, near: 3 },
 };
 
 export const GOAL_CENTRE = { x: 15, y: 0 };
@@ -98,6 +108,33 @@ export function checkSave({ keeper, shooter, target }, L = LIMITS.save) {
   return { ok: true };
 }
 
+// Dribble. start: where she began, with the ball. me: where she moved to.
+// them: their players.
+export function checkDribble({ start, me, them }, L = LIMITS.dribble) {
+  if (me.y - start.y < L.forward) return { ok: false, why: 'back' };
+  if (dist(start, me) > L.max) return { ok: false, why: 'far' };
+  const tight = them.findIndex((t) => dist(t, me) < L.space);
+  if (tight >= 0) return { ok: false, why: 'tight', who: tight };
+  const inWay = them.findIndex((t) => toSegment(t, start, me).d < L.clear);
+  if (inWay >= 0) return { ok: false, why: 'blocked', who: inWay };
+  return { ok: true };
+}
+
+// Press. ball: their player with the ball. start and now: where each of
+// our players began and is now, by part ('you', 'mate', ...). Only the
+// player nearest the ball at the start should go.
+export function checkPress({ ball, start, now }, L = LIMITS.press) {
+  const parts = Object.keys(start);
+  const nearest = parts.reduce((a, b) => (dist(start[b], ball) < dist(start[a], ball) ? b : a));
+  const moved = parts.filter((p) => dist(start[p], now[p]) > L.moved);
+  if (!moved.length) return { ok: false, why: 'none' };
+  if (!moved.includes(nearest)) return { ok: false, why: 'who' };
+  const me = now[nearest];
+  if (dist(me, ball) > L.near) return { ok: false, why: 'far' };
+  if (me.y >= ball.y) return { ok: false, why: 'side' };
+  return { ok: true };
+}
+
 // One check for any mini-game, by its kind. pos: where the players are now.
 export function checkDrill(kind, pos) {
   if (kind === 'pass') return checkPass(pos);
@@ -105,14 +142,26 @@ export function checkDrill(kind, pos) {
   if (kind === 'keeper') return checkKeeper(pos);
   if (kind === 'shoot') return checkShoot(pos);
   if (kind === 'save') return checkSave(pos);
+  if (kind === 'dribble') return checkDribble(pos);
+  if (kind === 'press') return checkPress(pos);
   throw new Error(`No check for ${kind}`);
 }
 
 // What the check needs for one puzzle, from the puzzle's data
 // (training.json) and where she moved her player to (moved: { x, y }).
-export function scenePositions(kind, scene, moved) {
+// live, if given, has where each of our players began and is now on the
+// pitch ({ start, now }, by part); otherwise the puzzle's own places are
+// used, with the player she moves at 'moved'.
+export function scenePositions(kind, scene, moved, live) {
   const pt = ([x, y]) => ({ x, y });
   const them = scene.them.map(pt);
+  const parts = (scene.movable || [scene.move]).filter((part) => scene.us[part]);
+  const start = {};
+  const now = {};
+  for (const part of parts) {
+    start[part] = live ? live.start[part] : pt(scene.us[part]);
+    now[part] = live ? live.now[part] : part === scene.move ? moved : pt(scene.us[part]);
+  }
   if (kind === 'pass') return { ball: pt(scene.us.you), mate: moved, them };
   if (kind === 'intercept') return { me: moved, from: them[0], to: them[1] };
   if (kind === 'keeper') return { keeper: moved, ball: them[0] };
@@ -121,5 +170,7 @@ export function scenePositions(kind, scene, moved) {
     return { me: moved, them: outfield };
   }
   if (kind === 'save') return { keeper: moved, shooter: them[0], target: pt(scene.target) };
+  if (kind === 'dribble') return { start: start[scene.move], me: moved, them };
+  if (kind === 'press') return { ball: them[0], start, now };
   throw new Error(`No positions for ${kind}`);
 }

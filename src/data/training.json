@@ -6,7 +6,7 @@
       "label": "When we have the ball",
       "icon": "ball",
       "tiles": [
-        { "id": "dribble", "label": "Dribble", "icon": "dribble", "built": false },
+        { "id": "dribble", "label": "Dribble", "icon": "dribble", "built": true },
         { "id": "pass", "label": "Pass", "icon": "pass", "built": true },
         { "id": "shoot", "label": "Shoot", "icon": "shoot", "built": true }
       ]
@@ -17,7 +17,7 @@
       "icon": "shield",
       "tiles": [
         { "id": "tackle", "label": "Tackle", "icon": "tackle", "built": false },
-        { "id": "press", "label": "Press", "icon": "press", "built": false },
+        { "id": "press", "label": "Press", "icon": "press", "built": true },
         { "id": "intercept", "label": "Intercept", "icon": "intercept", "built": true }
       ]
     },
@@ -103,6 +103,34 @@
         { "us": { "you": [11.5, 2.5] }, "them": [[15, 12]], "target": [16.5, 0], "move": "you", "ideal": [16.5, 3.5], "say": ["tr.save.ask"] },
         { "us": { "you": [12.5, 3.5] }, "them": [[24, 10]], "target": [13.5, 0], "move": "you", "ideal": [17.5, 3.5], "say": ["tr.save.ask2"] },
         { "us": { "you": [16.5, 2.5] }, "them": [[7, 9]], "target": [16.5, 0], "move": "you", "ideal": [12.5, 3.5], "say": ["tr.save.ask2"] }
+      ]
+    },
+    "dribble": {
+      "kind": "dribble",
+      "intro": ["tr.drib.intro"],
+      "right": ["tr.drib.right"],
+      "nudge": { "back": "tr.drib.back", "far": "tr.drib.far", "tight": "tr.drib.tight", "blocked": "tr.drib.blocked" },
+      "show": "tr.drib.show",
+      "together": "tr.drib.together",
+      "tip": "tr.drib.tip",
+      "scenes": [
+        { "us": { "you": [15, 12] }, "them": [[15, 18], [9, 20]], "move": "you", "ideal": [21.5, 18.5], "say": ["tr.drib.ask"] },
+        { "us": { "you": [6, 16] }, "them": [[8, 22], [14, 20]], "move": "you", "ideal": [4.5, 24.5], "say": ["tr.drib.ask2"] },
+        { "us": { "you": [20, 24] }, "them": [[20, 30], [25, 28], [14, 29]], "move": "you", "ideal": [15.5, 33.5], "say": ["tr.drib.ask2"] }
+      ]
+    },
+    "press": {
+      "kind": "press",
+      "intro": ["tr.press.intro"],
+      "right": ["tr.press.right"],
+      "nudge": { "none": "tr.press.none", "who": "tr.press.who", "far": "tr.press.far", "side": "tr.press.side" },
+      "show": "tr.press.show",
+      "together": "tr.press.together",
+      "tip": "tr.press.tip",
+      "scenes": [
+        { "us": { "you": [15, 16], "mate": [6, 12], "mate2": [24, 10] }, "them": [[15, 24]], "movable": ["you", "mate", "mate2"], "move": "you", "ideal": [15.5, 21.5], "say": ["tr.press.ask"] },
+        { "us": { "you": [15, 18], "mate": [8, 19], "mate2": [24, 15] }, "them": [[6, 26]], "movable": ["you", "mate", "mate2"], "move": "mate", "ideal": [6.5, 23.5], "say": ["tr.press.ask2"] },
+        { "us": { "you": [16, 14], "mate": [8, 16], "mate2": [23, 12] }, "them": [[24, 20]], "movable": ["you", "mate", "mate2"], "move": "mate2", "ideal": [23.5, 17.5], "say": ["tr.press.ask2"] }
       ]
     }
   },
