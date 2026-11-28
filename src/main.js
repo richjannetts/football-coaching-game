@@ -538,7 +538,6 @@ function goTouches(speak) {
     today: dayKey(),
     skills: training.touches.skills,
     options: training.touches,
-    name: profile?.name || '',
     onBack: () => goTraining(true, 'tn.back'),
     onTick: () => {
       const r = tickToday(touches, dayKey());

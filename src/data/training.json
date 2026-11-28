@@ -8,7 +8,7 @@
       "tiles": [
         { "id": "dribble", "label": "Dribble", "icon": "dribble", "built": false },
         { "id": "pass", "label": "Pass", "icon": "pass", "built": true },
-        { "id": "shoot", "label": "Shoot", "icon": "shoot", "built": false }
+        { "id": "shoot", "label": "Shoot", "icon": "shoot", "built": true }
       ]
     },
     {
@@ -27,7 +27,7 @@
       "icon": "gloves",
       "tiles": [
         { "id": "line", "label": "Get in line", "icon": "line", "built": true },
-        { "id": "save", "label": "Save it", "icon": "save", "built": false },
+        { "id": "save", "label": "Save it", "icon": "save", "built": true },
         { "id": "playout", "label": "Play it out", "icon": "playout", "built": false }
       ]
     }
@@ -74,6 +74,35 @@
         { "us": { "you": [8.5, 2.5] }, "them": [[15, 15]], "move": "you", "ideal": [15.5, 3.5], "say": ["tr.gk.ask"] },
         { "us": { "you": [15.5, 3.5] }, "them": [[25, 13]], "move": "you", "ideal": [17.5, 3.5], "say": ["tr.gk.ask2"] },
         { "us": { "you": [17.5, 3.5] }, "them": [[5, 10]], "move": "you", "ideal": [12.5, 3.5], "say": ["tr.gk.ask2"] }
+      ]
+    },
+    "shoot": {
+      "kind": "shoot",
+      "intro": ["tr.shoot.intro"],
+      "right": ["tr.shoot.right"],
+      "nudge": { "far": "tr.shoot.far", "near": "tr.shoot.near", "wide": "tr.shoot.wide", "blocked": "tr.shoot.blocked" },
+      "show": "tr.shoot.show",
+      "together": "tr.shoot.together",
+      "tip": "tr.shoot.tip",
+      "scenes": [
+        { "us": { "you": [15, 22] }, "them": [[15, 39], [10, 28]], "theirKeeper": 0, "move": "you", "ideal": [15.5, 32.5], "say": ["tr.shoot.ask"] },
+        { "us": { "you": [14, 37] }, "them": [[15, 39], [19, 33]], "theirKeeper": 0, "move": "you", "ideal": [12.5, 31.5], "say": ["tr.shoot.ask2"] },
+        { "us": { "you": [26, 34] }, "them": [[15, 39], [20, 31], [12, 33]], "theirKeeper": 0, "move": "you", "ideal": [15.5, 31.5], "say": ["tr.shoot.ask2"] }
+      ]
+    },
+    "save": {
+      "kind": "save",
+      "keeper": "you",
+      "intro": ["tr.save.intro"],
+      "right": ["tr.save.right"],
+      "nudge": { "offLine": "tr.save.offLine", "far": "tr.save.far" },
+      "show": "tr.save.show",
+      "together": "tr.save.together",
+      "tip": "tr.save.tip",
+      "scenes": [
+        { "us": { "you": [11.5, 2.5] }, "them": [[15, 12]], "target": [16.5, 0], "move": "you", "ideal": [16.5, 3.5], "say": ["tr.save.ask"] },
+        { "us": { "you": [12.5, 3.5] }, "them": [[24, 10]], "target": [13.5, 0], "move": "you", "ideal": [17.5, 3.5], "say": ["tr.save.ask2"] },
+        { "us": { "you": [16.5, 2.5] }, "them": [[7, 9]], "target": [16.5, 0], "move": "you", "ideal": [12.5, 3.5], "say": ["tr.save.ask2"] }
       ]
     }
   },

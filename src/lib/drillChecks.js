@@ -6,6 +6,9 @@
 //   - Intercept: stand on the line of their pass, between the two players.
 //   - Get in line: the keeper stands on the line from the ball to the
 //     middle of our goal, a step or two off her goal line.
+//   - Save it: the keeper stands on the line of their shot (shown by an
+//     arrow), near her goal.
+//   - Shoot: move her player, with the ball, to a good place to shoot.
 // Anywhere that does the job counts. All distances are in yards, on the
 // same pitch as the match (30 wide, 40 long, our goal along y = 0).
 // No imports, so it is easy to test.
@@ -32,9 +35,15 @@ export const LIMITS = {
   pass: { min: 4, max: 15, clear: 2.5 }, // a short pass, with their players at least 2.5 yards from its line
   intercept: { near: 1.6, from: 0.15, to: 0.85 }, // on their pass line, between the two of them
   keeper: { near: 1.6, minY: 1, maxY: 6, maxOut: 7 }, // in line with the ball, a step or two off the line
+  // Shoot at the best time (Rich's coaching point, 28th November 2026):
+  // not too far out, not too close, not from too tight an angle, and with
+  // no defender on the line of the shot.
+  shoot: { max: 13, min: 5, angle: 0.8, clear: 2 },
+  save: { near: 1.6, minY: 0.5, maxY: 6 }, // on the line of the shot, near her goal
 };
 
 export const GOAL_CENTRE = { x: 15, y: 0 };
+export const THEIR_GOAL = { x: 15, y: 40 };
 
 // Pass. ball: where the ball is. mate: where she moved her friend to.
 // them: their players. Returns { ok, why, who }: why says what to nudge
@@ -67,11 +76,35 @@ export function checkKeeper({ keeper, ball }, L = LIMITS.keeper) {
   return { ok: true };
 }
 
+// Shoot. me: where she moved her player (with the ball). them: their
+// outfield players (not their keeper), with their places in the puzzle in
+// 'at', so the nudge can make the right one hop.
+export function checkShoot({ me, them }, L = LIMITS.shoot) {
+  const d = dist(me, THEIR_GOAL);
+  if (d > L.max) return { ok: false, why: 'far' };
+  if (d < L.min) return { ok: false, why: 'near' };
+  if (THEIR_GOAL.y - me.y < L.angle * Math.abs(me.x - THEIR_GOAL.x)) return { ok: false, why: 'wide' };
+  const inWay = them.find((t) => toSegment(t, me, THEIR_GOAL).d < L.clear);
+  if (inWay) return { ok: false, why: 'blocked', who: inWay.at };
+  return { ok: true };
+}
+
+// Save it. keeper: where she moved our keeper. shooter: their player with
+// the ball. target: where the shot is going, on our goal line.
+export function checkSave({ keeper, shooter, target }, L = LIMITS.save) {
+  if (keeper.y > L.maxY) return { ok: false, why: 'far' };
+  const { d } = toSegment(keeper, shooter, target);
+  if (d > L.near || keeper.y < L.minY) return { ok: false, why: 'offLine' };
+  return { ok: true };
+}
+
 // One check for any mini-game, by its kind. pos: where the players are now.
 export function checkDrill(kind, pos) {
   if (kind === 'pass') return checkPass(pos);
   if (kind === 'intercept') return checkIntercept(pos);
   if (kind === 'keeper') return checkKeeper(pos);
+  if (kind === 'shoot') return checkShoot(pos);
+  if (kind === 'save') return checkSave(pos);
   throw new Error(`No check for ${kind}`);
 }
 
@@ -83,5 +116,10 @@ export function scenePositions(kind, scene, moved) {
   if (kind === 'pass') return { ball: pt(scene.us.you), mate: moved, them };
   if (kind === 'intercept') return { me: moved, from: them[0], to: them[1] };
   if (kind === 'keeper') return { keeper: moved, ball: them[0] };
+  if (kind === 'shoot') {
+    const outfield = them.map((t, at) => ({ ...t, at })).filter((t) => t.at !== scene.theirKeeper);
+    return { me: moved, them: outfield };
+  }
+  if (kind === 'save') return { keeper: moved, shooter: them[0], target: pt(scene.target) };
   throw new Error(`No positions for ${kind}`);
 }

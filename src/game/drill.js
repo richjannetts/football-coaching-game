@@ -1,6 +1,7 @@
 // A Training night mini-game (Rich's choice, 28th November 2026): a few
 // short puzzles on the match pitch. In each one she moves one player, taps
-// the tick, and the move plays out: a pass, an interception or a save.
+// the tick, and the move plays out: a pass, a shot, an interception or a
+// save.
 // The puzzles are data, in src/data/training.json. The checks are in
 // src/lib/drillChecks.js: anywhere that does the job counts.
 //
@@ -13,6 +14,7 @@ import { nearestSpot } from '../lib/geometry.js';
 import { checkDrill, scenePositions } from '../lib/drillChecks.js';
 
 const pt = ([x, y]) => ({ x, y });
+const OUR_BALL = new Set(['pass', 'shoot']);
 
 // Which of our squad plays each part: 'you' is her own player, 'mate' the
 // first friend who is not the marked keeper.
@@ -44,7 +46,7 @@ export async function runDrill(stage, drill, squad) {
     // Set out the puzzle.
     stage.setBusy(true);
     for (const t of stage.them) t.remove();
-    stage.addThem(scene.them);
+    stage.addThem(scene.them, scene.theirKeeper ?? -1);
     for (const [part, at] of Object.entries(scene.us)) {
       const i = indexOf(part);
       used.add(i);
@@ -54,17 +56,26 @@ export async function runDrill(stage, drill, squad) {
       await stage.placement.moveTo(i, spotAt(pt(at)), n === 0 ? 0 : 700);
     }
     stage.placement.refresh();
-    const ballAt = drill.kind === 'pass' ? pt(scene.us.you) : pt(scene.them[0]);
+    // The ball starts with her player when we have it, otherwise with
+    // their first player.
+    const ballAt = OUR_BALL.has(drill.kind) ? pt(scene.us.you) : pt(scene.them[0]);
     const feet = { x: ballAt.x + 0.7, y: ballAt.y + 0.4 };
     if (n === 0) pitch.placeBall(feet);
     else await pitch.moveBall(feet, 500);
+    // Save it: an arrow shows where their shot is going.
+    if (scene.target) pitch.showArrow(ballAt, pt(scene.target));
 
     const mover = stage.players[indexOf(scene.move)];
     stage.callNames({ mate: stage.players[parts.mate]?.el });
     await stage.play([...(n === 0 ? drill.intro : ['tr.next']), ...scene.say], {
       [scene.say[0]]: () => stage.jump([mover.el]),
     });
+    // Shoot: the ball stays at her feet wherever she moves.
+    const carrying = OUR_BALL.has(drill.kind) && scene.move === 'you';
+    if (carrying) stage.afterChange = () => pitch.moveBall({ x: mover.el._pos.x + 0.7, y: mover.el._pos.y + 0.4 }, 300);
     await solve(scene, mover, ballAt);
+    stage.afterChange = null;
+    pitch.clear('arrow');
   }
   return { used: [...used] };
 
@@ -114,13 +125,24 @@ export async function runDrill(stage, drill, squad) {
         pitch.clear('arrow');
         stage.jump([mover.el]);
       };
+    } else if (drill.kind === 'shoot') {
+      // She dribbles to her place, then shoots past their keeper, into the
+      // side of the goal away from their keeper.
+      cues[drill.right[0]] = async () => {
+        await pitch.moveBall({ x: to.x + 0.6, y: to.y + 0.4 }, 700);
+        const keeper = scene.theirKeeper != null ? scene.them[scene.theirKeeper][0] : 15;
+        await pitch.moveBall({ x: keeper >= 15 ? 13.8 : 16.2, y: 40.3 }, 700, 'ease-in');
+        stage.netShake();
+        stage.jump([mover.el]);
+      };
     } else if (drill.kind === 'intercept') {
       cues[drill.right[0]] = async () => {
         await pitch.moveBall({ x: to.x, y: to.y + 0.5 }, 1000, 'ease-in');
         stage.jump([mover.el]);
       };
     } else {
-      // Their player shoots at the middle of the goal: straight to her.
+      // Get in line and Save it: she is in the way, so the shot comes
+      // straight to her.
       cues[drill.right[0]] = async () => {
         await pitch.moveBall({ x: to.x, y: to.y + 0.3 }, 700, 'ease-in');
         stage.jump([mover.el]);
