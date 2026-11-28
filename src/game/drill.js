@@ -14,14 +14,15 @@ import { nearestSpot } from '../lib/geometry.js';
 import { checkDrill, scenePositions } from '../lib/drillChecks.js';
 
 const pt = ([x, y]) => ({ x, y });
-const OUR_BALL = new Set(['pass', 'shoot']);
+const OUR_BALL = new Set(['pass', 'shoot', 'dribble']);
+const CARRY = new Set(['shoot', 'dribble']); // she moves with the ball
 
-// Which of our squad plays each part: 'you' is her own player, 'mate' the
-// first friend who is not the marked keeper.
+// Which of our squad plays each part: 'you' is her own player, 'mate',
+// 'mate2' and 'mate3' her friends who are not the marked keeper.
 function cast(squad) {
   const you = squad.findIndex((p) => p.you);
-  const mate = squad.findIndex((p) => !p.you && !p.keeper);
-  return { you, mate };
+  const friends = squad.map((p, i) => (!p.you && !p.keeper ? i : -1)).filter((i) => i >= 0);
+  return { you, mate: friends[0], mate2: friends[1], mate3: friends[2] };
 }
 
 export async function runDrill(stage, drill, squad) {
@@ -47,15 +48,19 @@ export async function runDrill(stage, drill, squad) {
     stage.setBusy(true);
     for (const t of stage.them) t.remove();
     stage.addThem(scene.them, scene.theirKeeper ?? -1);
+    // Usually she moves one player. In Press she can move any of them,
+    // and has to choose the right one.
+    const movable = scene.movable || [scene.move];
     for (const [part, at] of Object.entries(scene.us)) {
       const i = indexOf(part);
       used.add(i);
       const p = stage.players[i];
       p.el.style.display = '';
-      p.locked = part !== scene.move;
+      p.locked = !movable.includes(part);
       await stage.placement.moveTo(i, spotAt(pt(at)), n === 0 ? 0 : 700);
     }
     stage.placement.refresh();
+    const start = posOf(movable);
     // The ball starts with her player when we have it, otherwise with
     // their first player.
     const ballAt = OUR_BALL.has(drill.kind) ? pt(scene.us.you) : pt(scene.them[0]);
@@ -71,16 +76,21 @@ export async function runDrill(stage, drill, squad) {
       [scene.say[0]]: () => stage.jump([mover.el]),
     });
     // Shoot: the ball stays at her feet wherever she moves.
-    const carrying = OUR_BALL.has(drill.kind) && scene.move === 'you';
+    const carrying = CARRY.has(drill.kind) && scene.move === 'you';
     if (carrying) stage.afterChange = () => pitch.moveBall({ x: mover.el._pos.x + 0.7, y: mover.el._pos.y + 0.4 }, 300);
-    await solve(scene, mover, ballAt);
+    await solve(scene, mover, ballAt, start);
     stage.afterChange = null;
     pitch.clear('arrow');
   }
   return { used: [...used] };
 
+  // Where some of our players are now, by part.
+  function posOf(list) {
+    return Object.fromEntries(list.map((part) => [part, { ...stage.players[indexOf(part)].el._pos }]));
+  }
+
   // One puzzle: wait for the tick, check, and help if it isn't right yet.
-  async function solve(scene, mover, ballAt) {
+  async function solve(scene, mover, ballAt, start) {
     let wrong = 0;
     for (;;) {
       stage.check();
@@ -92,19 +102,20 @@ export async function runDrill(stage, drill, squad) {
       stage.onReady = null;
       stage.setBusy(true);
       stage.showReady(false);
-      const result = checkDrill(drill.kind, scenePositions(drill.kind, scene, mover.el._pos));
-      if (result.ok) return playOut(scene, mover, ballAt);
+      const live = { start, now: posOf(Object.keys(start)) };
+      const result = checkDrill(drill.kind, scenePositions(drill.kind, scene, mover.el._pos, live));
+      if (result.ok) return playOut(scene, mover, ballAt, start);
       wrong += 1;
       if (wrong >= 3) {
         // Do it together: she watches her player walk to a good place.
         await stage.play(['sfx.whistle', drill.together], {
           [drill.together]: () => stage.placement.moveTo(indexOf(scene.move), spotAt(pt(scene.ideal)), 1200),
         });
-        return playOut(scene, mover, ballAt);
+        return playOut(scene, mover, ballAt, start);
       }
       // The nudge says which player to think about, and that player hops.
       const nudge = drill.nudge[result.why] || Object.values(drill.nudge)[0];
-      const hopper = result.why === 'blocked' && result.who != null ? stage.them[result.who] : drill.kind === 'intercept' && result.why === 'offLine' ? null : mover.el;
+      const hopper = result.who != null ? stage.them[result.who] : drill.kind === 'intercept' && result.why === 'offLine' ? null : mover.el;
       const lines = ['sfx.whistle', nudge, ...(wrong === 2 ? [drill.show] : []), 'hint.tryAgain'];
       await stage.play(lines, {
         [nudge]: () => stage.jump(hopper ? [hopper] : stage.them.slice(0, 2)),
@@ -114,7 +125,7 @@ export async function runDrill(stage, drill, squad) {
   }
 
   // The move plays out, so she sees why it was right.
-  async function playOut(scene, mover, ballAt) {
+  async function playOut(scene, mover, ballAt, start) {
     const to = mover.el._pos;
     const cues = {};
     if (drill.kind === 'pass') {
@@ -133,6 +144,20 @@ export async function runDrill(stage, drill, squad) {
         const keeper = scene.theirKeeper != null ? scene.them[scene.theirKeeper][0] : 15;
         await pitch.moveBall({ x: keeper >= 15 ? 13.8 : 16.2, y: 40.3 }, 700, 'ease-in');
         stage.netShake();
+        stage.jump([mover.el]);
+      };
+    } else if (drill.kind === 'dribble') {
+      // The path she dribbled, from where she started.
+      cues[drill.right[0]] = async () => {
+        pitch.showArrow(start[scene.move], to);
+        await wait(hold(900));
+        pitch.clear('arrow');
+        stage.jump([mover.el]);
+      };
+    } else if (drill.kind === 'press') {
+      // She gets there quickly, so their player loses the ball to her.
+      cues[drill.right[0]] = async () => {
+        await pitch.moveBall({ x: to.x + 0.6, y: to.y + 0.4 }, 700);
         stage.jump([mover.el]);
       };
     } else if (drill.kind === 'intercept') {

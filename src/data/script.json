@@ -1867,6 +1867,116 @@
       "cue": "Coach's tip."
     },
     {
+      "id": "tr.drib.intro",
+      "text": "Dribbling! You've got the ball. Keep it close, and run with it into space.",
+      "cue": "Her player has the ball. Their players are in front of her."
+    },
+    {
+      "id": "tr.drib.ask",
+      "text": "Dribble forward, into space, away from their players. Then tap the tick.",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.drib.ask2",
+      "text": "Where's the space this time?",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.drib.back",
+      "text": "Not quite. Dribble forward, towards their goal.",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.drib.far",
+      "text": "Not quite. That's a long way in one go. Stop a bit sooner, and keep the ball close.",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.drib.tight",
+      "text": "Not quite. Their player is too close there. Find more space.",
+      "cue": "Their player who is too close hops."
+    },
+    {
+      "id": "tr.drib.blocked",
+      "text": "Not quite. Their player is in the way. Go round her, into space.",
+      "cue": "Their player in the way hops."
+    },
+    {
+      "id": "tr.drib.show",
+      "text": "Here's a good place. Forward, into the space.",
+      "cue": "A yellow circle flashes on a good place."
+    },
+    {
+      "id": "tr.drib.together",
+      "text": "Let's do it together. Forward, into the space.",
+      "cue": "Her player walks into the space."
+    },
+    {
+      "id": "tr.drib.right",
+      "text": "Yes! Into the space, with the ball. Great dribbling!",
+      "cue": "An arrow shows the way she dribbled."
+    },
+    {
+      "id": "tr.drib.tip",
+      "text": "At training, keep the ball close, look up, and run into space.",
+      "cue": "Coach's tip."
+    },
+    {
+      "id": "tr.press.intro",
+      "text": "Pressing! They've got the ball. One of us goes to put them under pressure.",
+      "cue": "Their player has the ball. Three of ours are near."
+    },
+    {
+      "id": "tr.press.ask",
+      "text": "Who's nearest the ball? Move her close to it, on our goal's side. Then tap the tick.",
+      "cue": "Their player with the ball hops."
+    },
+    {
+      "id": "tr.press.ask2",
+      "text": "They've got the ball again. Who should go this time?",
+      "cue": "Their player with the ball hops."
+    },
+    {
+      "id": "tr.press.none",
+      "text": "Not quite. Somebody needs to go to the ball. Who's nearest?",
+      "cue": "The nearest player hops."
+    },
+    {
+      "id": "tr.press.who",
+      "text": "Not quite. The player nearest the ball goes. She gets there first.",
+      "cue": "The nearest player hops."
+    },
+    {
+      "id": "tr.press.far",
+      "text": "Not quite. Get closer to the ball, so they have to hurry.",
+      "cue": "The nearest player hops."
+    },
+    {
+      "id": "tr.press.side",
+      "text": "Not quite. Stay on our goal's side of the ball, between it and our goal.",
+      "cue": "The nearest player hops."
+    },
+    {
+      "id": "tr.press.show",
+      "text": "Here's a good place. Close to the ball, on our goal's side.",
+      "cue": "A yellow circle flashes on a good place."
+    },
+    {
+      "id": "tr.press.together",
+      "text": "Let's do it together. The nearest player goes, close to the ball.",
+      "cue": "The nearest player walks to the ball."
+    },
+    {
+      "id": "tr.press.right",
+      "text": "Yes! You got there fast. They have to hurry, and we win the ball!",
+      "cue": "The ball comes to our player."
+    },
+    {
+      "id": "tr.press.tip",
+      "text": "When they have the ball, the nearest player goes quickly. Stay between the ball and our goal.",
+      "cue": "Coach's tip."
+    },
+    {
       "id": "tr.next",
       "text": "Here's another one.",
       "cue": "The players move to new places."

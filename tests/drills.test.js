@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { toSegment, checkPass, checkIntercept, checkKeeper, checkShoot, checkSave, checkDrill, scenePositions } from '../src/lib/drillChecks.js';
+import { toSegment, checkPass, checkIntercept, checkKeeper, checkShoot, checkSave, checkDribble, checkPress, checkDrill, scenePositions } from '../src/lib/drillChecks.js';
 import { readJson } from './helpers.js';
 
 const training = readJson('src/data/training.json');
@@ -60,6 +60,26 @@ test('save: on the line of the shot, near her goal', () => {
   assert.equal(checkSave({ keeper: { x: 16.5, y: 3.5 }, shooter, target }).ok, true);
   assert.equal(checkSave({ keeper: { x: 11.5, y: 2.5 }, shooter, target }).why, 'offLine');
   assert.equal(checkSave({ keeper: { x: 15.5, y: 8 }, shooter, target }).why, 'far');
+});
+
+test('dribble: forward, into space, and not through their players', () => {
+  const start = { x: 15, y: 12 };
+  const them = [{ x: 15, y: 18 }, { x: 9, y: 20 }];
+  assert.equal(checkDribble({ start, me: start, them }).why, 'back');
+  assert.equal(checkDribble({ start, me: { x: 15, y: 30 }, them: [] }).why, 'far');
+  assert.deepEqual(checkDribble({ start, me: { x: 16, y: 19 }, them }), { ok: false, why: 'tight', who: 0 });
+  assert.deepEqual(checkDribble({ start, me: { x: 15, y: 22 }, them: [{ x: 15, y: 17 }] }), { ok: false, why: 'blocked', who: 0 });
+  assert.equal(checkDribble({ start, me: { x: 21.5, y: 18.5 }, them }).ok, true);
+});
+
+test('press: only the nearest goes, close and goal side', () => {
+  const ball = { x: 15, y: 24 };
+  const start = { you: { x: 15, y: 16 }, mate: { x: 6, y: 12 } };
+  assert.equal(checkPress({ ball, start, now: start }).why, 'none');
+  assert.equal(checkPress({ ball, start, now: { ...start, mate: { x: 13, y: 22 } } }).why, 'who');
+  assert.equal(checkPress({ ball, start, now: { ...start, you: { x: 15, y: 19 } } }).why, 'far');
+  assert.equal(checkPress({ ball, start, now: { ...start, you: { x: 15, y: 26 } } }).why, 'side');
+  assert.equal(checkPress({ ball, start, now: { ...start, you: { x: 15.5, y: 21.5 } } }).ok, true);
 });
 
 // Every puzzle must start wrong (or there is nothing to do), and its good
