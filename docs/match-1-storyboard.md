@@ -6,7 +6,7 @@ Agreed with Rich on 27th November 2026. The visual version is a published page f
 | --- | --- | --- | --- |
 | 1 | Our centre kick | 1-0 | Built |
 | 2 | Their centre kick | 1-0 | Built |
-| 3 | Our goal kick (spread wide, find a friend) | 1-0 | Built |
+| 3 | Our goal kick (spread wide, find a friend). A friend passes back, our keeper dribbles out and passes forward. The shot goes just wide, or scores where the round says so (Round 1) | 1-0 | Built |
 | 4 | Their goal kick (back, wait, GO) | 1-0 | Built |
 | 5 | Our kick-in (FA pass-in or dribble-in) | 1-0 | Built |
 | 6 | Their kick-in. They score a great shot before half-time, told not tested | 1-1 | Built |
@@ -25,7 +25,7 @@ The match is played as a cup run of three short matches, each with its own skill
 
 | Round | Skills | First half | Second half | Score |
 | --- | --- | --- | --- | --- |
-| Round 1 (Easy) | Kick-offs and goal kicks | 1, 2 | 3, 4 | 1-0 |
+| Round 1 (Easy) | Kick-offs and goal kicks | 1, 2 | 4, 3 | 2-0 (our keeper dribbles out at our goal kick and sets up the second) |
 | Semi-final (Medium) | Kick-ins and corners | 5, 6 | 8, 9 | 2-1 (our corner, then a goal on the break at 9) |
 | Final (Difficult) | A mix, ending with the penalty | 1, 6 | 7, 9 (32'), 10 | 2-1 |
 
