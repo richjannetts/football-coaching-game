@@ -4,7 +4,7 @@
     {"id": "m1", "label": "Match 1", "levels": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "complete": true}
   ],
   "cup": {
-    "note": "Rich's daughter found ten moments in one match too many (Rich, 27th November 2026), so each cup match has a few moments and the skills are spread across the rounds: Round 1 is kick-offs and goal kicks, the semi-final kick-ins and corners, and the final a mix of everything, ending with the penalty to win the cup. Every level is in at least one round. 'goals' is each round's story: who scores at which moment, so the score follows the round and we always win. Levels 1, 6 and 10 always score; levels 3, 8 and 9 score only where 'goals' says so (otherwise our goal kick ends with a shot just wide, our corner hits the post, and their corner leads to the penalty). In Round 1 our goal kick comes last and scores: our keeper dribbles out and passes for the goal (Rich, 28th November 2026), so the keeper is part of the play. 'minutes' moves a moment on the match clock (otherwise they are spread out evenly). 'comeback' is the moment that goes in if a Difficult mistake let them score; their goal levels only count before it, and without one a Difficult mistake never costs a goal. 'story' lists the rules every round must keep (checked by tests/cup.test.js).",
+    "note": "Rich's daughter found ten moments in one match too many (Rich, 27th November 2026), so each cup match has a few moments and the skills are spread across the rounds: Round 1 is kick-offs and goal kicks, the semi-final kick-ins and corners, and the final a mix of everything, ending with the penalty to win the cup. Every level is in at least one round. 'goals' is each round's story: who scores at which moment, so the score follows the round and we always win. Levels 1, 6 and 10 always score; levels 8 and 9 score only where 'goals' says so (otherwise our corner hits the post, and their corner leads to the penalty). 'minutes' moves a moment on the match clock (otherwise they are spread out evenly). 'comeback' is the moment that goes in if a Difficult mistake let them score; their goal levels only count before it, and without one a Difficult mistake never costs a goal. 'story' lists the rules every round must keep (checked by tests/cup.test.js).",
     "name": "The Cup",
     "match": "m1",
     "story": {
@@ -13,11 +13,11 @@
       "startSecondHalf": [7],
       "lastOnly": [10],
       "alwaysScores": {"1": "us", "6": "them", "10": "us"},
-      "canScore": {"3": "us", "8": "us", "9": "us"}
+      "canScore": {"8": "us", "9": "us"}
     },
     "comeback": 8,
     "rounds": [
-      {"id": "round1", "label": "Round 1", "spoken": "round one", "difficulty": "easy", "halves": [[1, 2], [4, 3]], "goals": {"1": "us", "3": "us"}},
+      {"id": "round1", "label": "Round 1", "spoken": "round one", "difficulty": "easy", "halves": [[1, 2], [3, 4]], "goals": {"1": "us"}},
       {
         "id": "semi",
         "label": "Semi-final",

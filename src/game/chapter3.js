@@ -2,10 +2,8 @@
 // Their shot went wide in level 2, so it is our goal kick. The rule: the
 // other team goes back into its own half until the ball is kicked (the
 // retreat line). In our team: "Spread wide, find a friend." Line up, choose
-// the keeper's pass, then watch us play out from the back: a friend passes
-// it back, our keeper dribbles out into the space and passes to our front
-// player. In Round 1 she scores. Where a round has no goal here, the shot
-// goes just wide, so it is their goal kick, for level 4.
+// the keeper's pass, then watch us play out from the back. Our shot goes
+// just wide, so it is their goal kick, for level 4.
 
 import { team } from './content.js';
 import { runLineup } from './lineup.js';
@@ -118,63 +116,33 @@ export async function chapter3(stage) {
     await Promise.all([pitch.moveBall(BALL, 700), pitch.moveTo(catcher, { x: RETREAT[0][0], y: RETREAT[0][1] }, 700)]);
   }
 
-  // Our friend passes it straight back to our keeper, who has stepped
-  // out. They are all still back in their half, so there is lots of space:
-  // our keeper dribbles out, passes to our front player, and runs back to
-  // her goal (Rich, 28th November 2026: keep the keeper in the game).
-  // A return pass first, because the kicker may not touch a goal kick
-  // twice in a row; whether a keeper may dribble a goal kick straight out
-  // is not confirmed for 5v5, so the story never shows it.
-  // Where this round's story has a goal here, our front player scores.
-  // Otherwise her shot goes just wide, and it is their goal kick (level 4).
+  // Our friend takes it up the side, passes inside, and our front player
+  // shoots. Just wide: their goal kick.
   async function playOut(friend) {
     const right = friend.x > 15;
     const flip = right ? (x) => 30 - x : (x) => x;
     const other = friend === wideL ? wideR : wideL;
     const [gk, , , centre, deep] = them;
-    const scores = stage.mode.goal === 'us';
-    stage.callNames({ mate: friend.el, keeper: keeper.el, shooter: up.el });
-    const ending = scores ? ['sfx.goal', 'c3.goal'] : ['c3.wide', ...stage.linked(4, 'c3.theirKick')];
-    await stage.play(['c3.back', 'c3.dribble', 'c3.keeperPass', 'c3.keeperBack', 'c3.shot', 'sfx.kick', ...ending], {
-      'c3.back': async () => {
-        await Promise.all([pitch.moveTo(keeper.el, { x: flip(11.5), y: 6 }, 900), pitch.moveBall({ x: flip(11.8), y: 6.6 }, 1000)]);
-        stage.jump([keeper.el]);
-      },
-      'c3.dribble': () =>
+    const near = right ? them[2] : them[1];
+    stage.callNames({ runner: friend.el, mate: middle.el, shooter: up.el });
+    await stage.play(['c3.move1', 'c3.move2', 'c3.shot', 'sfx.kick', 'c3.wide', ...stage.linked(4, 'c3.theirKick')], {
+      'c3.move1': () =>
         Promise.all([
-          pitch.moveTo(keeper.el, { x: flip(13), y: 11.5 }, 2200),
-          pitch.moveBall({ x: flip(13.3), y: 12.1 }, 2200),
-          pitch.moveTo(up.el, { x: flip(19), y: 24 }, 2400),
-          pitch.moveTo(middle.el, { x: flip(5.5), y: 19 }, 2200),
-          pitch.moveTo(friend.el, { x: flip(4), y: 13 }, 2000),
-          pitch.moveTo(other.el, { x: flip(25), y: 16 }, 2200),
-          pitch.moveTo(centre, { x: flip(14.5), y: 20.5 }, 2400),
+          pitch.moveTo(friend.el, { x: flip(4.5), y: 17.5 }, 2000),
+          pitch.moveBall({ x: flip(5), y: 18.4 }, 2000),
+          pitch.moveTo(middle.el, { x: flip(12), y: 21 }, 2000),
+          pitch.moveTo(up.el, { x: flip(17), y: 29 }, 2200),
+          pitch.moveTo(other.el, { x: flip(24), y: 15 }, 2000),
+          pitch.moveTo(near, { x: flip(7), y: 21 }, 1800),
+          pitch.moveTo(centre, { x: flip(14), y: 25 }, 1800),
         ]),
-      'c3.keeperPass': () => Promise.all([pitch.moveBall({ x: flip(19.3), y: 24.6 }, 900), pitch.moveTo(centre, { x: flip(13.6), y: 14.5 }, 900)]),
-      'c3.keeperBack': () =>
-        Promise.all([
-          pitch.moveTo(keeper.el, { x: 15, y: 1.5 }, 2000),
-          pitch.moveTo(up.el, { x: flip(17.5), y: 33 }, 2000),
-          pitch.moveBall({ x: flip(17.8), y: 33.6 }, 2000),
-          pitch.moveTo(deep, { x: flip(13.5), y: 30.5 }, 1900),
-          pitch.moveTo(middle.el, { x: flip(9), y: 27 }, 2000),
-        ]),
-      'c3.shot': () => wait(motion(200)),
-      'sfx.kick': () =>
-        scores
-          ? Promise.all([pitch.moveBall({ x: flip(12.8), y: 40.9 }, 550, 'ease-in'), pitch.moveTo(gk, { x: flip(17), y: 38.6 }, 500)])
-          : Promise.all([pitch.moveBall({ x: flip(20.5), y: 41.2 }, 650, 'ease-in'), pitch.moveTo(gk, { x: flip(17), y: 38.6 }, 500)]),
-      'sfx.goal': () => {
-        stage.storyGoal('us');
-        stage.goalBanner(true);
-        stage.netShake();
-        stage.confetti(null, 70);
-        stage.jump(stage.players.map((p) => p.el));
+      'c3.move2': async () => {
+        await pitch.moveBall({ x: flip(12.4), y: 21.8 }, 700);
+        await wait(motion(250));
+        await Promise.all([pitch.moveBall({ x: flip(17), y: 29.8 }, 800), pitch.moveTo(deep, { x: flip(16), y: 33 }, 900)]);
       },
-      'c3.goal': async () => {
-        await wait(hold(2000));
-        stage.goalBanner(false);
-      },
+      'c3.shot': () => Promise.all([pitch.moveTo(up.el, { x: flip(18), y: 32 }, 900), pitch.moveBall({ x: flip(18.4), y: 32.8 }, 900)]),
+      'sfx.kick': () => Promise.all([pitch.moveBall({ x: flip(20.5), y: 41.2 }, 650, 'ease-in'), pitch.moveTo(gk, { x: flip(17), y: 38.6 }, 500)]),
       'c3.wide': () => stage.jump([friend.el, middle.el, up.el, other.el]),
       'c3.theirKick': async () => {
         await pitch.moveTo(gk, { x: flip(18.5), y: 39.6 }, 900);

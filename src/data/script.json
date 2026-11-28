@@ -747,34 +747,19 @@
       "cue": "The ball rolls out to a friend on the side."
     },
     {
-      "id": "c3.back",
-      "text": "{mate|Our friend} passes it straight back to {keeper|our keeper}.",
-      "cue": "Our friend passes the ball back to our keeper, who has stepped out of her goal."
+      "id": "c3.move1",
+      "text": "{runner|Our friend} takes it up the side of the pitch.",
+      "cue": "Our friend dribbles up the side. Everyone moves up with her."
     },
     {
-      "id": "c3.dribble",
-      "text": "Lots of space! {keeper|Our keeper} dribbles out with the ball. Head up, looking for a friend.",
-      "cue": "Our keeper dribbles up the pitch with the ball. Everyone runs forward."
-    },
-    {
-      "id": "c3.keeperPass",
-      "text": "Their player runs at her, so she passes to {shooter|our front player}. Lovely pass!",
-      "cue": "Our keeper passes the ball forward to our front player."
-    },
-    {
-      "id": "c3.keeperBack",
-      "text": "Our keeper runs straight back to her goal, and {shooter|our front player} runs at their goal.",
-      "cue": "Our keeper runs back into goal. Our front player dribbles towards their goal."
+      "id": "c3.move2",
+      "text": "She passes inside to {mate|a friend}. Pass and move!",
+      "cue": "The ball goes inside to a friend, who passes it forward."
     },
     {
       "id": "c3.shot",
       "text": "{shooter|Our front player} shoots...",
       "cue": "Our front player kicks the ball at their goal."
-    },
-    {
-      "id": "c3.goal",
-      "text": "GOAL! {keeper|Our keeper} started it, and {shooter|our front player} finished it. {score|We're winning}!",
-      "cue": "The ball goes in the net. Everyone jumps, our keeper too."
     },
     {
       "id": "c3.wide",
@@ -1368,23 +1353,23 @@
     },
     {
       "id": "c9.catch",
-      "text": "Our keeper catches it! Safe hands.",
-      "cue": "Our keeper jumps and holds the ball."
+      "text": "{keeper|Our keeper} catches it! Safe hands.",
+      "cue": "Our keeper jumps and catches the ball."
     },
     {
       "id": "c9.roll",
-      "text": "She rolls it out to {mate|a friend}, quick as a flash.",
-      "cue": "Our keeper rolls the ball to a friend at the side."
+      "text": "She puts the ball down and dribbles out into the space. Head up, looking for a friend!",
+      "cue": "Our keeper puts the ball down and dribbles out of our box."
     },
     {
       "id": "c9.up",
-      "text": "A big pass up to {runner|our front player}, who was waiting near halfway.",
-      "cue": "The ball goes up the pitch to our front player."
+      "text": "Then she passes up to {runner|our front player}, who was waiting near halfway.",
+      "cue": "Our keeper passes up the pitch to our front player."
     },
     {
       "id": "c9.race",
-      "text": "She races away towards their goal!",
-      "cue": "Our front player runs with the ball into their penalty box."
+      "text": "{runner|Our front player} races away towards their goal, and our keeper runs back to hers!",
+      "cue": "Our front player runs with the ball. Our keeper runs back into goal."
     },
     {
       "id": "c9.trip",

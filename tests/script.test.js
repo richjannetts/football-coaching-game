@@ -14,7 +14,3 @@ test('script: every line a level speaks is in script.json', () => {
     for (const [, id] of code.matchAll(/'(c\d+\.[A-Za-z0-9]+)'/g)) assert.ok(ids.has(id), `${file} speaks ${id}, which is not in the script`);
   }
 });
-
-test('script: our keeper dribbles out and passes at our goal kick', () => {
-  for (const id of ['c3.back', 'c3.dribble', 'c3.keeperPass', 'c3.keeperBack', 'c3.goal']) assert.ok(ids.has(id), id);
-});
