@@ -183,7 +183,7 @@ Built 28th November 2026 (Rich's choices). The game opens on two big doors after
 - A mini-game is three short puzzles on the match pitch, run by `src/game/drill.js`: she moves one player and taps the tick, and the move plays out. Pass, Intercept and Get in line share one check, a player on (or clear of) the line between two points (`src/lib/drillChecks.js`). Anywhere that does the job counts. Help steps up: a nudge, then a flash on a good place, then do it together. No timer.
 - In goalkeeping, her own player goes in goal: every girl gets a turn (FA advice).
 - Coaching points Rich added for later mini-games: Shoot at the best time, not too far out and not too close. The keeper sometimes comes out with the ball, and then a defender stays close to goal.
-- 100 touches a day (`src/lib/touches.js`, store key `touches`): a grown-up sets the touches and days with two iPhone-style dials. One ball a day. Stickers come from the total (the first ball, half the chart, a full chart), never from days in a row, and a missed day stays blank. "Print the chart" uses the phone's own print, with an A4 layout in `@media print`.
+- 100 touches a day (`src/lib/touches.js`, store key `touches`): a grown-up sets the touches and days with two iPhone-style dials. One ball a day. Stickers come from the total (the first ball, half the chart, a full chart), never from days in a row, and a missed day stays blank. No printed version: the app is shared instead (Rich, 28th November 2026).
 - The Training ground album page (before the shinies) holds the training stickers. Each names what wins it in `earnedBy`, and they never use up a bonus answer.
 
 ## Not in scope yet

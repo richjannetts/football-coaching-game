@@ -168,9 +168,8 @@ function dial({ values, value, label, onChange }) {
 }
 
 // ---------- 100 touches a day ----------
-// state: from src/lib/touches.js. today: today's date key. name: her name,
-// for the printed chart.
-export function touchesScreen({ state, today, skills, options, name, onBack, onTick, onSetChart, onNewChart }) {
+// state: from src/lib/touches.js. today: today's date key.
+export function touchesScreen({ state, today, skills, options, onBack, onTick, onSetChart, onNewChart }) {
   const el = h('section', { class: 'screen hub touches' });
   let setting = !state.set;
 
@@ -196,7 +195,6 @@ export function touchesScreen({ state, today, skills, options, name, onBack, onT
       'div',
       { class: 'touches-grown' },
       h('button', { class: 'text-btn', type: 'button', onclick: () => ((setting = true), draw(st), narrator.say(['tc.setup'])) }, 'Grown-ups: change the chart'),
-      h('button', { class: 'text-btn', type: 'button', onclick: () => printChart(st, skills, name) }, 'Print the chart'),
       full ? h('button', { class: 'text-btn', type: 'button', onclick: onNewChart }, 'Start a new chart') : null
     );
     el.replaceChildren(
@@ -235,29 +233,4 @@ export function touchesScreen({ state, today, skills, options, name, onBack, onT
   };
   el.begin = () => narrator.say(setting ? ['tc.setup'] : ['tc.hello', 'tc.skills']);
   return el;
-}
-
-// The chart on paper, for the fridge door: printed with the phone's own
-// Share, then Print. It is laid out for A4 and only shows when printing.
-function printChart(st, skills, name) {
-  document.querySelector('.print-sheet')?.remove();
-  const sheet = h(
-    'div',
-    { class: 'print-sheet' },
-    h('h1', {}, `${st.touches} touches a day`),
-    h('p', { class: 'print-name' }, `Name: ${name || '________________'}`),
-    h('ul', { class: 'print-skills' }, skills.map((sk) => h('li', {}, sk.label))),
-    h(
-      'div',
-      { class: 'print-grid' },
-      Array.from({ length: st.days }, (_, i) => h('div', { class: 'print-day' }, h('span', {}, `Day ${i + 1}`), h('i', {})))
-    ),
-    h('p', { class: 'print-foot' }, 'Colour in a ball each day you do your touches. See you at training!')
-  );
-  document.body.append(sheet);
-  try {
-    window.print();
-  } catch {
-    /* printing not offered here */
-  }
 }
