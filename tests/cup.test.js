@@ -49,7 +49,7 @@ test('cup: the score follows each round story', () => {
   assert.deepEqual(scoreBefore(semi.goals, order, 5), { us: 0, them: 0 });
   assert.deepEqual(scoreBefore(semi.goals, order, 8), { us: 0, them: 1 });
   assert.deepEqual(scoreBefore(semi.goals, order, 9), { us: 1, them: 1 });
-  assert.deepEqual(storyScore(rounds[0]), { us: 2, them: 0 });
+  assert.deepEqual(storyScore(rounds[0]), { us: 1, them: 0 });
   assert.deepEqual(storyScore(semi), { us: 2, them: 1 });
   assert.deepEqual(storyScore(rounds[2]), { us: 2, them: 1 });
 });

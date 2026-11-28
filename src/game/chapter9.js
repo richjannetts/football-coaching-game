@@ -3,7 +3,8 @@
 // corner is kicked (the dotted ring is a helper). In our team: keeper in
 // goal, a friend by the near post, two friends in our box between their
 // players and our goal, and our front player up near halfway. Our keeper
-// catches the cross and starts a break. Our front player is tripped in
+// catches the cross, puts the ball down, dribbles out and passes up to our
+// front player (Rich, 28th November 2026: keep the keeper in the game). Our front player is tripped in
 // their box: a penalty to us, for level 10 (the storyboard Rich agreed,
 // 27th November 2026). In a cup round where this moment scores instead
 // (levels.json), she runs on and scores on the break.
@@ -52,7 +53,7 @@ export async function chapter9(stage) {
   const keeper = role('keeper')[0];
   const [guardL, guardR] = role('guard').sort((a, b) => a.x - b.x);
   const up = role('up')[0].el;
-  stage.callNames({ mate: guardR.el, runner: up });
+  stage.callNames({ keeper: keeper.el, runner: up });
 
   // In a round where this moment scores (the semi-final), she runs on and
   // scores on the break. Where the penalty comes next (the final), she is
@@ -71,8 +72,14 @@ export async function chapter9(stage) {
       stage.jump([keeper.el]);
       await wait(hold(1200));
     },
-    // She rolls it out to the friend on the far side, away from their players.
-    'c9.roll': () => Promise.all([pitch.moveTo(guardR.el, { x: 25, y: 9 }, 900), pitch.moveBall({ x: 24.6, y: 9.6 }, 1200)]),
+    // She puts the ball down and dribbles out, away from their players,
+    // into the space. A friend moves wide to help.
+    'c9.roll': () => Promise.all([
+      pitch.moveTo(keeper.el, { x: 18.5, y: 11.5 }, 2200),
+      pitch.moveBall({ x: 18.8, y: 12.1 }, 2200),
+      pitch.moveTo(attackerR, { x: 16.5, y: 9 }, 2000),
+      pitch.moveTo(guardR.el, { x: 25, y: 12 }, 1800),
+    ]),
     'c9.up': async () => {
       await pitch.moveTo(up, { x: 20, y: 22 }, 700);
       await pitch.moveBall({ x: 20.4, y: 22.6 }, 1100, 'ease-out');
@@ -82,6 +89,7 @@ export async function chapter9(stage) {
       pitch.moveBall({ x: 17.3, y: 35.2 }, 1800),
       pitch.moveTo(theirBack, { x: 16, y: 33.6 }, 1800),
       pitch.moveTo(guardL.el, { x: 9, y: 16 }, 1800),
+      pitch.moveTo(keeper.el, { x: 15, y: 1.5 }, 1800),
       pitch.moveTo(gk, { x: 15.5, y: 37.5 }, 1200),
     ]),
     'c9.trip': async () => {
