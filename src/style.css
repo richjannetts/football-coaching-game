@@ -4002,3 +4002,6 @@ button.chip:active {
     margin-top: 12pt;
   }
 }
+.touches .hub-title {
+  font-size: clamp(1.15rem, 5.2vw, 1.7rem);
+}
