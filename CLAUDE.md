@@ -40,7 +40,7 @@ The "Saturday morning" look (Rich's choice, 26th November 2026). Colours and fon
 - Each of our players has her name on a small plate under her feet. Long names are cut short there. In landscape, names on the bench wait until a player is picked up, because the bench is a column.
 - A small scoreboard above the pitch shows both team names with a dot of each kit colour.
 - The menu is the cup path (`src/lib/path.js`, drawn in `src/screens.js`, Rich's choice, 27th November 2026, after the match clock did not work for him): one winding trail up the screen through the whole cup. Round 1's moments, a flag and the semi-final's, a flag and the final's, then the cup at the top (gold once she has won a cup). Each moment shows its place in its round (1 to 4 or 5). Finished moments are green, the one to play next is yellow and glows, the rest are white and locked. Her player stands beside the next moment and hops up when she passes one. Only the round she is in can be played from the path. The match's minutes still come from `src/lib/clock.js` for the scoreboard. Who she is playing sits under the top buttons.
-- The sticker album (`src/lib/album.js`, `src/lib/stickers.js`) has cream paper pages with numbered spaces, opened from the book button or the sticker count on the path screen. Page order (Rich's choice, 26th November 2026): our team with the coach, club colours, world colours, kit bag, shinies. Club and world colours are made-up kits with made-up names: colours and patterns only. Never a badge, a sponsor, a real club or a country name.
+- The sticker album (`src/lib/album.js`, `src/lib/stickers.js`) has cream paper pages with numbered spaces, opened from the book button or the sticker count on the path screen. Page order (Rich's choice, 26th November 2026): our team with the coach, club colours, world colours, kit bag, training ground (added 28th November 2026), shinies. Club and world colours are made-up kits with made-up names: colours and patterns only. Never a badge, a sponsor, a real club or a country name.
 
 ## Commands
 
@@ -173,6 +173,18 @@ Replays and difficulty built 27th November 2026. The cup replaced the difficulty
 - The score in spoken lines comes from `{score}` and `{final}`, so extra goals on Difficult are said correctly.
 - Stickers stay first-time-only for bonus answers, whatever the round.
 - A grown-up can stop a round in the grown-ups area. Her levels and stickers stay, and she can start that round again from the path.
+
+## Match day and Training night
+
+Built 28th November 2026 (Rich's choices). The game opens on two big doors after the Play button: Match day and Training night. Neither locks the other. A new player's first run still ends on the cup path.
+
+- Match day (`src/trainingScreens.js`): a yellow Cup run tile opens the cup path, and a Coming soon tile marks a future kind of match. The cup path's back button returns to Match day.
+- Training night: mini-games grouped like the FA fundamentals Rich coaches: when we have the ball (Dribble, Pass, Shoot), when they have the ball (Tackle, Press, Intercept) and goalkeeping (Get in line, Save it, Play it out), then 100 touches a day at home. The menu and the puzzles are data in `src/data/training.json`. A tile with `built: false` shows as coming soon.
+- A mini-game is three short puzzles on the match pitch, run by `src/game/drill.js`: she moves one player and taps the tick, and the move plays out. Pass, Intercept and Get in line share one check, a player on (or clear of) the line between two points (`src/lib/drillChecks.js`). Anywhere that does the job counts. Help steps up: a nudge, then a flash on a good place, then do it together. No timer.
+- In goalkeeping, her own player goes in goal: every girl gets a turn (FA advice).
+- Coaching points Rich added for later mini-games: Shoot at the best time, not too far out and not too close. The keeper sometimes comes out with the ball, and then a defender stays close to goal.
+- 100 touches a day (`src/lib/touches.js`, store key `touches`): a grown-up sets the touches and days with two iPhone-style dials. One ball a day. Stickers come from the total (the first ball, half the chart, a full chart), never from days in a row, and a missed day stays blank. "Print the chart" uses the phone's own print, with an A4 layout in `@media print`.
+- The Training ground album page (before the shinies) holds the training stickers. Each names what wins it in `earnedBy`, and they never use up a bonus answer.
 
 ## Not in scope yet
 

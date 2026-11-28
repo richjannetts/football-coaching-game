@@ -71,8 +71,19 @@ test('album: the first page is our team, with the keeper in her keeper kit and a
   assert.equal(page.stickers[5].kind, 'coach');
 });
 
-test('album: page order is team, club colours, world colours, kit bag, shinies', () => {
-  assert.deepEqual(data.pages.map((p) => p.id), ['team', 'club', 'world', 'kitbag', 'shiny']);
+test('album: page order is team, club colours, world colours, kit bag, training ground, shinies', () => {
+  assert.deepEqual(data.pages.map((p) => p.id), ['team', 'club', 'world', 'kitbag', 'training', 'shiny']);
+});
+
+test('album: training stickers come from training, never from bonus answers', () => {
+  const progress = Object.fromEntries(levels.matches[0].levels.flatMap((n) => [[`ch${n}`, true], [`bonus${n}`, true]]));
+  let a = buildAlbum(data, { squad: mine.squad, teamName: mine.name, progress, levels });
+  const training = () => a.pages.find((p) => p.id === 'training').stickers;
+  assert.equal(training().filter((x) => x.earned).length, 0);
+  a = buildAlbum(data, { squad: mine.squad, teamName: mine.name, progress: { train_pass: true, touches1: true }, levels });
+  assert.deepEqual(training().filter((x) => x.earned).map((x) => x.name), ['Pass', 'Touches']);
+  // Training stickers never use up the sticker the next bonus answer wins.
+  assert.equal(a.next.no, 1);
 });
 
 test('data: every made-up kit has a short name, four colours and a known pattern', () => {
@@ -91,7 +102,9 @@ test('album: with more bonus answers than stickers, nothing breaks', () => {
   const lots = { matches: [{ label: 'M', levels: Array.from({ length: 40 }, (_, i) => i + 1) }] };
   const progress = Object.fromEntries(lots.matches[0].levels.flatMap((n) => [[`ch${n}`, true], [`bonus${n}`, true]]));
   const a = buildAlbum(data, { squad: mine.squad, teamName: mine.name, progress, levels: lots });
-  assert.equal(a.count, a.total);
+  // Every sticker except the training ones, which training wins.
+  const training = a.pages.find((p) => p.id === 'training').stickers.length;
+  assert.equal(a.count, a.total - training);
   assert.equal(a.next, null);
 });
 

@@ -3524,3 +3524,484 @@ button.chip:active {
   row-gap: 2px;
   border-radius: 16px;
 }
+
+/* ---------- Opening doors, Match day and Training night ----------
+   Rich's choices, 28th November 2026. Same chunky buttons as the rest:
+   white panels with a thick bottom edge, yellow for "tap me next". */
+.home,
+.hub {
+  gap: 12px;
+}
+.home-title,
+.hub-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: #fff;
+  text-shadow: 0 3px 0 var(--ink);
+  text-align: center;
+  margin: 0;
+}
+.home-title {
+  font-size: clamp(1.5rem, 6.5vw, 2.1rem);
+}
+.hub-title {
+  flex: 1;
+  font-size: clamp(1.4rem, 6vw, 2rem);
+  align-self: center;
+}
+.chip-book {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+}
+.doors {
+  flex: 1;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 18px;
+  min-height: 0;
+}
+.door {
+  position: relative;
+  overflow: hidden;
+  border: 4px solid #fff;
+  border-radius: 26px;
+  padding: 0;
+  min-height: 150px;
+  text-align: left;
+  color: #fff;
+  transition: scale 0.28s cubic-bezier(0.3, 1.6, 0.5, 1), translate 0.12s ease-out;
+}
+.door:active {
+  scale: 0.97;
+  translate: 0 4px;
+}
+.door-match {
+  background: linear-gradient(#4f9df7, #2e7be0);
+  box-shadow: 0 8px 0 var(--blue-lip);
+}
+.door-training {
+  background: linear-gradient(#27306b, #3f4aa0);
+  box-shadow: 0 8px 0 #141a45;
+}
+.door-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.door-score {
+  font-family: var(--font-display);
+  font-size: 22px;
+  fill: var(--accent);
+}
+.door-cap {
+  position: absolute;
+  left: 16px;
+  bottom: 12px;
+  display: grid;
+}
+.door-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 7vw, 2.2rem);
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
+}
+.door-sub {
+  font-weight: 600;
+  font-size: 1rem;
+}
+.home-bottom {
+  display: flex;
+  justify-content: center;
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .doors {
+    grid-template-rows: none;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Match day: big tiles. */
+.big-tiles {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .big-tiles {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.big-tile,
+.station-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: none;
+  border-radius: 22px;
+  padding: 16px;
+  background: var(--panel);
+  color: var(--ink);
+  text-align: left;
+  box-shadow: 0 6px 0 var(--lip);
+  transition: scale 0.28s cubic-bezier(0.3, 1.6, 0.5, 1), translate 0.12s ease-out;
+}
+.big-tile:active,
+.station-btn:active,
+.tile:active {
+  scale: 0.96;
+  translate: 0 4px;
+}
+.big-tile.is-next {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 6px 0 var(--accent-lip);
+}
+.big-tile.is-soon {
+  opacity: 0.7;
+}
+.big-tile-pic {
+  width: 72px;
+  height: 72px;
+  flex: none;
+  border-radius: 50%;
+  background: #fff;
+  display: grid;
+  place-items: center;
+}
+.big-tile-pic > svg {
+  width: 70%;
+  height: 70%;
+}
+.big-tile.is-soon .big-tile-pic {
+  background: var(--bg-2);
+}
+.big-tile-words,
+.station-words {
+  display: grid;
+  gap: 2px;
+}
+.big-tile-title {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+}
+.big-tile-sub,
+.station-sub {
+  font-weight: 600;
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+/* Training night: sections of tiles. */
+.hub-body {
+  display: grid;
+  gap: 10px;
+  padding-bottom: 8px;
+}
+.hub-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.tile {
+  position: relative;
+  border: none;
+  border-radius: 18px;
+  padding: 10px 4px 10px;
+  min-height: 96px;
+  background: var(--panel);
+  color: var(--ink);
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 4px;
+  box-shadow: 0 5px 0 var(--lip);
+  font: 700 0.95rem/1.1 var(--font);
+  transition: scale 0.28s cubic-bezier(0.3, 1.6, 0.5, 1), translate 0.12s ease-out;
+}
+.tile.is-next {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 5px 0 var(--accent-lip);
+}
+.tile.is-done {
+  background: #dff5e6;
+  box-shadow: 0 5px 0 var(--green-lip);
+}
+.tile.is-soon {
+  opacity: 0.55;
+}
+.tile.is-shaking,
+.big-tile.is-shaking,
+.did-btn.is-shaking {
+  animation: shake 0.5s ease-in-out;
+}
+.tile-tick,
+.tile-lock {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.tile-tick {
+  background: var(--green);
+  color: #fff;
+}
+.tile-lock {
+  background: var(--bg-2);
+}
+.tile-tick .icon,
+.tile-lock .icon {
+  width: 80%;
+  height: 80%;
+}
+.station-btn {
+  width: 100%;
+  padding: 12px 16px;
+}
+.station-pic {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #fff7e0;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.station-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .hub-body {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* 100 touches a day: the chart, and the grown-ups' dials. */
+.touches-body,
+.touches-setup {
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+.skills {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+.skills li {
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 4px 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.chart {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+  gap: 8px;
+}
+.day {
+  position: relative;
+  height: 62px;
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: 0 4px 0 var(--lip);
+  display: grid;
+  place-items: center;
+}
+.day-no {
+  position: absolute;
+  top: 3px;
+  left: 7px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+.day.is-got {
+  background: #dff5e6;
+  box-shadow: 0 4px 0 var(--green-lip);
+}
+.day.is-next {
+  outline: 4px dashed var(--accent-lip);
+  outline-offset: -4px;
+}
+.did-btn {
+  min-width: 220px;
+  min-height: 64px;
+  border: none;
+  border-radius: 22px;
+  padding: 12px 24px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 7px 0 var(--accent-lip);
+  font: 700 1.4rem/1 var(--font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.did-btn.is-done {
+  background: #dff5e6;
+  color: var(--ink);
+  box-shadow: 0 7px 0 var(--green-lip);
+}
+.did-btn .icon {
+  width: 30px;
+  height: 30px;
+}
+.touches-grown {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 16px;
+}
+.dials {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+}
+.dial {
+  position: relative;
+  width: 120px;
+  display: grid;
+  justify-items: center;
+}
+.dial-list {
+  width: 100%;
+  height: 144px;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  background: var(--panel);
+  border-radius: 18px;
+  box-shadow: 0 5px 0 var(--lip);
+  -webkit-mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent);
+  mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent);
+}
+.dial-list::-webkit-scrollbar {
+  display: none;
+}
+.dial-pad {
+  height: 48px;
+}
+.dial-item {
+  height: 48px;
+  display: grid;
+  place-items: center;
+  scroll-snap-align: center;
+  font: 600 1.5rem/1 var(--font);
+  color: var(--ink-soft);
+}
+.dial-item.is-on {
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 1.8rem;
+}
+.dial-window {
+  position: absolute;
+  top: 48px;
+  left: 6px;
+  right: 6px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 208, 40, 0.35);
+  pointer-events: none;
+}
+.dial-label {
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+/* The chart on paper. Only shows when printing. */
+.print-sheet {
+  display: none;
+}
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+  body {
+    background: #fff !important;
+  }
+  #app {
+    display: none !important;
+  }
+  .print-sheet {
+    display: block;
+    color: #12305c;
+    font-family: var(--font);
+  }
+  .print-sheet h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-align: center;
+    font-size: 34pt;
+    margin: 0;
+  }
+  .print-name {
+    text-align: center;
+    font-size: 16pt;
+    margin: 8pt 0;
+  }
+  .print-skills {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 14pt;
+    font-size: 12pt;
+    font-weight: 600;
+  }
+  .print-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8pt;
+  }
+  .print-day {
+    border: 2.5pt solid #12305c;
+    border-radius: 10pt;
+    height: 26mm;
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    padding-top: 4pt;
+    font-weight: 700;
+    break-inside: avoid;
+  }
+  .print-day i {
+    width: 13mm;
+    height: 13mm;
+    margin-top: 4pt;
+    border: 2pt dashed #8fb6e0;
+    border-radius: 50%;
+  }
+  .print-foot {
+    text-align: center;
+    font-weight: 600;
+    margin-top: 12pt;
+  }
+}
+.touches .hub-title {
+  font-size: clamp(1.15rem, 5.2vw, 1.7rem);
+}

@@ -29,6 +29,11 @@ import { readReplays, startReplay, finishReplayLevel, addGoal, pathProgress } fr
 import { buildClock, orderOf, levelAfter, minuteOf } from './lib/clock.js';
 import { readCup, winRound, ladder, scoreBefore, roundLevels, goalLevelsFor } from './lib/cup.js';
 import { burst, burstFrom } from './lib/confetti.js';
+import { homeScreen, matchDayScreen, trainingScreen, touchesScreen } from './trainingScreens.js';
+import training from './data/training.json';
+import { runDrill } from './game/drill.js';
+import { trainingPic } from './lib/trainingIcons.js';
+import { readTouches, tickToday, earnedKeys, setChart, newChart, dayKey, isFull } from './lib/touches.js';
 
 
 const app = document.getElementById('app');
@@ -54,6 +59,9 @@ let updateReady = false;
 let onMenu = false;
 let skippedInstall = false;
 let applyUpdate = () => {};
+// The screen to draw again when a new version is ready: the opening doors
+// or the cup path, whichever she is on.
+let redrawMenu = () => goMenu(false);
 
 const isInstalled = () => globalThis.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone === true;
 
@@ -101,7 +109,7 @@ if ('serviceWorker' in navigator) {
   applyUpdate = registerSW({
     onNeedRefresh() {
       updateReady = true;
-      if (onMenu) goMenu(false);
+      if (onMenu) redrawMenu();
     },
   });
 }
@@ -153,7 +161,7 @@ function boot() {
   show(
     startScreen({
       profile,
-      onStart: () => (profile ? goMenu(true) : goStory()),
+      onStart: () => (profile ? goHome(true) : goStory()),
     })
   );
 }
@@ -363,6 +371,7 @@ function goMenu(speak) {
       movedFrom: live ? movedFrom : null,
       nextButton: live ? null : { kind: newCup ? 'cup' : 'round', onTap: () => goCup(false) },
       onAlbum: goAlbum,
+      onBack: () => goMatchDay(true),
       onTeam: () => goTeam(true),
       onChapter: (n, locked) => {
         if (locked) {
@@ -376,6 +385,7 @@ function goMenu(speak) {
     })
   );
   onMenu = true;
+  redrawMenu = () => goMenu(false);
   if (cur) narrator.setVars({ them: cur.opponent.name });
   tellRound(round);
   if (!speak) return;
@@ -433,6 +443,134 @@ function goCupWin() {
   });
   show(el);
   el.begin();
+}
+
+// ---- Match day or Training night ----
+// The game opens on two big doors (Rich's choice, 28th November 2026).
+// Match day holds the cup run and a "coming soon" marker. Training night
+// holds mini-games grouped like the FA fundamentals Rich coaches, and the
+// 100 touches a day chart.
+function goHome(speak, line = 'home.hello') {
+  const el = homeScreen({
+    albumCount: albumNow().count,
+    line,
+    updateReady,
+    onUpdate: () => applyUpdate(true),
+    onAlbum: () => goAlbumFrom(() => goHome(false)),
+    onMatchDay: () => goMatchDay(true),
+    onTraining: () => goTraining(true),
+    onGrownUps: () => show(gateScreen({ onPass: goGrownUps, onBack: () => goHome(false) })),
+  });
+  show(el);
+  onMenu = true;
+  redrawMenu = () => goHome(false);
+  if (speak) el.begin();
+}
+
+function goMatchDay(speak) {
+  const el = matchDayScreen({ roundLabel: roundNow().label, onBack: () => goHome(true, 'home.back'), onCup: () => goMenu(true) });
+  show(el);
+  if (speak) el.begin();
+}
+
+function goAlbumFrom(back) {
+  const el = albumScreen({ album: albumNow(), onBack: back });
+  show(el);
+  el.begin();
+}
+
+// The mini-games she has finished at least once.
+const drillsDone = () => new Set(Object.keys(training.drills).filter((id) => progress[`train_${id}`]));
+let touches = readTouches(store.load('touches'), training.touches.start);
+const saveTouches = (next) => {
+  touches = next;
+  store.save('touches', touches);
+};
+
+function goTraining(speak, line = 'tn.hello') {
+  const el = trainingScreen({
+    sections: training.sections,
+    done: drillsDone(),
+    touches,
+    line,
+    onBack: () => goHome(true, 'home.back'),
+    onDrill: goDrill,
+    onTouches: () => goTouches(true),
+  });
+  show(el);
+  if (speak) el.begin();
+}
+
+// A training sticker: the album's sticker won by this key.
+const trainingSticker = (key) => albumNow().pages.flatMap((p) => p.stickers).find((st) => st.key === key) || null;
+
+// One mini-game: a few puzzles, then a medal, and a sticker the first time.
+function goDrill(id) {
+  const drill = training.drills[id];
+  const tile = training.sections.flatMap((sec) => sec.tiles).find((t) => t.id === id);
+  if (!drill) return;
+  const stage = createStage({ profile, training: true, onHome: () => goTraining(false, 'tn.back'), showWords: !!store.load('showWords'), mode: { difficulty: 'difficult' } });
+  show(stage.el);
+  runDrill(stage, drill, teams.myTeam(profile).squad)
+    .then(async () => {
+      const key = `train_${id}`;
+      const firstTime = !progress[key];
+      progress = { ...progress, [key]: true };
+      store.save('progress', progress);
+      const sticker = firstTime ? trainingSticker(key) : null;
+      stage.showEnd({ level: 1, medal: trainingPic(tile?.icon || 'ball', 120), shiny: sticker, question: null, firstTime: false, onNext: null });
+      stage.setBusy(false);
+      await stage.play(['sfx.sticker', 'tr.done', drill.tip, ...(sticker ? ['tr.sticker'] : []), 'tr.bye']).catch(() => {});
+    })
+    .catch((err) => {
+      if (err === ABORT) return;
+      console.error(err);
+      stage.leave();
+      goTraining(false, 'tn.back');
+    });
+}
+
+// 100 touches a day: a chart she ticks once a day, after her practice.
+function goTouches(speak) {
+  narrator.setVars({ touches: String(touches.touches) });
+  const el = touchesScreen({
+    state: touches,
+    today: dayKey(),
+    skills: training.touches.skills,
+    options: training.touches,
+    name: profile?.name || '',
+    onBack: () => goTraining(true, 'tn.back'),
+    onTick: () => {
+      const r = tickToday(touches, dayKey());
+      if (!r.added) return;
+      saveTouches(r.state);
+      // Stickers from the total: the first ball, half the chart, a full chart.
+      const won = earnedKeys(touches).filter((k) => !progress[k]);
+      if (won.length) {
+        progress = { ...progress, ...Object.fromEntries(won.map((k) => [k, true])) };
+        store.save('progress', progress);
+      }
+      narrator.say(['sfx.cheer', 'tc.done', ...(won.length ? ['tc.sticker'] : []), ...(isFull(touches) ? ['tc.full'] : [])]);
+      el.redraw(touches);
+      const cell = el.querySelectorAll('.day.is-got');
+      const last = cell[cell.length - 1];
+      const t = teams.myTeam(profile);
+      if (last) burstFrom(last, { colours: [t.kit.us.shirt, t.kit.us.stripe, '#ffffff', '#facc15'], count: won.length ? 60 : 30 });
+    },
+    onSetChart: (choice) => {
+      saveTouches(setChart(touches, choice));
+      narrator.setVars({ touches: String(touches.touches) });
+      el.redraw(touches);
+      narrator.say(['tc.hello']);
+    },
+    onNewChart: () => {
+      saveTouches(newChart(touches));
+      el.redraw(touches);
+      narrator.say(['tc.hello']);
+    },
+  });
+  show(el);
+  if (speak) el.begin();
 }
 
 function goGrownUps() {

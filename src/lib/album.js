@@ -3,6 +3,8 @@
 //   - Each bonus question answered right wins the next sticker, in order.
 //     The first one is her own player (Rich's choice, 27th November 2026).
 //   - Finishing every level of a match gives that match's shiny.
+//   - Training night stickers name what wins them (earnedBy), such as
+//     finishing a mini-game for the first time.
 // No imports, so it is easy to test.
 
 // data: stickers.json. levels: levels.json. squad: the team's players
@@ -18,14 +20,23 @@ export function buildAlbum(data, { squad, teamName, progress = {}, levels }) {
     const stickers = list.map((st) => {
       no += 1;
       const player = st.squad != null ? squad[st.squad] : null;
-      const out = { no, kind: st.kind, page: page.id, name: st.name || '', look: st.look || null, kit: st.kit || 'us', pattern: st.pattern || 'stripes', item: st.item || null, bg: st.bg || null, earned: false };
+      const out = { no, kind: st.kind, page: page.id, name: st.name || '', look: st.look || null, kit: st.kit || 'us', pattern: st.pattern || 'stripes', item: st.item || null, bg: st.bg || null, key: st.earnedBy || null, earned: false };
       if (player) out.look = player;
       if (st.kind === 'player') {
         out.name = player.name;
         out.kit = player.keeper ? 'keeper' : 'us';
         out.pattern = null; // our own kit's shirt style, whatever she chose
       }
-      if (st.kind === 'shiny') {
+      // A Training night sticker: her own player, practising a skill.
+      if (st.kind === 'skill') {
+        out.kit = st.kit || 'us';
+        out.pattern = null;
+      }
+      if (st.earnedBy) {
+        // Training night stickers are won by finishing a mini-game, or by
+        // balls on the 100 touches chart, not by bonus answers.
+        out.earned = !!progress[st.earnedBy];
+      } else if (st.kind === 'shiny') {
         // A match still being built (complete: false) gives no shiny yet:
         // its last level so far is not full time.
         const m = levels.matches[st.match];

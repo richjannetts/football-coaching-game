@@ -1,5 +1,5 @@
 {
-  "note": "The sticker album, page by page. Stickers are won in this order, one for each bonus question answered right. The first sticker she wins is her own player (Rich's choice, 27th November 2026). 'squad' is a player's place in team.json (0 is her own player). Club colours and world colours are made-up kits: colours and patterns only, with made-up names. Never add a badge, a sponsor, a real club or a country name (Rich's choice, 26th November 2026; the repository is public). Patterns: stripes, hoops, halves, sash, band, plain. 'bg' is the two colours behind the player. The Shinies page has one sticker for each match in levels.json, given for finishing every level in that match.",
+  "note": "The sticker album, page by page. Stickers are won in this order, one for each bonus question answered right. The first sticker she wins is her own player (Rich's choice, 27th November 2026). 'squad' is a player's place in team.json (0 is her own player). Club colours and world colours are made-up kits: colours and patterns only, with made-up names. Never add a badge, a sponsor, a real club or a country name (Rich's choice, 26th November 2026; the repository is public). Patterns: stripes, hoops, halves, sash, band, plain. 'bg' is the two colours behind the player. The Training ground page (28th November 2026) holds Training night stickers: each names what wins it in 'earnedBy' (a mini-game finished, or balls on the 100 touches chart), and they never use up a bonus answer. The Shinies page has one sticker for each match in levels.json, given for finishing every level in that match.",
   "pages": [
     {
       "id": "team",
@@ -51,6 +51,19 @@
         { "kind": "item", "item": "cone", "name": "Cone", "bg": ["#bff0cd", "#2563eb"] },
         { "kind": "item", "item": "whistle", "name": "Whistle", "bg": ["#fff2a8", "#ffffff"] },
         { "kind": "item", "item": "bottle", "name": "Bottle", "bg": ["#c7d2fe", "#ffd028"] }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training ground",
+      "colour": "#2a8f49",
+      "stickers": [
+        { "kind": "skill", "squad": 0, "name": "Pass", "earnedBy": "train_pass", "bg": ["#bff0cd", "#ffd028"] },
+        { "kind": "skill", "squad": 0, "name": "Intercept", "earnedBy": "train_intercept", "bg": ["#ffd6d4", "#ffffff"] },
+        { "kind": "skill", "squad": 0, "name": "Keeper", "kit": "keeper", "earnedBy": "train_line", "bg": ["#ffe1c2", "#c4eaff"] },
+        { "kind": "item", "item": "boots", "name": "Touches", "earnedBy": "touches1", "bg": ["#c4eaff", "#ffffff"] },
+        { "kind": "item", "item": "bottle", "name": "Half way", "earnedBy": "touchesHalf", "bg": ["#bff0cd", "#c4eaff"] },
+        { "kind": "item", "item": "ball", "name": "Chart done", "earnedBy": "touchesAll", "bg": ["#fff2a8", "#ffd028"] }
       ]
     },
     {

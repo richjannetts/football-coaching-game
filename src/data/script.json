@@ -1590,6 +1590,236 @@
       "id": "quiz.c10.reveal",
       "text": "Good try. The rule says: wait outside the box, and five big steps from the ball, like this one. Then be ready to run in if it bounces out. You can try for the sticker again next time you play level ten.",
       "cue": "The right picture glows. The other two pictures fade."
+    },
+    {
+      "id": "home.hello",
+      "text": "Hi {name}! What shall we do today? Match day, or training night?",
+      "cue": "Two big doors: Match day and Training night."
+    },
+    {
+      "id": "home.back",
+      "text": "Match day, or training night?",
+      "cue": "Two big doors: Match day and Training night."
+    },
+    {
+      "id": "md.hello",
+      "text": "It's match day! Tap the cup run to play in the cup.",
+      "cue": "The cup run tile glows yellow. Beside it, a tile says coming soon."
+    },
+    {
+      "id": "md.soon",
+      "text": "Something new is coming here soon. For now, play the cup run.",
+      "cue": "The coming soon tile wobbles."
+    },
+    {
+      "id": "tn.hello",
+      "text": "It's training night! Pick a game to practise. The yellow one is a good place to start.",
+      "cue": "The training night menu: when we have the ball, when they have the ball, goalkeeping, and 100 touches a day."
+    },
+    {
+      "id": "tn.back",
+      "text": "Pick a game to practise.",
+      "cue": "The training night menu."
+    },
+    {
+      "id": "tn.soon",
+      "text": "Coach is still setting that game up. It's coming soon. Try one of the others.",
+      "cue": "The tile wobbles. It has a small lock."
+    },
+    {
+      "id": "tr.pass.intro",
+      "text": "Passing! You've got the ball. But their player is standing in the way of {mate|your friend}.",
+      "cue": "Our player has the ball. Their player stands on the line between her and a friend."
+    },
+    {
+      "id": "tr.pass.ask",
+      "text": "Move {mate|your friend} so you can pass to her. Then tap the tick.",
+      "cue": "The friend glows. A dotted line runs from the ball to her."
+    },
+    {
+      "id": "tr.pass.ask2",
+      "text": "Where can {mate|your friend} go, so your pass can reach her?",
+      "cue": "The friend glows."
+    },
+    {
+      "id": "tr.pass.blocked",
+      "text": "Not quite. Their player can still get to the pass. Move {mate|your friend} out from behind her.",
+      "cue": "Their player in the way hops."
+    },
+    {
+      "id": "tr.pass.far",
+      "text": "Not quite. That's a long way for a pass. Come a bit closer.",
+      "cue": "The friend hops."
+    },
+    {
+      "id": "tr.pass.near",
+      "text": "Not quite. That's very close. Move a few big steps away, into space.",
+      "cue": "The friend hops."
+    },
+    {
+      "id": "tr.pass.show",
+      "text": "Here's a good place. Out from behind their player, where you can see each other.",
+      "cue": "A yellow circle flashes on a good place."
+    },
+    {
+      "id": "tr.pass.together",
+      "text": "Let's do it together. Out into space, where you can see each other.",
+      "cue": "The friend walks to a good place."
+    },
+    {
+      "id": "tr.pass.right",
+      "text": "Yes! A clear line for the pass. Pass to {mate|your friend}!",
+      "cue": "The ball rolls to the friend, who jumps."
+    },
+    {
+      "id": "tr.pass.tip",
+      "text": "At training, move so your friend can see you. Make it easy for her to pass to you.",
+      "cue": "Our players smile."
+    },
+    {
+      "id": "tr.int.intro",
+      "text": "Intercepting! They've got the ball, and they want to pass it.",
+      "cue": "Their player has the ball. A friend of theirs waits for the pass."
+    },
+    {
+      "id": "tr.int.ask",
+      "text": "Move into the way of their pass. Then tap the tick.",
+      "cue": "Your player glows. Their two players look at each other."
+    },
+    {
+      "id": "tr.int.ask2",
+      "text": "They want to pass again. Where should you stand?",
+      "cue": "Your player glows."
+    },
+    {
+      "id": "tr.int.miss",
+      "text": "Not quite. Their pass can still get through. Stand on the line between their two players.",
+      "cue": "Their two players hop."
+    },
+    {
+      "id": "tr.int.show",
+      "text": "Here's a good place. Right on the line, between them.",
+      "cue": "A yellow circle flashes on a good place."
+    },
+    {
+      "id": "tr.int.together",
+      "text": "Let's do it together. In the way of the pass, between them.",
+      "cue": "Your player walks to a good place."
+    },
+    {
+      "id": "tr.int.right",
+      "text": "Yes! You're in the way. Their pass comes straight to you. It's our ball!",
+      "cue": "The ball rolls to your player, who jumps."
+    },
+    {
+      "id": "tr.int.tip",
+      "text": "Watch the ball, and try to be first to their pass.",
+      "cue": "Our player smiles."
+    },
+    {
+      "id": "tr.gk.intro",
+      "text": "Goalkeeping! Tonight you're in goal, {name}. Everyone gets a turn.",
+      "cue": "Your player wears the keeper top, in goal."
+    },
+    {
+      "id": "tr.gk.ask",
+      "text": "Their player has the ball. Stand in line with the ball, a step off your goal line. Then tap the tick.",
+      "cue": "A dotted line runs from the ball to the middle of our goal."
+    },
+    {
+      "id": "tr.gk.ask2",
+      "text": "The ball has moved. Where should you stand now?",
+      "cue": "Their player has moved with the ball."
+    },
+    {
+      "id": "tr.gk.offLine",
+      "text": "Not quite. Think of a line from the ball to the middle of your goal. Stand on it.",
+      "cue": "Their player with the ball hops."
+    },
+    {
+      "id": "tr.gk.back",
+      "text": "Not quite. Take a step off your goal line, towards the ball.",
+      "cue": "Your player hops."
+    },
+    {
+      "id": "tr.gk.far",
+      "text": "Not quite. That's a long way from your goal. Come back nearer to it.",
+      "cue": "Your player hops."
+    },
+    {
+      "id": "tr.gk.show",
+      "text": "Here's a good place. In line with the ball, a step off your line.",
+      "cue": "A yellow circle flashes on a good place."
+    },
+    {
+      "id": "tr.gk.together",
+      "text": "Let's do it together. In line with the ball, a step off your line.",
+      "cue": "Your player walks to a good place."
+    },
+    {
+      "id": "tr.gk.right",
+      "text": "Great save! You were in line with the ball, so the shot came straight to you.",
+      "cue": "Their player shoots. The ball goes into your keeper's hands."
+    },
+    {
+      "id": "tr.gk.tip",
+      "text": "Good keepers start our attacks too. Look for a friend to roll it to.",
+      "cue": "Our keeper holds the ball up."
+    },
+    {
+      "id": "tr.next",
+      "text": "Here's another one.",
+      "cue": "The players move to new places."
+    },
+    {
+      "id": "tr.done",
+      "text": "Training done! You worked really hard, {name}.",
+      "cue": "A medal, with confetti."
+    },
+    {
+      "id": "tr.sticker",
+      "text": "And here's a new sticker for your training ground page!",
+      "cue": "A sticker appears beside the medal."
+    },
+    {
+      "id": "tr.bye",
+      "text": "See you at training! Tap the house to go back.",
+      "cue": "A hand points at the house button."
+    },
+    {
+      "id": "tc.hello",
+      "text": "{touches} touches a day! Practise with a ball at home. When you've done your touches, tap the yellow button.",
+      "cue": "A chart with a space for a ball each day."
+    },
+    {
+      "id": "tc.setup",
+      "text": "Grown-ups: turn the dials to pick how many touches, and how many days. Then tap the tick.",
+      "cue": "Two dials: touches, and days."
+    },
+    {
+      "id": "tc.done",
+      "text": "Brilliant! Another ball on your chart. Well done for practising.",
+      "cue": "A ball fills the next space on the chart."
+    },
+    {
+      "id": "tc.today",
+      "text": "That's today's ball done. Well done!",
+      "cue": "Today's ball wobbles."
+    },
+    {
+      "id": "tc.full",
+      "text": "Your chart is full! That's a lot of practice. You can start a new one any time.",
+      "cue": "Every space on the chart has a ball."
+    },
+    {
+      "id": "tc.sticker",
+      "text": "You've won a sticker for your training ground page!",
+      "cue": "A sticker appears."
+    },
+    {
+      "id": "tc.skills",
+      "text": "Try toe taps, inside insides, sole rolls, step overs and keepy-ups. Count your touches as you go.",
+      "cue": "Five little pictures of skills."
     }
   ]
 }

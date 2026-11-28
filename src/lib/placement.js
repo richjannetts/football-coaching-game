@@ -19,7 +19,7 @@ const SNAP_MS = 280;
 const SNAP_EASE = 'cubic-bezier(.3,1.45,.55,1)'; // overshoots a touch, then settles: a little bounce
 
 export function createPlacement({ pitch, players, spots, keeperAt, onChange, onEmptyTap, onPick, onDrop }) {
-  // players: [{ el, spotId }]
+  // players: [{ el, spotId, locked? }]. A locked player can't be picked up.
   const spotById = new Map(spots.map((sp) => [sp.id, sp]));
   let enabled = false;
   let selected = -1;
@@ -91,6 +91,7 @@ export function createPlacement({ pitch, players, spots, keeperAt, onChange, onE
     let best = -1;
     let bestD = Infinity;
     players.forEach((p, i) => {
+      if (p.locked) return; // a player she can't move in this puzzle
       const d = distance(p.el._pos, yards);
       if (d < bestD) {
         bestD = d;
