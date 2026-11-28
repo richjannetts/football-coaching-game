@@ -747,19 +747,34 @@
       "cue": "The ball rolls out to a friend on the side."
     },
     {
-      "id": "c3.move1",
-      "text": "{runner|Our friend} takes it up the side of the pitch.",
-      "cue": "Our friend dribbles up the side. Everyone moves up with her."
+      "id": "c3.back",
+      "text": "{mate|Our friend} passes it straight back to {keeper|our keeper}.",
+      "cue": "Our friend passes the ball back to our keeper, who has stepped out of her goal."
     },
     {
-      "id": "c3.move2",
-      "text": "She passes inside to {mate|a friend}. Pass and move!",
-      "cue": "The ball goes inside to a friend, who passes it forward."
+      "id": "c3.dribble",
+      "text": "Lots of space! {keeper|Our keeper} dribbles out with the ball. Head up, looking for a friend.",
+      "cue": "Our keeper dribbles up the pitch with the ball. Everyone runs forward."
+    },
+    {
+      "id": "c3.keeperPass",
+      "text": "Their player runs at her, so she passes to {shooter|our front player}. Lovely pass!",
+      "cue": "Our keeper passes the ball forward to our front player."
+    },
+    {
+      "id": "c3.keeperBack",
+      "text": "Our keeper runs straight back to her goal, and {shooter|our front player} runs at their goal.",
+      "cue": "Our keeper runs back into goal. Our front player dribbles towards their goal."
     },
     {
       "id": "c3.shot",
       "text": "{shooter|Our front player} shoots...",
       "cue": "Our front player kicks the ball at their goal."
+    },
+    {
+      "id": "c3.goal",
+      "text": "GOAL! {keeper|Our keeper} started it, and {shooter|our front player} finished it. {score|We're winning}!",
+      "cue": "The ball goes in the net. Everyone jumps, our keeper too."
     },
     {
       "id": "c3.wide",

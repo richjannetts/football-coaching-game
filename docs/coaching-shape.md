@@ -54,6 +54,7 @@ Changed by Rich, 27th November 2026: our shape matches the one shown for the oth
 - One friend inside, a little to one side of the middle of our half.
 - Up on the other side, just behind halfway. Either side counts in the game, and so does the middle.
 - First pass: short, out wide. Never a long kick.
+- Then (Rich, 28th November 2026, to keep the keeper in the game): the friend passes it straight back, the keeper dribbles out into the space, passes forward to a friend, and runs back to her goal.
 
 ## Their goal kick (level 4, a first guess for Rich to change)
 
