@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { toSegment, checkPass, checkIntercept, checkKeeper, checkShoot, checkSave, checkDribble, checkPress, checkDrill, scenePositions } from '../src/lib/drillChecks.js';
+import { toSegment, checkPass, checkIntercept, checkKeeper, checkShoot, checkSave, checkDribble, checkPress, checkTackle, checkCover, checkDrill, scenePositions } from '../src/lib/drillChecks.js';
 import { readJson } from './helpers.js';
 
 const training = readJson('src/data/training.json');
@@ -82,21 +82,34 @@ test('press: only the nearest goes, close and goal side', () => {
   assert.equal(checkPress({ ball, start, now: { ...start, you: { x: 15.5, y: 21.5 } } }).ok, true);
 });
 
+test('tackle: win the ball that is away from its player, not one at her feet', () => {
+  const balls = [{ x: 10.7, y: 19.4 }, { x: 20, y: 18.5 }];
+  assert.equal(checkTackle({ me: { x: 20.5, y: 17.5 }, balls, loose: 1 }).ok, true);
+  assert.deepEqual(checkTackle({ me: { x: 10.5, y: 18.5 }, balls, loose: 1 }), { ok: false, why: 'close', who: 0 });
+  assert.equal(checkTackle({ me: { x: 15, y: 12 }, balls, loose: 1 }).why, 'far');
+});
+
+test('play it out: a friend stays close to our goal', () => {
+  assert.equal(checkCover({ mate: { x: 15.5, y: 2.5 } }).ok, true);
+  assert.equal(checkCover({ mate: { x: 23, y: 15 } }).why, 'cover');
+});
+
 // Every puzzle must start wrong (or there is nothing to do), and its good
 // answer, used by the hints, must be right.
 for (const [id, drill] of Object.entries(training.drills)) {
   test(`training ${id}: each puzzle starts wrong and its good answer is right`, () => {
     for (const [i, scene] of drill.scenes.entries()) {
       const start = pt(scene.us[scene.move]);
-      assert.equal(checkDrill(drill.kind, scenePositions(drill.kind, scene, start)).ok, false, `${id} puzzle ${i + 1} starts right`);
-      assert.equal(checkDrill(drill.kind, scenePositions(drill.kind, scene, pt(scene.ideal))).ok, true, `${id} puzzle ${i + 1}: the good answer is wrong`);
-      for (const [x, y] of [scene.ideal, ...Object.values(scene.us), ...scene.them]) {
+      const kind = scene.kind || drill.kind;
+      assert.equal(checkDrill(kind, scenePositions(kind, scene, start)).ok, false, `${id} puzzle ${i + 1} starts right`);
+      assert.equal(checkDrill(kind, scenePositions(kind, scene, pt(scene.ideal))).ok, true, `${id} puzzle ${i + 1}: the good answer is wrong`);
+      for (const [x, y] of [scene.ideal, ...Object.values(scene.us), ...scene.them, ...(scene.balls || [])]) {
         assert.ok(x > 0 && x < 30 && y > 0 && y < 40, `${id} puzzle ${i + 1}: a player is off the pitch`);
       }
     }
   });
   test(`training ${id}: every line it speaks is in the script`, () => {
-    const lines = [...drill.intro, ...drill.right, ...Object.values(drill.nudge), drill.show, drill.together, drill.tip, ...drill.scenes.flatMap((s) => s.say)];
+    const lines = [...drill.intro, ...drill.right, ...Object.values(drill.nudge), drill.show, drill.together, drill.tip, ...drill.scenes.flatMap((s) => [...s.say, ...(s.right || []), s.show, s.together].filter(Boolean))];
     for (const line of lines) assert.ok(script.has(line), `${line} is not in script.json`);
   });
 }

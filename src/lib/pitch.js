@@ -238,6 +238,20 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea, 
     arrowLayer.replaceChildren(s('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: 'big-arrow', 'marker-end': 'url(#arrow-head)' }));
   }
 
+  // More balls on the pitch, as in a dribbling game at training where
+  // everyone has one (Tackle). Drawn in the arrow layer, so clear('arrow')
+  // takes them away.
+  function showExtraBalls(points) {
+    arrowLayer.replaceChildren(
+      ...points.map((p) => {
+        const v = toView(p);
+        const g = footballSvg(10, { cls: 'ball extra-ball', shadow: true });
+        g.setAttribute('transform', `translate(${v.x} ${v.y})`);
+        return g;
+      })
+    );
+  }
+
   function showTargets(targets) {
     targetsLayer.replaceChildren(
       ...targets.map((t) => {
@@ -308,6 +322,7 @@ export function createPitch({ length, width, goalWidth, ringYards, penaltyArea, 
     showHints,
     flashSpots,
     showArrow,
+    showExtraBalls,
     showTargets,
     showCross,
     setWhy,

@@ -1977,6 +1977,106 @@
       "cue": "Coach's tip."
     },
     {
+      "id": "tr.tk.intro",
+      "text": "Tackling! It's a dribbling game, like at training. Everyone has a ball.",
+      "cue": "Their players each have a ball."
+    },
+    {
+      "id": "tr.tk.ask",
+      "text": "Tackle when the ball is away from their feet. Find that ball and go and win it. Then tap the tick.",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.tk.ask2",
+      "text": "Which ball has got away from their feet this time?",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.tk.close",
+      "text": "Not quite. That ball is right at her feet. Look for a ball that has got away.",
+      "cue": "Their player with the ball at her feet hops."
+    },
+    {
+      "id": "tr.tk.far",
+      "text": "Not quite. Get right next to the ball that's away from their feet.",
+      "cue": "Her player hops."
+    },
+    {
+      "id": "tr.tk.show",
+      "text": "Here's a good place. Right by the ball that got away.",
+      "cue": "A yellow circle flashes on a good place."
+    },
+    {
+      "id": "tr.tk.together",
+      "text": "Let's do it together. To the ball that got away from her feet.",
+      "cue": "Her player walks to the loose ball."
+    },
+    {
+      "id": "tr.tk.right",
+      "text": "Yes! The ball was away from her feet, so you won it. Great tackle!",
+      "cue": "Our player takes the ball."
+    },
+    {
+      "id": "tr.tk.tip",
+      "text": "At training, be patient. Wait for the ball to get away from their feet, then tackle.",
+      "cue": "Coach's tip."
+    },
+    {
+      "id": "tr.po.intro",
+      "text": "Playing it out! Tonight you're in goal, {name}, and you've got the ball.",
+      "cue": "Her player in the keeper top, with the ball."
+    },
+    {
+      "id": "tr.po.ask",
+      "text": "Move {mate|your friend} into space, so you can roll it out to her. Then tap the tick.",
+      "cue": "Her friend hops."
+    },
+    {
+      "id": "tr.po.ask2",
+      "text": "Where can {mate|your friend} go this time, so you can roll it to her?",
+      "cue": "Her friend hops."
+    },
+    {
+      "id": "tr.po.right",
+      "text": "Yes! A lovely roll out to {mate|your friend}. That's how we start our attacks.",
+      "cue": "The ball rolls out to her friend."
+    },
+    {
+      "id": "tr.po.out",
+      "text": "This time you run out with the ball. Brilliant!",
+      "cue": "Our keeper is out of her goal with the ball."
+    },
+    {
+      "id": "tr.po.ask3",
+      "text": "But now our goal is empty. Move {mate|your friend} back, close to our goal. Then tap the tick.",
+      "cue": "Her friend hops."
+    },
+    {
+      "id": "tr.po.cover",
+      "text": "Not quite. Our goal is empty. Bring {mate|your friend} right back, close to it.",
+      "cue": "Her friend hops."
+    },
+    {
+      "id": "tr.po.show3",
+      "text": "Here's a good place. Right back, close to our goal.",
+      "cue": "A yellow circle flashes near our goal."
+    },
+    {
+      "id": "tr.po.together3",
+      "text": "Let's do it together. Right back, close to our goal.",
+      "cue": "Her friend walks back to our goal."
+    },
+    {
+      "id": "tr.po.right3",
+      "text": "Yes! Our goal is safe, so you can run out with the ball.",
+      "cue": "Our keeper and her friend hop."
+    },
+    {
+      "id": "tr.po.tip",
+      "text": "Good keepers start our attacks. If you run out with the ball, a friend stays close to our goal.",
+      "cue": "Coach's tip."
+    },
+    {
       "id": "tr.next",
       "text": "Here's another one.",
       "cue": "The players move to new places."
