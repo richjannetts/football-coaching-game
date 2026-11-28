@@ -11,6 +11,11 @@
 //   - Shoot: move her player, with the ball, to a good place to shoot.
 //   - Dribble: move her player, with the ball, forward into space.
 //   - Press: the one of ours nearest the ball goes to it, goal side.
+//   - Tackle: everyone has a ball; go and win the one that has got away
+//     from its player's feet.
+//   - Play it out: the keeper rolls it to a friend in space (the pass
+//     check), and when the keeper comes out with the ball, a friend stays
+//     close to our goal.
 // Anywhere that does the job counts. All distances are in yards, on the
 // same pitch as the match (30 wide, 40 long, our goal along y = 0).
 // No imports, so it is easy to test.
@@ -50,6 +55,11 @@ export const LIMITS = {
   // and stays goal side (between the ball and our goal). A player counts
   // as moved if she is a yard or more from where she started.
   press: { moved: 0.9, near: 3 },
+  // Tackle: get to the ball that is away from its player's feet (within
+  // 1.8 yards of it). Play it out: while our keeper is out with the ball,
+  // a friend stays close to our goal (within 4.5 yards of its middle).
+  tackle: { near: 1.8 },
+  cover: { near: 4.5 },
 };
 
 export const GOAL_CENTRE = { x: 15, y: 0 };
@@ -135,6 +145,22 @@ export function checkPress({ ball, start, now }, L = LIMITS.press) {
   return { ok: true };
 }
 
+// Tackle. me: where she moved her player. balls: the ball each of their
+// players has. loose: which ball is away from its player's feet.
+export function checkTackle({ me, balls, loose }, L = LIMITS.tackle) {
+  if (dist(me, balls[loose]) <= L.near) return { ok: true };
+  const close = balls.findIndex((b, i) => i !== loose && dist(me, b) <= L.near);
+  if (close >= 0) return { ok: false, why: 'close', who: close };
+  return { ok: false, why: 'far' };
+}
+
+// Play it out, the last puzzle: our keeper is out with the ball. mate:
+// where she moved the friend who stays back.
+export function checkCover({ mate }, L = LIMITS.cover) {
+  if (dist(mate, GOAL_CENTRE) <= L.near) return { ok: true };
+  return { ok: false, why: 'cover' };
+}
+
 // One check for any mini-game, by its kind. pos: where the players are now.
 export function checkDrill(kind, pos) {
   if (kind === 'pass') return checkPass(pos);
@@ -144,6 +170,8 @@ export function checkDrill(kind, pos) {
   if (kind === 'save') return checkSave(pos);
   if (kind === 'dribble') return checkDribble(pos);
   if (kind === 'press') return checkPress(pos);
+  if (kind === 'tackle') return checkTackle(pos);
+  if (kind === 'cover') return checkCover(pos);
   throw new Error(`No check for ${kind}`);
 }
 
@@ -172,5 +200,7 @@ export function scenePositions(kind, scene, moved, live) {
   if (kind === 'save') return { keeper: moved, shooter: them[0], target: pt(scene.target) };
   if (kind === 'dribble') return { start: start[scene.move], me: moved, them };
   if (kind === 'press') return { ball: them[0], start, now };
+  if (kind === 'tackle') return { me: moved, balls: scene.balls.map(pt), loose: scene.loose };
+  if (kind === 'cover') return { mate: moved };
   throw new Error(`No positions for ${kind}`);
 }
